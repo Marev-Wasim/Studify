@@ -16,7 +16,7 @@ CREATE TABLE users (
 );
 GO
 
--- 2. Subjects
+-- 2. Subjects: act as categories
 -- ON DELETE CASCADE: a foreign key constraint that automatically deletes rows in a child table when the corresponding row in the parent table is deleted
 CREATE TABLE subjects (
     id INT IDENTITY(1,1) PRIMARY KEY,
@@ -26,7 +26,21 @@ CREATE TABLE subjects (
 );
 GO
 
--- 3. Study Logs
+--3. Tasks: different tasks inside each subject (category)
+CREATE TABLE tasks (
+    task_id          INT IDENTITY(1,1) PRIMARY KEY,
+    subject_id       INT          NOT NULL,
+    name             VARCHAR(150) NOT NULL,                       -- e.g. "Ch.4 Exercises", "Read pages 120-150"
+    due_date         DATE         NULL,                           -- NULL = no due date
+    est_min          INT          NULL     CHECK (est_min > 0),
+    completed        BIT          DEFAULT 0,
+    completed_at     DATETIME2    NULL,
+    created_at       DATETIME2    DEFAULT GETUTCDATE(),
+    FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+);
+GO
+
+-- 4. Study Logs
 -- DECIMAL(4,2): a data type that specifies a number with a total of four digits, where two of those digits are after the decimal point
 CREATE TABLE study_logs (
     id INT IDENTITY(1,1) PRIMARY KEY,
@@ -39,7 +53,7 @@ CREATE TABLE study_logs (
 );
 GO
 
--- 4. Coin Transactions
+-- 5. Coin Transactions
 -- reason: to earn money, auto-filled through Flask
 CREATE TABLE coin_transactions (
     id INT IDENTITY(1,1) PRIMARY KEY,
@@ -53,7 +67,7 @@ CREATE TABLE coin_transactions (
 );
 GO
 
--- 5. Friends
+-- 6. Friends
 -- The table only prevents duplicate or self-friend entries
 -- Guarantees that (2,5) and (5,2) can’t both exist
 CREATE TABLE friends (
@@ -72,6 +86,9 @@ GO
 CREATE INDEX idx_study_logs_user_date ON study_logs(user_id, study_date);
 CREATE INDEX idx_friends_user ON friends(user_id1, status);
 CREATE INDEX idx_study_logs_user_subject ON study_logs(user_id, subject_id);
+CREATE INDEX idx_tasks_subject_id ON tasks(subject_id);
+CREATE INDEX idx_tasks_due_date ON tasks(due_date);
+CREATE INDEX idx_study_logs_task_id ON study_logs(task_id);
 GO
 
-PRINT 'All 5 tables created successfully!';
+PRINT 'All 6 tables created successfully!';
