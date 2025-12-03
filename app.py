@@ -5,6 +5,17 @@ from sqlalchemy import text
 from flask import Flask, render_template
 
 app = Flask(__name__)
+#marev start
+import os
+from flask import Flask, send_from_directory
+
+app = Flask(__name__, static_folder='static', static_url_path='')  # Key: empty static_url_path for root-relative URLs
+
+# Serve static files explicitly (e.g., /css/style.css → static/css/style.css)
+@app.route('/<path:filename>')
+def static_files(filename):
+    return send_from_directory(app.static_folder, filename)
+#marev end
 CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -54,6 +65,7 @@ if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
