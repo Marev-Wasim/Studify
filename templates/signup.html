@@ -99,6 +99,7 @@
       border-color: #4a7fb8;
     }
 
+    /* زر إنشاء الحساب */
     .create-btn {
       display: block;
       width: 100%;
@@ -174,7 +175,7 @@
       <h2>Join Studify Today!</h2>
       <p>Join us and start your study journey!</p>
 
-      <!-- <form action="">
+      <form action="">
         <div class="form-row">
           <input type="text" placeholder="Full Name">
           <input type="email" placeholder="Email Address">
@@ -186,29 +187,7 @@
         </div>
         
         <a href="login.html" class="create-btn">Create Account</a>
-      </form> -->
-<!-- marev start -->
-      <!-- Add id to form for JS -->
-      <form id="registerForm">
-        <div class="form-row">
-          <input type="text" id="username" placeholder="Full Name" required>
-          <input type="email" id="email" placeholder="Email Address" required>
-        </div>
-        <div class="form-row">
-          <input type="password" id="password" placeholder="Password" required>
-          <input type="password" id="confirm_password" placeholder="Confirm Password" required>
-        </div>
-
-        <!-- Message area -->
-        <div id="message"></div>
-
-        <button type="submit" class="create-btn">Create Account</button>
       </form>
-      <p style="text-align: center; margin-top: 20px;">
-        Already have an account? <a href="login.html" style="color: #00a8a0; font-weight: 600;">Log in</a>
-      </p>
-    </div>
-<!-- marev end -->
 
     </div>
 
@@ -219,67 +198,6 @@
     </div>
 
   </div>
-<!-- marev start -->
-  <script>
-    const form = document.getElementById('registerForm');
-    const messageDiv = document.getElementById('message');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault(); // Prevent page reload
-
-      const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const confirm_password = document.getElementById('confirm_password').value;
-
-      // Clear previous messages
-      messageDiv.innerHTML = '';
-
-      // Client-side validation
-      if (password !== confirm_password) {
-        messageDiv.innerHTML = '<p class="error-message">Passwords do not match!</p>';
-        return;
-      }
-      if (password.length < 6) {
-        messageDiv.innerHTML = '<p class="error-message">Password must be at least 6 characters</p>';
-        return;
-      }
-
-      try {
-        const response = await fetch('/auth/register', {  // Change URL if deployed
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username,
-            email,
-            password,
-            confirm_password
-          })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          // Success
-          messageDiv.innerHTML = '<p class="success-message">Account created successfully! Redirecting...</p>';
-          setTimeout(() => {
-            window.location.href = 'login.html'; // Redirect to login page
-          }, 2000);
-        } else {
-          // Error from backend
-          messageDiv.innerHTML = `<p class="error-message">${data.message || 'Registration failed'}</p>`;
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        messageDiv.innerHTML = '<p class="error-message">Network error. Please try again later.</p>';
-      }
-    });
-  </script>
-<!-- marev end -->
 
 </body>
 </html>
-
-
