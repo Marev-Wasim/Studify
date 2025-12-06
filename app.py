@@ -2,12 +2,9 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from extensions import db  # <-- import db from extensions
 from sqlalchemy import text
-from flask import Flask, render_template
+from flask import render_template
 
 app = Flask(__name__)
-@app.route('/')
-def index():
-    return '<h1 style="text-align:center; margin-top:100px;">Studify is LIVE! 🚀</h1><p style="text-align:center;"><a href="/auth/register">Go to Sign Up</a> | <a href="/auth/login">Log In</a></p>'
 #marev start
 # import os
 # from flask import Flask, send_from_directory
@@ -68,6 +65,7 @@ if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
