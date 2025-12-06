@@ -8,7 +8,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
-        return render_template('register.html')
+        return render_template('signup.html')
     data = request.get_json()
     username = data.get('username')
     email = data.get('email')
@@ -31,7 +31,7 @@ def register():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('Login.html')
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -40,4 +40,5 @@ def login():
     if user and user.check_password(password):
         return jsonify({'message': 'Login successful', 'user_id': user.id})
     return jsonify({'message': 'Invalid credentials'}), 401
+
 
