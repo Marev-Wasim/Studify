@@ -5,8 +5,10 @@ from models.user import User
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 # Register a new user
-@auth_bp.route('/register', methods=['POST'])
+@auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'GET':
+        return render_template('register.html')
     data = request.get_json()
     username = data.get('username')
     email = data.get('email')
@@ -26,8 +28,10 @@ def register():
     return jsonify({'message': 'User registered successfully'}), 201
 
 # Login (simple placeholder, no JWT yet)
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'GET':
+        return render_template('login.html')
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -36,3 +40,4 @@ def login():
     if user and user.check_password(password):
         return jsonify({'message': 'Login successful', 'user_id': user.id})
     return jsonify({'message': 'Invalid credentials'}), 401
+
