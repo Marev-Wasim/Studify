@@ -61,10 +61,22 @@ app.register_blueprint(friend_bp)
 def index():
     return render_template('index.html')
 
-if __name__ == "__main__":
-    # with app.app_context():
-    #     db.create_all()
+# if __name__ == "__main__":
+#     # with app.app_context():
+#     #     db.create_all()
+#     app.run(debug=True)
+
+# Create tables on startup
+    with app.app_context():
+        db.create_all()
+
+    return app
+
+app = create_app()
+
+if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
