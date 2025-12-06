@@ -5,16 +5,19 @@ from sqlalchemy import text
 from flask import Flask, render_template
 
 app = Flask(__name__)
+@app.route('/')
+def index():
+    return '<h1 style="text-align:center; margin-top:100px;">Studify is LIVE! 🚀</h1><p style="text-align:center;"><a href="/auth/register">Go to Sign Up</a> | <a href="/auth/login">Log In</a></p>'
 #marev start
-import os
-from flask import Flask, send_from_directory
+# import os
+# from flask import Flask, send_from_directory
 
-app = Flask(__name__, static_folder='static', static_url_path='')  # Key: empty static_url_path for root-relative URLs
+# app = Flask(__name__, static_folder='static', static_url_path='')  # Key: empty static_url_path for root-relative URLs
 
-# Serve static files explicitly (e.g., /css/style.css → static/css/style.css)
-@app.route('/<path:filename>')
-def static_files(filename):
-    return send_from_directory(app.static_folder, filename)
+# # Serve static files explicitly (e.g., /css/style.css → static/css/style.css)
+# @app.route('/<path:filename>')
+# def static_files(filename):
+#     return send_from_directory(app.static_folder, filename)
 #marev end
 CORS(app)
 
@@ -65,6 +68,7 @@ if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
