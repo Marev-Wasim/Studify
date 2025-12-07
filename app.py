@@ -48,11 +48,15 @@ app.register_blueprint(friend_bp)
 @app.route("/")
 def index():
     return render_template('index.html')
+@app.route("/signup-link")
+def signup():
+    return render_template("signup.html")
 
 if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
