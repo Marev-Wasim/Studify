@@ -31,7 +31,7 @@ def register():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('Login.html')
+        return render_template('index.html')
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -40,6 +40,7 @@ def login():
     if user and user.check_password(password):
         return jsonify({'message': 'Login successful', 'user_id': user.id})
     return jsonify({'message': 'Invalid credentials'}), 401
+
 
 
 
