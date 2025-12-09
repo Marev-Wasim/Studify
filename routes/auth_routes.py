@@ -5,8 +5,8 @@ from models.user import User
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 # Register a new user
-@auth_bp.route('/register', methods=['GET', 'POST'])
-def register():
+@auth_bp.route('/signup', methods=['GET', 'POST'])
+def signup():
     if request.method == 'GET':
         return render_template('signup.html')
     # data = request.get_json()
@@ -53,6 +53,7 @@ def login():
     if user and user.check_password(password):
         return jsonify({'message': 'Login successful', 'user_id': user.id})
     return jsonify({'message': 'Invalid credentials'}), 401
+
 
 
 
