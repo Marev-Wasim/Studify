@@ -24,7 +24,7 @@ with app.app_context():
 from models.user import User
 from models.subject import Subject
 from models.task import Task
-from models.activity_log import ActivityLog
+from models.study_log import StudyLog
 from models.badge import Badge
 from models.friend import Friend
 
@@ -54,4 +54,5 @@ if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
