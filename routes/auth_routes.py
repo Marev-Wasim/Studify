@@ -44,7 +44,7 @@ def signup():
     # return redirect(url_for('login'))
     session['user_id'] = user.id  # Log them in automatically
     flash('Account created successfully!')
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('dashboard.dashboard_page'))
 
 # Login (simple placeholder, no JWT yet)
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -73,4 +73,5 @@ def login():
         return redirect(url_for('dashboard'))
         # marev end
     return jsonify({'message': 'Invalid credentials'}), 401
+
 
