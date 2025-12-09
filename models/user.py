@@ -1,5 +1,6 @@
-from extensions import db
-from werkzeug.security import generate_password_hash, check_password_hash
+from extensions import db # Changed import to include bcrypt if not already there
+from extensions import bcrypt # Assuming bcrypt is initialized in extensions.py
+from werkzeug.security import generate_password_hash, check_password_hash # Keep imports for type hints/backward compatibility
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -14,7 +15,16 @@ class User(db.Model):
     badges = db.relationship('Badge', backref='user', lazy=True)
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        # IMPORTANT: Use bcrypt from extensions to hash the password
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8') 
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        # IMPORTANT: Use bcrypt from extensions to check the password
+        # You may need to handle cases where the hash is from werkzeug directly, 
+        # but using bcrypt.check_password_hash is safer if you use Flask-Bcrypt
+        return bcrypt.check_password_hash(self.password_hash, password)
+    
+    # You should add a to_dict method here if it doesn't exist to match user_routes.py expectations:
+    # def to_dict(self):
+    #     return { 'id': self.id, 'username': self.username, 'email': self.email, 'points': getattr(self, 'points', 0) }
+
