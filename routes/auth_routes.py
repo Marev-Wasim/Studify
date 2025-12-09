@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for
+from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for, session
 from extensions import db
 from models.user import User
 
@@ -40,8 +40,11 @@ def signup():
     db.session.add(user)
     db.session.commit()
     #return jsonify({'message': 'User registered successfully'}), 201
-    flash('Account created successfully! Please login.')
-    return redirect(url_for('login'))
+    # flash('Account created successfully! Please login.')
+    # return redirect(url_for('login'))
+    session['user_id'] = user.id  # Log them in automatically
+    flash('Account created successfully!')
+    return redirect(url_for('dashboard'))
 
 # Login (simple placeholder, no JWT yet)
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -70,3 +73,4 @@ def login():
         return redirect(url_for('dashboard'))
         # marev end
     return jsonify({'message': 'Invalid credentials'}), 401
+
