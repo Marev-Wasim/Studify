@@ -14,7 +14,7 @@ def dashboard_page():
 @dashboard_bp.route('/summary', methods=['GET'])
 def summary():
     total_tasks = Task.query.count()
-    completed_tasks = Task.query.filter_by(status='done').count()
+    completed_tasks = Task.query.filter_by(completed=True).count()
     total_hours = sum([log.hours_studied for log in StudyLog.query.all()])
 
     return jsonify({
@@ -23,5 +23,6 @@ def summary():
         'total_hours': total_hours,
         'completion_percentage': (completed_tasks / total_tasks * 100) if total_tasks else 0
     })
+
 
 
