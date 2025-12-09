@@ -175,7 +175,7 @@
       <h2>Join Studify Today!</h2>
       <p>Join us and start your study journey!</p>
 
-      <form action="">
+      <!-- <form action="">
         <div class="form-row">
           <input type="text" placeholder="Full Name">
           <input type="email" placeholder="Email Address">
@@ -187,7 +187,23 @@
         </div>
         
         <a href="login.html" class="create-btn">Create Account</a>
-      </form>
+      </form> -->
+      <form action="/auth/register" method="POST">
+
+  <div class="form-row">
+    <input type="text" name="username" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email Address" required>
+  </div>
+
+  <div class="form-row">
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+  </div>
+
+  <button type="submit" class="create-btn">Create Account</button>
+
+</form>
+
 
     </div>
 
@@ -201,4 +217,5 @@
 
 </body>
 </html>
+
 
