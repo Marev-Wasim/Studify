@@ -71,4 +71,5 @@ export default function Home() {
       <Image src="/cloud.png" alt="cloud" width={140} height={80} className={styles.cloud2} />
     </div>
   );
+
 }
