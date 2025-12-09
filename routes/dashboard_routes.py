@@ -15,7 +15,7 @@ def dashboard_page():
 def summary():
     total_tasks = Task.query.count()
     completed_tasks = Task.query.filter_by(status='done').count()
-    total_hours = sum([log.hours for log in ActivityLog.query.all()])
+    total_hours = sum([log.hours_studied for log in StudyLog.query.all()])
 
     return jsonify({
         'total_tasks': total_tasks,
@@ -23,4 +23,5 @@ def summary():
         'total_hours': total_hours,
         'completion_percentage': (completed_tasks / total_tasks * 100) if total_tasks else 0
     })
+
 
