@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template
 from flask_cors import CORS
-from extensions import db  # <-- import db from extensions
+from extensions import db  
 from sqlalchemy import text
 
 app = Flask(__name__)
@@ -38,12 +38,14 @@ from routes.task_routes import task_bp
 from routes.subject_routes import subject_bp
 from routes.dashboard_routes import dashboard_bp
 from routes.friend_routes import friend_bp
+from routes.user_routes import user_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(task_bp)
 app.register_blueprint(subject_bp)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(friend_bp)
+app.register_blueprint(user_bp)
 
 @app.route("/")
 def index():
@@ -56,6 +58,7 @@ if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
