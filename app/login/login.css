@@ -1,0 +1,33 @@
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family: "Poppins", sans-serif; background:#a8cef1;}
+
+.container{
+  width:90%; max-width:1100px; margin:40px auto;
+  background:white; border-radius:20px; overflow:hidden; display:flex;
+  box-shadow:0 15px 35px rgba(0,0,0,0.08);
+}
+
+.left{flex:1; padding:55px 55px;}
+
+.brand{display:flex; align-items:center; gap:14px; margin-bottom:30px;}
+.brand img{width:140px; height:90px; margin-left:-50px; margin-top:-40px; margin-bottom:40px;}
+.brand h1{font-size:30px; font-weight:1000; color:#072450; margin-top:-40px; margin-left:-50px; margin-bottom:40px;}
+
+h2{font-size:44px; font-weight:800; color:#0a093b; margin-bottom:45px; margin-top:-40px;}
+p{color:#7088a2; font-size:16px; margin-bottom:40px; margin-top:-40px;}
+
+input{width:100%; padding:15px; margin-bottom:15px; border:1px solid #d6e4f0; border-radius:7px; background:#f6fbff; font-size:15px;color:#000;}
+
+.login-link{display:block; text-align:center; padding:14px; margin-top:8px; background:#00a8a0; border-radius:8px; color:white; font-weight:700; font-size:17px; text-decoration:none; box-shadow:0 6px 18px rgba(0,168,153,0.22);}
+.login-link:hover{background:#00948f;}
+
+.links{margin-top:10px; display:flex; justify-content:flex-start; font-size:14px;}
+.links a{color:#0a7cc4; text-decoration:none;}
+
+.dont-have{margin-top:20px; font-size:14px; color:#0c2345;}
+
+.google-btn{margin-top:8px; width:100%; padding:12px; border-radius:8px; border:1px solid #d7e3ed; background:white; display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; font-weight:600; text-decoration:none; color:#000;}
+
+.right{width:45%; background:#e7f2fc; position:relative; display:flex; align-items:center; justify-content:center;}
+.shape{position:absolute; width:120px; height:120px; background:#a8cef1; opacity:0.4; border-radius:18px; top:70px; right:70px;}
+.right img{width:80%; max-width:360px;}
