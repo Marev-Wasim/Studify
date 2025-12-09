@@ -9,11 +9,11 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 def register():
     if request.method == 'GET':
         return render_template('signup.html')
-    data = request.get_json()
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
-    confirm_password = data.get('confirm_password')
+    #data = request.get_json()
+    username = request.form.get('username')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')
 
     if password != confirm_password: 
         return jsonify({'message': 'Passwords do not match'}), 400
@@ -40,6 +40,7 @@ def login():
     if user and user.check_password(password):
         return jsonify({'message': 'Login successful', 'user_id': user.id})
     return jsonify({'message': 'Invalid credentials'}), 401
+
 
 
 
