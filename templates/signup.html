@@ -67,7 +67,7 @@
       font-size: 32px;
       font-weight: 800;
       color: #0a093b;
-      margin-bottom: 10px;
+      margin-bottom: 0px;
       margin-top: -70px;
       font-family: 'Konkhmer Sleokchher', serif;
     }
@@ -75,7 +75,7 @@
     p {
       color: #7088a2;
       font-size: 16px;
-      margin-bottom: 30px;
+      margin-bottom: 39px;
     }
 
     .form-row {
@@ -216,6 +216,9 @@ input.input-error {
     <input type="password" name="confirm_password" placeholder="Confirm Password" required>
   </div>
 
+  <div id="password-error-msg" style="color: #ff4d4d; font-size: 14px; margin-top: -10px; margin-bottom: 15px; font-weight: bold;">
+    </div>
+
   <button type="submit" class="create-btn">Create Account</button>
 
 </form>
@@ -234,21 +237,38 @@ input.input-error {
     const form = document.querySelector('form');
     const passwordInput = document.querySelector('input[name="password"]');
     const confirmPasswordInput = document.querySelector('input[name="confirm_password"]');
+    
+    // **جلب عنصر رسالة الخطأ الجديد**
+    const errorMsgDiv = document.getElementById('password-error-msg');
 
     form.addEventListener('submit', function(event) {
+        
+        // 1. إزالة أي أخطاء سابقة
+        passwordInput.classList.remove('input-error');
+        confirmPasswordInput.classList.remove('input-error');
+        errorMsgDiv.textContent = ''; // إفراغ الرسالة المرئية
+
+        // ** شرط التحقق **
         if (passwordInput.value !== confirmPasswordInput.value) {
-            alert('Error: The password and confirmation password do not match!');
-            event.preventDefault(); // منع الإرسال إذا لم يتطابقا
+            
+            // 2. منع الإرسال
+            event.preventDefault(); 
+            
+            // 3. **عرض التنبيه كجملة تحت المربعين**
+            errorMsgDiv.textContent = 'Error: The password and confirmation password do not match!';
+            
+            // 4. تطبيق الحركة (إضافة الكلاس الأحمر)
             passwordInput.classList.add('input-error');
             confirmPasswordInput.classList.add('input-error');
+            
+            // 5. وضع التركيز
             passwordInput.focus();
+
         }
-        // إذا تطابقا، سيستمر الإرسال إلى الخادم (وهو ما نريده)
     });
 </script>
 </body>
 </html>
-
 
 
 
