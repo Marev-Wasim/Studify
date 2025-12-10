@@ -158,7 +158,23 @@
       .left { padding: 30px; }
       .form-row { flex-direction: column; gap: 15px; }
     }
+
+    /* --- نمط حقول الإدخال عند وجود خطأ --- */
+input.input-error {
+  border-color: #ff4d4d; /* اللون الأحمر للحدود */
+  background: #fff0f0; /* خلفية وردية فاتحة (اختياري) */
+  animation: shake 0.5s; /* تأثير اهتزاز بسيط (اختياري) */
+}
+
+/* إضافة تأثير الاهتزاز (اختياري) */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+    
   </style>
+  
 </head>
 
 <body>
@@ -214,9 +230,25 @@
     </div>
 
   </div>
-  
+  <script>
+    const form = document.querySelector('form');
+    const passwordInput = document.querySelector('input[name="password"]');
+    const confirmPasswordInput = document.querySelector('input[name="confirm_password"]');
+
+    form.addEventListener('submit', function(event) {
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            alert('Error: The password and confirmation password do not match!');
+            event.preventDefault(); // منع الإرسال إذا لم يتطابقا
+            passwordInput.classList.add('input-error');
+            confirmPasswordInput.classList.add('input-error');
+            passwordInput.focus();
+        }
+        // إذا تطابقا، سيستمر الإرسال إلى الخادم (وهو ما نريده)
+    });
+</script>
 </body>
 </html>
+
 
 
 
