@@ -188,7 +188,7 @@
         
         <a href="login.html" class="create-btn">Create Account</a>
       </form> -->
-      <form action="/auth/signup" method="POST">
+      <form id = "signupform" form action="/auth/signup" method="POST">
 
   <div class="form-row">
     <input type="text" name="username" placeholder="Full Name" required>
@@ -215,38 +215,8 @@
 
   </div>
   
-<script>
-    const form = document.getElementById('signupForm');
-    const createBtn = form.querySelector('.create-btn');
-
-    form.addEventListener('submit', function(event) {
-        // 1. منع الإرسال الافتراضي للنموذج
-        event.preventDefault();
-
-        // 2. محاكاة حالة الإرسال (تغيير الزر)
-        createBtn.innerText = 'Creating Account...';
-        createBtn.disabled = true;
-        createBtn.style.background = '#007f77'; // لون للإشارة إلى حالة التحميل
-
-        // **هنا يتم إرسال البيانات إلى الخادم في تطبيقك الحقيقي (باستخدام Fetch API مثلاً)**
-        // بما أننا لا نملك خادمًا حقيقيًا هنا، سنقوم بمحاكاة وقت الاستجابة باستخدام setTimeout.
-
-        // 3. المحاكاة: بعد 2 ثوانٍ، نفترض نجاح الإرسال وننتقل
-        setTimeout(() => {
-            
-            // في تطبيق حقيقي، إذا كان الرد من الخادم "نجاح":
-            
-            // 4. الانتقال إلى الصفحة المطلوبة
-            window.location.href = 'dashboard.html';
-            
-            // ملاحظة: إذا كان الرد من الخادم "فشل":
-            // يجب إعادة الزر لوضعه الأصلي وعرض رسالة خطأ.
-
-        }, 2000); // 2000 ميلي ثانية = 2 ثوانٍ
-    });
-</script>
-  
 </body>
 </html>
+
 
 
