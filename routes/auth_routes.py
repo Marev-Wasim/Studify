@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, render_template, flash, redirect,
 from extensions import db
 from models.user import User
 
-# auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 # Register a new user
 # @auth_bp.route('/signup', methods=['GET', 'POST'])
@@ -45,6 +45,8 @@ from models.user import User
     # session['user_id'] = user.id  # Log them in automatically
     # flash('Account created successfully!')
     # return redirect(url_for('dashboard.dashboard_page'))
+
+# Register a new user
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()  # React sends JSON
@@ -95,6 +97,7 @@ def signup():
 #         # marev end
 #     return jsonify({'message': 'Invalid credentials'}), 401
 
+# Login (simple placeholder, no JWT yet)
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
