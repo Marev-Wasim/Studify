@@ -1,0 +1,202 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #abd1f4;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1250px;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      min-height: 600px;
+    }
+
+    /* LEFT SIDE */
+    .left {
+      flex: 1;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      /* المحاذاة لليسار */
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    /* تنسيق اللوجو والاسم */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      position: relative;
+      /* تنسيقات تحديد الموضع التي استخدمت في ملف Signup */
+      top: -50px; 
+      left: -60px;
+    }
+
+    .brand img {
+      width: 150px;
+      height: auto;
+    }
+
+    .brand h1 {
+      font-size: 2.5rem;
+      font-family: 'Konkhmer Sleokchher', serif;
+      color: #10203a;
+      font-weight: 650;
+      margin-top: 5px;
+      margin-left: -40px;
+    }
+
+    h2 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #0a093b;
+      margin-bottom: 10px;
+      font-family: 'Konkhmer Sleokchher', serif;
+    }
+
+    p {
+      color: #7088a2;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    /* حقول الإدخال */
+    input {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 1px solid #d6e4f0;
+      border-radius: 10px;
+      background: #f6fbff;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.3s;
+      color:#7088a2;
+    }
+
+    input:focus {
+      border-color: #4a7fb8;
+    }
+
+    /* تنسيق حقل الإدخال عند وجود خطأ */
+    input.error {
+      border-color: #ff4d4d;
+      background: #fff0f0;
+    }
+
+    /* رسالة الخطأ */
+    .error-msg {
+      color: #ff4d4d;
+      font-size: 14px;
+      margin-bottom: 15px;
+      display: none; /* يتم تجاوزها في JSX عند وجود خطأ */
+      font-weight: bold;
+    }
+     
+    /* زر تسجيل الدخول (بنفس لون زر Signup) */
+    .login-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 14px;
+      margin-top: 10px;
+      background: #00a8a0; /* نفس اللون الأخضر لـ create-btn في Signup */
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      font-size: 17px;
+      text-decoration: none;
+      transition: background 0.3s;
+      font-family: 'Konkhmer Sleokchher', serif;
+      cursor: pointer;
+    }
+
+    .login-btn:hover {
+      background: #00948f;
+    }
+
+    /* تنسيق رابط Sign up والجملة المحيطة */
+    .signup-link-container {
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .dont-have {
+      /* لضمان محاذاة النص لليسار */
+      text-align: left; 
+      margin-top: 25px;
+      font-size: 14px;
+      color: #0c2345;
+      margin-bottom: 5px;
+    }
+    
+    /* الكلاس المخصص للون التركواز/البيبي بلو للرابط */
+    .signup-redirect-link {
+        color: #4AC5E0; /* اللون التركواز/البيبي بلو */
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        margin-left: 5px;
+    }
+    
+    .links {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .links a {
+      color: #0a7cc4;
+      text-decoration: none;
+    }
+
+    /* RIGHT SIDE */
+    .right {
+      width: 50%;
+      background: #e7f2fc;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .deco-blob {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: #abd1f4;
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+
+    .blob-1 { top: -50px; right: -50px; }
+    .blob-2 { bottom: -50px; left: -50px; width: 200px; height: 200px; }
+
+    .right img {
+      width: 95%;
+      max-width: 550px;
+      position: relative;
+      z-index: 2;
+    }
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      .right { display: none; }
+      .left { padding: 30px; }
+    }
