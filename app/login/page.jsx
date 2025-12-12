@@ -19,7 +19,8 @@ const LoginPage = () => {
     setIsLoading(true);
     
     // نقطة النهاية للباك إند
-    const API_ENDPOINT = 'http://127.0.0.1:5000/auth/login';
+    //const API_ENDPOINT = 'http://127.0.0.1:5000/auth/login';
+    const API_ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
 
     try {
       const response = await fetch(API_ENDPOINT, {
@@ -149,5 +150,6 @@ const LoginPage = () => {
     </>
   );
 };
+
 
 export default LoginPage;
