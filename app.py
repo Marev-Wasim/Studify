@@ -50,6 +50,9 @@ app.register_blueprint(friend_bp)
 app.register_blueprint(user_bp)
 
 ## marev start react
+@app.route("/")
+def home():
+    return jsonify({"status": "Flask API is running"})
 # @app.route("/")
 # def index():
 #     return render_template('index.html')
@@ -62,5 +65,6 @@ if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
