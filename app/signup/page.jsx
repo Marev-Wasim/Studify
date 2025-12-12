@@ -44,7 +44,8 @@ export default function SignupForm() {
       return; 
     }
 
-    const backendUrl = 'http://127.0.0.1:5000/auth/register'; 
+    // const backendUrl = 'http://127.0.0.1:5000/auth/register'; 
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/signup`;
 
     try {
       const response = await fetch(backendUrl, {
@@ -56,6 +57,7 @@ export default function SignupForm() {
           username: formData.username,
           email: formData.email,
           password: formData.password,
+          confirm_password: formData.confirm_password,
         }),
       });
 
