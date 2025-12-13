@@ -4,12 +4,13 @@ from extensions import db
 from sqlalchemy import text
 
 app = Flask(__name__)
-CORS(
-    app, 
-    resources={r"/*": {"origins": ["http://192.168.52.1:3000"]}},
+CORS(app)
+#CORS(
+    #app, 
+    #resources={r"/*": {"origins": ["http://192.168.52.1:3000"]}},
     #supports_credentials=True,
     #allow_headers=["Content-Type", "Authorization"] # Explicitly allow common headers
-)
+#)
 app.config.from_object('config.Config')
 
 # Initialize db with app
@@ -62,6 +63,7 @@ if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
