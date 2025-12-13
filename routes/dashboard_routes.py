@@ -13,7 +13,7 @@ def dashboard_page():
 # Simple dashboard: count tasks and total hours
 @dashboard_bp.route('/summary', methods=['GET'])
 def summary():
-if 'user_id' not in session:
+    if 'user_id' not in session:
         return jsonify({'error': 'Not authenticated'}), 401
     
     user_id = session['user_id']
@@ -42,6 +42,7 @@ if 'user_id' not in session:
         'total_hours': round(total_hours, 2),  # Round to 2 decimal places
         'completion_percentage': round(completion_percentage, 1)  # Round to 1 decimal
     })
+
 
 
 
