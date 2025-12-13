@@ -308,7 +308,7 @@
                 <p class="dont-have">
                     Don't have an account? 
                     <a 
-                        href="signup.html" 
+                        href="/signup" 
                         class="signup-redirect-link"
                     >
                         Sign up
@@ -393,7 +393,7 @@
                 if (response.ok) {
                     console.log('Login successful:', data);
                     
-                    window.location.href = '/home.html'; 
+                    window.location.href = '/dashboard'; 
                 } else {
                     const errorMessage = data.message || 'Login failed. Please check your credentials.';
                     displayError(errorMessage);
@@ -414,6 +414,7 @@
 
 </body>
 </html>
+
 
 
 
