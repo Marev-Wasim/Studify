@@ -1108,273 +1108,284 @@
   </div>
 
  <script>
-        // 1. تعريف العناصر
-        const addSubjectBtn = document.getElementById('addSubjectBtn');
-        const subjectInput = document.getElementById('subjectInput');
-        const subjectsContainer = document.getElementById('subjectsContainer');
-        const taskSubjectSelect = document.getElementById('taskSubject');
-        const addTaskBtn = document.getElementById('addTaskBtn');
-        const taskName = document.getElementById('taskName');
-        const taskTime = document.getElementById('taskTime');
-        const taskDateInput = document.getElementById('taskDate');
-        
-        // ⭐ التعديل رقم 1: تعريف المسار الأساسي (الجذر)
-        // إذا كنت تستخدم خادم محلي: 'http://127.0.0.1:5000'
-        const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net'; 
+    // 1. تعريف العناصر
+    const addSubjectBtn = document.getElementById('addSubjectBtn');
+    const subjectInput = document.getElementById('subjectInput');
+    const subjectsContainer = document.getElementById('subjectsContainer');
+    const taskSubjectSelect = document.getElementById('taskSubject');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const taskName = document.getElementById('taskName');
+    const taskTime = document.getElementById('taskTime');
+    const taskDateInput = document.getElementById('taskDate');
+    // ⭐ 2. تعريف نقطة نهاية الباك إند (يجب تغييره إلى رابط سيرفرك الحي)
+    const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net/auth/dashboard'; 
 
-        // 3. متغيرات البيانات
-        let studifyData = [];
-        let totalPoints = 0; 
+    // 3. متغيرات البيانات
+    let studifyData = [];
+    let totalPoints = 0; // النقاط ستأتي من الباك إند أو ستتم معالجتها هناك
 
-        // ------------------------------------------------------------------
-        // ⭐️ دوال الاتصال بالباك إند (API Calls)
-        // ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+    // ⭐ دوال الاتصال بالباك إند (API Calls)
+    // ------------------------------------------------------------------
 
-        // دالة لجلب جميع البيانات (المواد والمهام) عند التحميل
-        async function fetchAllData() {
-            try {
-                // ⭐ التعديل رقم 2: المسار الصحيح: /dashboard/data
-                const response = await fetch(`${BASE_API_URL}/dashboard/data`);
-                if (!response.ok) throw new Error('Failed to fetch data');
-                
-                const data = await response.json();
-                studifyData = data.subjects || [];  
-                totalPoints = data.totalPoints || 0;  
-                
-                renderAllData(); 
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        }
-
-        // دالة لإضافة مادة جديدة
-        async function addSubject(subName) {
-            try {
-                // ⭐ التعديل رقم 3: المسار الصحيح: /dashboard/subjects
-                const response = await fetch(`${BASE_API_URL}/dashboard/subjects`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: subName })
-                });
-                
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to add subject');
-                }
-                
-                await fetchAllData();  
-                subjectInput.value = "";
-            } catch (error) {
-                console.error('Error adding subject:', error.message);
-                alert(`Failed to add subject: ${error.message}`);
-            }
-        }
-
-        // دالة لإضافة مهمة جديدة
-        async function addTask(taskData) {
-            try {
-                // ⭐ التعديل رقم 4: المسار الصحيح: /dashboard/tasks
-                const response = await fetch(`${BASE_API_URL}/dashboard/tasks`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(taskData)
-                });
-                
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to add task');
-                }
-                
-                await fetchAllData();  
-                taskName.value = ""; taskTime.value = ""; taskDateInput.value = "";
-            } catch (error) {
-                console.error('Error adding task:', error.message);
-                alert(`Failed to add task: ${error.message}`);
-            }
-        }
-
-        // دالة إتمام المهمة
-        window.completeTask = async function (buttonElement, taskId) {
-            try {
-                // ⭐ التعديل رقم 5: المسار الصحيح: /dashboard/tasks/{id}/complete
-                const response = await fetch(`${BASE_API_URL}/dashboard/tasks/${taskId}/complete`, {
-                    method: 'PUT'
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to complete task');
-                }
-
-                await fetchAllData();  
-                
-            } catch (error) {
-                console.error('Error completing task:', error.message);
-                alert(`Failed to complete task: ${error.message}`);
-            }
-        }
-        
-        // دالة حذف المادة
-        window.removeSubject = async function (subName) {
-            if (!confirm(`Are you sure you want to delete ${subName} and all its tasks?`)) return;
-            try {
-                // ⭐ التعديل رقم 6: المسار الصحيح: /dashboard/subjects/{name}
-                const response = await fetch(`${BASE_API_URL}/dashboard/subjects/${encodeURIComponent(subName)}`, {
-                    method: 'DELETE'
-                });if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to delete subject');
-                }
-                
-                await fetchAllData();  
-            } catch (error) {
-                console.error('Error deleting subject:', error.message);
-                alert(`Failed to delete subject: ${error.message}`);
-            }
-        }
-
-        // ------------------------------------------------------------------
-        // التشغيل عند التحميل وباقي الدوال المساعدة (بدون تغيير)
-        // ------------------------------------------------------------------
-        window.onload = function() {
-            const today = new Date().toISOString().split('T')[0];
-            taskDateInput.setAttribute('min', today);
+    // دالة لجلب جميع البيانات (المواد والمهام) عند التحميل
+    async function fetchAllData() {
+        try {
+            const response = await fetch(${BASE_API_URL}/data);
+            if (!response.ok) throw new Error('Failed to fetch data');
             
-            fetchAllData();  
+            const data = await response.json();
+            // يجب أن يكون الـ JSON بهذا الشكل تقريباً: { subjects: [...], totalPoints: 100 }
+            studifyData = data.subjects || []; 
+            totalPoints = data.totalPoints || 0; 
             
-            checkOverdueTasks();
-            setInterval(checkOverdueTasks, 60000);  
-        };
+            renderAllData(); // إعادة رسم الواجهة بالبيانات الجديدة
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // يمكنك تخصيص رسالة الخطأ للمستخدم هنا
+            // alert('Could not connect to the server or load data. Check console for details.'); 
+        }
+    }
 
-        // ... (دوال renderAllData, createSubjectCard, createTaskElement, إلخ تبقى كما هي) ...
-
-        function renderAllData() {
-            subjectsContainer.innerHTML = '';
-            taskSubjectSelect.innerHTML = '<option value="" disabled selected>Select Subject</option>';
-            
-            studifyData.forEach(subject => {
-                createSubjectCard(subject.name);
-                
-                const option = document.createElement('option');
-                option.value = subject.name; option.innerText = subject.name;
-                taskSubjectSelect.appendChild(option);
-                
-                const listContainer = document.getElementById(`list-${subject.name}`);
-                if (listContainer) {
-                    if (subject.tasks.length > 0) listContainer.innerHTML = '';
-                    else listContainer.innerHTML = '<div style="text-align:center; color:#ccc; margin-top:20px; font-style:italic;">No tasks</div>';
-
-                    subject.tasks.sort((a, b) => a.completed - b.completed);
-                    
-                    subject.tasks.forEach(task => createTaskElement(task, listContainer));
-                }
+    // دالة لإضافة مادة جديدة
+    async function addSubject(subName) {
+        try {
+            const response = await fetch(${BASE_API_URL}/subjects, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: subName })
             });
-        }
-
-        function createSubjectCard(subName) {
-            const cardId =`card-${subName.replace(/\s/g, '-')}`;
-            const card = document.createElement('div');
-            card.className = 'subject-card'; card.id = cardId;
-            card.innerHTML =` <button class="delete-sub-btn" onclick="removeSubject('${subName.replace(/'/g, "\\'")}')">×</button><div class="subject-title">${subName}</div><div class="tasks-list" id="list-${subName}"></div>`; // تم تصحيح طريقة تمرير subName
             
-            card.addEventListener('click', (e) => { 
-                if (!e.target.classList.contains('delete-sub-btn') && e.target.tagName !== 'BUTTON') {
-                    toggleExpand(cardId); 
-                }
-            });
-            subjectsContainer.appendChild(card);
-        }
-
-        function createTaskElement(task, container) {
-            const taskItem = document.createElement('div');
-            taskItem.className = 'task-entry';
-            taskItem.id = `task-${task.id}`; 
-            taskItem.setAttribute('data-due-date', task.date);
-
-            let formattedDate = task.date;
-            try { 
-                const dateObj = new Date(task.date);
-                formattedDate = dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }); 
-            } catch (e) {}
-
-            let buttonHTML = `<button onclick="completeTask(this, '${task.id}')" style="background: #00a8a0; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">✓</button>`;
-            let timeText = `${task.time}m`;
-            if (task.completed) {
-                taskItem.classList.add('completed');
-                timeText = 'Completed!';
-                buttonHTML = `<button disabled style="background-color: #ccc; border: none; border-radius: 5px; padding: 2px 8px;">✓</button>`;
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to add subject');
             }
             
-            taskItem.innerHTML =` 
-                <span style="flex-grow: 1;">
-                    ${task.name} <span style="font-size:0.9em; color:#555;">(Due: ${formattedDate})</span>
-                </span>
-                <span class="task-time">${timeText}</span>
-                ${task.completed ? '' : buttonHTML}
-            `;
+            await fetchAllData(); 
+            subjectInput.value = "";
+        } catch (error) {
+            console.error('Error adding subject:', error.message);
+            alert(Failed to add subject: ${error.message});
+        }
+    }
+
+    // دالة لإضافة مهمة جديدة
+    async function addTask(taskData) {
+        try {
+            const response = await fetch(${BASE_API_URL}/tasks, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(taskData)
+            });
             
-            const now = new Date(); now.setHours(0,0,0,0);
-            const dueDate = new Date(task.date);
-            if (dueDate < now && !task.completed) {
-                taskItem.classList.add('failed');
-                taskItem.querySelector('.task-time').innerText = 'Failed';
-                taskItem.querySelector('button')?.remove();
+            if (!response.ok) {
+                 const errorData = await response.json();
+                 throw new Error(errorData.message || 'Failed to add task');
             }
             
-            container.appendChild(taskItem);
+            await fetchAllData(); 
+            taskName.value = ""; taskTime.value = ""; taskDateInput.value = "";
+        } catch (error) {
+            console.error('Error adding task:', error.message);
+            alert(Failed to add task: ${error.message});
         }
+    }
 
-        window.toggleExpand = function(id){
-            const card = document.getElementById(id);
-            const current = document.querySelector('.expanded');
-            if(current && current!==card) { current.classList.remove('expanded'); subjectsContainer.appendChild(current); }
-            card.classList.toggle('expanded');
-            if(card.classList.contains('expanded')) subjectsContainer.insertBefore(card, subjectsContainer.firstChild);
-            else subjectsContainer.appendChild(card);
-        }
-        
-        function containsArabic(t){return /[\u0600-\u06FF]/.test(t);}
-        
-        function checkOverdueTasks(){
-            const tasks = document.querySelectorAll('.task-entry');
-            const now = new Date(); now.setHours(0,0,0,0);
-            
-            tasks.forEach(t => {
-                if(t.classList.contains('completed') || t.classList.contains('failed')) return;
-                
-                const d = new Date(t.getAttribute('data-due-date'));
-                if(d < now) {
-                    t.classList.add('failed');
-                    t.querySelector('.task-time').innerText = 'Failed';
-                    t.querySelector('button')?.remove();
-                }
+    // دالة إتمام المهمة
+    window.completeTask = async function (buttonElement, taskId) {
+        try {
+            const response = await fetch(${BASE_API_URL}/tasks/${taskId}/complete, {
+                method: 'PUT'
             });
-        }
 
-        // معالجات أزرار الإضافة (تستدعي دوال الـ API)
-        addSubjectBtn.addEventListener('click', function () {
-            const subName = subjectInput.value.trim();
-            if (subName) {
-                if (containsArabic(subName)) { alert("Subject names must be in English."); subjectInput.value = ""; return; }
-                addSubject(subName);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to complete task');
+            }
+
+            await fetchAllData(); 
+            
+        } catch (error) {
+            console.error('Error completing task:', error.message);
+            alert(Failed to complete task: ${error.message});
+        }
+    }
+    
+    // دالة حذف المادة
+    window.removeSubject = async function (subName) {
+        if (!confirm(Are you sure you want to delete ${subName} and all its tasks?)) return;
+        try {
+            const response = await fetch(${BASE_API_URL}/subjects/${encodeURIComponent(subName)}, {
+                method: 'DELETE'
+            });if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete subject');
+            }
+            
+            await fetchAllData(); 
+        } catch (error) {
+            console.error('Error deleting subject:', error.message);
+            alert(Failed to delete subject: ${error.message});
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // التشغيل عند التحميل
+    // ------------------------------------------------------------------
+    window.onload = function() {
+        const today = new Date().toISOString().split('T')[0];
+        taskDateInput.setAttribute('min', today);
+        
+        // ⭐ جلب البيانات من الباك إند عند التحميل
+        fetchAllData(); 
+        
+        checkOverdueTasks();
+        // التحقق من المهام الفائتة كل دقيقة
+        setInterval(checkOverdueTasks, 60000); 
+    };
+
+    // ------------------------------------------------------------------
+    // دوال الرسم والعرض
+    // ------------------------------------------------------------------
+    function renderAllData() {
+        subjectsContainer.innerHTML = '';
+        taskSubjectSelect.innerHTML = '<option value="" disabled selected>Select Subject</option>';
+        
+        studifyData.forEach(subject => {
+            // 1. إنشاء بطاقة المادة
+            createSubjectCard(subject.name);
+            
+            // 2. إضافة المادة لقائمة الـ Select
+            const option = document.createElement('option');
+            option.value = subject.name; option.innerText = subject.name;
+            taskSubjectSelect.appendChild(option);
+            
+            // 3. ملء قائمة المهام داخل البطاقة
+            const listContainer = document.getElementById(list-${subject.name});
+            if (listContainer) {
+                 if (subject.tasks.length > 0) listContainer.innerHTML = '';
+                 else listContainer.innerHTML = '<div style="text-align:center; color:#ccc; margin-top:20px; font-style:italic;">No tasks</div>';
+
+                 // ترتيب المهام: غير المكتملة أولاً، ثم المكتملة
+                 subject.tasks.sort((a, b) => a.completed - b.completed);
+                 
+                 subject.tasks.forEach(task => createTaskElement(task, listContainer));
             }
         });
+    }
 
-        addTaskBtn.addEventListener('click', function () {
-            const name = taskName.value.trim(); 
-            const subjectName = taskSubjectSelect.value;
-            const dateValue = taskDateInput.value; 
-            const time = taskTime.value;
-            
-            if (!name || subjectName === "" || !dateValue || !time) { alert("Please fill all task fields."); return; }
-            if (containsArabic(name)) { alert("Task names must be in English."); taskName.value = ""; return; }
-
-            const taskData = { name: name, subject: subjectName, date: dateValue, time: time };
-            addTask(taskData);
+    function createSubjectCard(subName) {
+        const cardId =card-${subName.replace(/\s/g, '-')};
+        const card = document.createElement('div');
+        card.className = 'subject-card'; card.id = cardId;
+        card.innerHTML =` <button class="delete-sub-btn" onclick="removeSubject(${subName})">×</button><div class="subject-title">${subName}</div><div class="tasks-list" id="list-${subName}"></div>`;
+        
+        card.addEventListener('click', (e) => { 
+             // التأكد من عدم الضغط على زر الحذف
+             if (!e.target.classList.contains('delete-sub-btn') && e.target.tagName !== 'BUTTON') {
+                 toggleExpand(cardId); 
+             }
         });
-    </script>
+        subjectsContainer.appendChild(card);
+    }
+
+    function createTaskElement(task, container) {
+        const taskItem = document.createElement('div');
+        taskItem.className = 'task-entry';
+        taskItem.id = task-${task.id}; 
+        taskItem.setAttribute('data-due-date', task.date);
+
+        let formattedDate = task.date;
+        try { 
+            const dateObj = new Date(task.date);
+            formattedDate = dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }); 
+        } catch (e) {}
+
+        let buttonHTML = <button onclick="completeTask(this, '${task.id}')" style="background: #00a8a0; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">✓</button>;
+        let timeText = ${task.time}m;
+        if (task.completed) {
+            taskItem.classList.add('completed');
+            timeText = 'Completed!';
+            buttonHTML = <button disabled style="background-color: #ccc; border: none; border-radius: 5px; padding: 2px 8px;">✓</button>;
+        }
+        
+        taskItem.innerHTML =` 
+            <span style="flex-grow: 1;">
+                ${task.name} <span style="font-size:0.9em; color:#555;">(Due: ${formattedDate})</span>
+            </span>
+            <span class="task-time">${timeText}</span>
+            ${task.completed ? '' : buttonHTML}
+        ;`
+        
+        // التحقق من المهام الفائتة فور إنشائها (للتلوين)
+        const now = new Date(); now.setHours(0,0,0,0);
+        const dueDate = new Date(task.date);
+        if (dueDate < now && !task.completed) {
+             taskItem.classList.add('failed');
+             taskItem.querySelector('.task-time').innerText = 'Failed';
+        }
+        
+        container.appendChild(taskItem);
+    }
+
+    // ------------------------------------------------------------------
+    // دوال مساعدة
+    // ------------------------------------------------------------------
+    window.toggleExpand = function(id){
+        const card = document.getElementById(id);
+        const current = document.querySelector('.expanded');
+        if(current && current!==card) { current.classList.remove('expanded'); subjectsContainer.appendChild(current); }
+        card.classList.toggle('expanded');
+        if(card.classList.contains('expanded')) subjectsContainer.insertBefore(card, subjectsContainer.firstChild);
+        else subjectsContainer.appendChild(card);
+    }
+    
+    function containsArabic(t){return /[\u0600-\u06FF]/.test(t);}
+    
+    // هذه الدالة تعمل على عناصر DOM الموجودة فقط
+    function checkOverdueTasks(){
+        const tasks = document.querySelectorAll('.task-entry');
+        const now = new Date(); now.setHours(0,0,0,0);
+        
+        tasks.forEach(t => {
+            if(t.classList.contains('completed') || t.classList.contains('failed')) return;
+            
+            const d = new Date(t.getAttribute('data-due-date'));
+            if(d < now) {
+                t.classList.add('failed');
+                t.querySelector('.task-time').innerText = 'Failed';
+                t.querySelector('button')?.remove();
+            }
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // معالجات أزرار الإضافة (تستدعي دوال الـ API)
+    // ------------------------------------------------------------------
+    addSubjectBtn.addEventListener('click', function () {
+        const subName = subjectInput.value.trim();
+        if (subName) {
+            if (containsArabic(subName)) { alert("Subject names must be in English."); subjectInput.value = ""; return; }
+            addSubject(subName);
+        }
+    });
+
+    addTaskBtn.addEventListener('click', function () {
+        const name = taskName.value.trim(); 
+        const subjectName = taskSubjectSelect.value;
+        const dateValue = taskDateInput.value; 
+        const time = taskTime.value;
+        
+        if (!name || subjectName === "" || !dateValue || !time) { alert("Please fill all task fields."); return; }
+        if (containsArabic(name)) { alert("Task names must be in English."); taskName.value = ""; return; }
+
+        const taskData = { name: name, subject: subjectName, date: dateValue, time: time };
+        addTask(taskData);
+    });
+</script>
 </body>
 
 </html>
+
 
 
