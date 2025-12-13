@@ -8,7 +8,8 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-
+    
+    points = db.Column(db.Integer, default=0)
     subjects = db.relationship('Subject', backref='user', lazy=True)
     tasks = db.relationship('Task', backref='user', lazy=True)
     study_logs = db.relationship('StudyLog', backref='user', lazy=True)
@@ -27,5 +28,6 @@ class User(db.Model):
     # You should add a to_dict method here if it doesn't exist to match user_routes.py expectations:
     # def to_dict(self):
     #     return { 'id': self.id, 'username': self.username, 'email': self.email, 'points': getattr(self, 'points', 0) }
+
 
 
