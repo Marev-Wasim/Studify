@@ -9,5 +9,4 @@ class StudyLog(db.Model):
     study_date = db.Column(db.Date, nullable=False)
     hours_studied = db.Column(db.Numeric(4, 2), nullable=False)
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.task_id'), nullable=True)
-    # date = db.Column(db.DateTime, default=datetime.utcnow)
-    #hours = db.Column(db.Float, nullable=False)
+    task = db.relationship('Task', backref=db.backref('study_logs', lazy=True))
