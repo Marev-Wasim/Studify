@@ -117,11 +117,10 @@
             color: #ff4d4d;
             font-size: 14px;
             margin-bottom: 15px;
-            /* تم تغيير display: none إلى display: block مؤقتًا لو عرض رسائل خطأ من السيرفر */
             display: none; 
             font-weight: bold;
         }
-        
+         
         /* زر تسجيل الدخول */
         .login-btn {
             display: block;
@@ -272,7 +271,7 @@
             <h2>Welcome Back!</h2>
             <p>Log in to continue your study journey.</p>
 
-            <form id="loginForm" action="/auth/login" method="POST"> 
+            <form id="loginForm"> 
                 
                 <input 
                     type="email" 
@@ -325,15 +324,92 @@
     </div>
 
     <script>
-        /* =================================================
-        === تم حذف جميع وظائف JavaScript (fetch) لتمكين إرسال النموذج التقليدي ===
-        =================================================
+        /* ================================================= */
+        /* === محتوى ملف script.js المدمج هنا === */
+        /* ================================================= */
         
-        ملاحظة: عند استخدام الإرسال التقليدي، يجب أن يقوم السيرفر
-        بالتحقق من صحة البيانات وإعادة توجيه المستخدم أو إعادة عرض
-        صفحة تسجيل الدخول مع رسالة الخطأ المضمنة في HTML إذا فشل.
+        // نقطة النهاية للباك إند
+        const API_ENDPOINT = '/auth/login';
 
-        */
+        // الحصول على العناصر من DOM
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginButton = document.getElementById('loginButton');
+        const errorMessageDiv = document.getElementById('errorMessage');
+
+        // دالة لعرض رسالة الخطأ
+        function displayError(message) {
+            errorMessageDiv.textContent = message;
+            errorMessageDiv.style.display = 'block';
+            
+            emailInput.classList.add('error');
+            passwordInput.classList.add('error');
+        }
+
+        // دالة لإخفاء رسالة الخطأ
+        function clearError() {
+            errorMessageDiv.textContent = '';
+            errorMessageDiv.style.display = 'none';
+            
+            emailInput.classList.remove('error');
+            passwordInput.classList.remove('error');
+        }
+
+        // دالة لتحديث حالة زر التحميل
+        function setIsLoading(isLoading) {
+            if (isLoading) {
+                loginButton.disabled = true;
+                loginButton.textContent = 'Logging In...';
+            } else {
+                loginButton.disabled = false;
+                loginButton.textContent = 'Log In';
+            }
+        }
+
+        // معالج الإرسال
+        const handleSubmit = async (e) => {
+            e.preventDefault(); 
+            clearError();
+            setIsLoading(true);
+            
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json', 
+                    },
+                    body: JSON.stringify({
+                        email: email, 
+                        password: password,
+                    }),
+                });
+
+                const data = await response.json(); 
+
+                if (response.ok) {
+                    console.log('Login successful:', data);
+                    
+                    window.location.href = '/dashboard'; 
+                } else {
+                    const errorMessage = data.message || 'Login failed. Please check your credentials.';
+                    displayError(errorMessage);
+                    console.error('Login failed with status:', response.status, data);
+                }
+
+            } catch (err) {
+                console.error('Network or parsing error:', err);
+                displayError('Could not connect to the server. Please check your network or try again later.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        // ربط معالج الإرسال بالنموذج
+        loginForm.addEventListener('submit', handleSubmit);
     </script>
 
 </body>
