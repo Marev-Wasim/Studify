@@ -4,6 +4,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta charset="utf-8" />
+  <title>Studify - Home</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Konkhmer+Sleokchher&family=Lao+Muang+Khong&family=Koh+Santepheap&family=Hind+Siliguri&family=Holtwood+One+SC&family=Lao+Muang+Don&display=swap"
     rel="stylesheet">
@@ -33,6 +34,7 @@
       align-items: center;
     }
 
+    /* === تطبيق حركة الدخول Pop-in على الحاوية الرئيسية === */
     .frame .div {
       width: 100%;
       max-width: 1250px;
@@ -42,9 +44,8 @@
       position: relative;
       overflow: hidden;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-      animation: fade-in 1s ease forwards;
-      opacity: 0;
-      transform: translateY(-1rem);
+      /* استخدام Pop-in */
+      animation: popIn 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; 
     }
 
     /* Character Elements */
@@ -59,8 +60,6 @@
 
     }
 
-
-
     .frame .rectangle-12 {
       position: absolute;
       top: 364px;
@@ -71,8 +70,6 @@
       border-radius: 0px 0px 0px 5px;
     }
 
-
-
     .frame .rectangle-13 {
       position: absolute;
       top: 419px;
@@ -82,8 +79,6 @@
       background-color: #f7c8b4;
       transform: rotate(-23.23deg);
     }
-
-
 
     .frame .rectangle-14 {
       position: absolute;
@@ -96,8 +91,6 @@
       transform: rotate(-23.08deg);
     }
 
-
-
     .frame .rectangle-15 {
       position: absolute;
       top: 355px;
@@ -109,8 +102,6 @@
       transform: rotate(-51.84deg);
     }
 
-
-
     .frame .rectangle-16 {
       position: absolute;
       top: 302px;
@@ -119,8 +110,6 @@
       height: 12px;
       background-color: #f5c2a3;
     }
-
-
 
     .frame .ellipse-6 {
       position: absolute;
@@ -131,8 +120,6 @@
       background-color: #f7c8b4;
       border-radius: 8.5px / 9px;
     }
-
-
 
     .frame .ellipse-7 {
       position: absolute;
@@ -145,8 +132,6 @@
       transform: rotate(1.28deg);
     }
 
-
-
     .frame .ellipse-8 {
       position: absolute;
       top: 290px;
@@ -157,8 +142,6 @@
       border-radius: 4.44px / 2.65px;
       transform: rotate(-7.94deg);
     }
-
-
 
     .frame .ellipse-9 {
       position: absolute;
@@ -171,8 +154,6 @@
       transform: rotate(137.33deg);
     }
 
-
-
     .frame .rectangle-17 {
       position: absolute;
       top: 328px;
@@ -184,8 +165,6 @@
       transform: rotate(-129.55deg);
     }
 
-
-
     .frame .ellipse-10 {
       position: absolute;
       top: 329px;
@@ -195,9 +174,6 @@
       background-color: #f7c8b4;
       border-radius: 3px;
     }
-
-
-
     .frame .rectangle-18 {
       position: absolute;
       top: 335px;
@@ -208,8 +184,6 @@
       transform: rotate(137.70deg);
     }
 
-
-
     .frame .rectangle-19 {
       position: absolute;
       top: 406px;
@@ -219,8 +193,6 @@
       background-color: #f7c8b4;
       transform: rotate(-51.99deg);
     }
-
-
 
     .frame .rectangle-20 {
       position: absolute;
@@ -233,8 +205,6 @@
       transform: rotate(-51.95deg);
     }
 
-
-
     .frame .rectangle-21 {
       position: absolute;
       top: 422px;
@@ -246,8 +216,6 @@
       transform: rotate(-22.74deg);
     }
 
-
-
     .frame .ellipse-11 {
       position: absolute;
       top: 321px;
@@ -257,8 +225,6 @@
       background-color: #f7c8b4;
       border-radius: 3px;
     }
-
-
 
     /* Navigation Links */
     .frame .text-wrapper-7 {
@@ -273,8 +239,6 @@
       line-height: normal;
     }
 
-
-
     .frame .text-wrapper-10 {
       position: absolute;
       top: 21px;
@@ -286,8 +250,6 @@
       letter-spacing: 0;
       line-height: normal;
     }
-
-
 
     .frame .text-wrapper-11 {
       position: absolute;
@@ -301,9 +263,6 @@
       line-height: normal;
     }
 
-
-
-
     /* Calendar Items */
 
     .frame .rectangle-32 {
@@ -316,8 +275,6 @@
       transform: rotate(108.98deg);
     }
 
-
-
     .frame .rectangle-33 {
       position: absolute;
       top: 430px;
@@ -328,8 +285,6 @@
       border-radius: 5px;
     }
 
-
-
     .frame .rectangle-34 {
       position: absolute;
       top: 307px;
@@ -339,8 +294,6 @@
       background-color: #0bb9b7;
       border-radius: 5px;
     }
-
-
 
     .frame .text-wrapper-16 {
       position: absolute;
@@ -354,8 +307,6 @@
       line-height: normal;
     }
 
-
-
     .frame .text-wrapper-17 {
       position: absolute;
       top: 604px;
@@ -368,8 +319,6 @@
       line-height: normal;
     }
 
-
-
     .frame .rectangle-35 {
       position: absolute;
       top: 639px;
@@ -377,8 +326,6 @@
       width: 231px;
       height: 42px;
     }
-
-
 
     /* Book & Character details */
 
@@ -392,8 +339,6 @@
       border-radius: 1px 1px 0px 0px;
     }
 
-
-
     .frame .rectangle-37 {
       position: absolute;
       top: 190px;
@@ -403,8 +348,6 @@
       background-color: #363a6d;
       border-radius: 1px 1px 1px 0px;
     }
-
-
 
     .frame .text-wrapper-18 {
       position: absolute;
@@ -418,9 +361,6 @@
       letter-spacing: 0;
       line-height: normal;
     }
-
-
-
     .frame .rectangle-38 {
       position: absolute;
       top: 186px;
@@ -431,8 +371,6 @@
       border-radius: 1px 1px 0px 1px;
     }
 
-
-
     .frame .rectangle-39 {
       position: absolute;
       top: 311px;
@@ -442,7 +380,6 @@
       background-color: #653e3e;
       transform: rotate(33.59deg);
     }
-
 
     .frame .rectangle-40 {
       position: absolute;
@@ -612,9 +549,7 @@
       justify-content: center;
       gap: 10px;
       z-index: 10;
-      /* عشان يبقى فوق أي حاجة */
     }
-
     .frame .text-wrapper-5 {
       font-size: 20px;
       font-family: "Konkhmer Sleokchher", Helvetica;
@@ -656,47 +591,43 @@
     /* --- حاوية عرض المواد (Subjects Container) --- */
     #subjectsContainer {
       position: absolute;
-    top: 520px;
-    left: 48px;
-    width: 850px; /* العرض الكلي للحاوية */
-    height: 540px; /* ارتفاع ثابت يستوعب 4 مواد (تقريبي) */
-    
-    display: flex; /* استخدام Flexbox */
-    flex-wrap: wrap; /* السماح بتوزيع العناصر على صفوف */
-    justify-content: space-between; /* توزيع المسافات بين المربعات */
-    align-content: flex-start; /* لضمان أن تبدأ العناصر من الأعلى */
-    
-    overflow-y: auto; /* تفعيل التمرير العمودي للمادة الخامسة وما بعدها */
-    
-    gap: 20px 0; /* مسافة رأسية 20px بين الصفوف، ولا توجد مسافة أفقية إضافية هنا */
-    padding: 10px;
-    z-index: 5;
-    background-color: transparent;
-    box-shadow: none;
-    border: none;
+      top: 520px;
+      left: 48px;
+      width: 850px;
+      height: 540px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-content: flex-start;
+      overflow-y: auto;
+      gap: 20px 0;
+      padding: 10px;
+      z-index: 5;
+      background-color: transparent;
+      box-shadow: none;
+      border: none;
     }
 
     /* تصميم مربع المادة الواحد (Card) */
     .subject-card {
-     width: 49%; /* تحديد العرض لـ 49% لضمان وجود مسافة 2% بين البطاقتين */
-    min-height: 250px; 
-    background-color: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-    position: relative;
-    transition: all 0.3s ease;
-    cursor: pointer;
+      width: 49%;
+      min-height: 250px;
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
 
 
     .subject-card.expanded {
-    width: 850px; /* توسيع العرض ليشغل المنطقة بأكملها */
-    min-height: 200px;
-    /* ... (بقية خصائص التكبير كما هي) ... */
-}
+      width: 850px;
+      min-height: 200px;
+    }
 
     .subject-card:hover {
       transform: translateY(-5px);
@@ -731,9 +662,10 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 8px;
       overflow-y: auto;
-      max-height: 80px;
+      max-height: 200px;
+      padding-right: 5px;
     }
 
     .task-entry {
@@ -742,16 +674,46 @@
       color: #333;
       background: #ecf6ff;
       padding: 5px;
+      border-left: 5px solid transparent; /* default */
       border-radius: 5px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      transition: all 0.3s ease;
+    }
+    
+    .task-entry.completed {
+        border-left: 5px solid #00a8a0;
+        opacity: 0.7;
+    }
+    
+    .task-entry.completed span {
+        text-decoration: line-through;
     }
 
     .task-time {
       color: #00a8a0;
       font-weight: bold;
       font-size: 11px;
+    }
+
+    /* 3. (اختياري) تجميل شكل شريط التمرير */
+    .tasks-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .tasks-list::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .tasks-list::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 10px;
+    }
+
+    .tasks-list::-webkit-scrollbar-thumb:hover {
+      background: #00a8a0;
     }
 
     /* تفاصيل الديكور والتقويم (زي ما هي) */
@@ -767,8 +729,6 @@
       border: 1px solid #00000042;
       box-shadow: 0px 4px 4px #00000040;
     }
-
-    /* الشريط العلوي الأزرق */
     .frame .rectangle-7 {
       position: absolute;
       top: 201px;
@@ -970,28 +930,48 @@
       color: #2563eb;
     }
 
+    /* === تعريف الحركات === */
     @keyframes fade-in {
       0% {
         opacity: 0;
         transform: translateY(-10px);
       }
-
       100% {
         opacity: 1;
         transform: translateY(0);
       }
     }
-
-    @keyframes pop-in {
+    
+    @keyframes popIn {
       0% {
-        transform: scale(0.8);
         opacity: 0;
+        transform: scale(0.5); /* يبدأ بحجم 50% */
       }
-
-      100% {
-        transform: scale(1);
+      60% {
         opacity: 1;
+        transform: scale(1.05); /* يصل إلى 105% (تأثير الارتداد) */
       }
+      100% {
+        transform: scale(1); /* يستقر على الحجم الطبيعي 100% */
+      }
+    }
+
+    /* تنسيق المهمة الفاشلة (التي فات موعدها) */
+    .task-entry.failed {
+      border-left: 5px solid #ff4d4d;
+      /* خط أحمر على اليسار */
+      background-color: #fff0f0;
+      /* خلفية حمراء فاتحة */
+    }
+
+    .task-entry.failed .task-time {
+      color: #ff4d4d;
+      font-weight: bold;
+    }
+
+    .task-entry.failed span {
+      text-decoration: line-through;
+      color: #888;
     }
   </style>
 </head>
@@ -1008,7 +988,7 @@
       <div class="nav-links">
         <a href="Profile.html">Profile</a>
         <a href="friends.html">Friends</a>
-        <a>About us</a>
+        <a href="index.html">Log out</a>
       </div>
 
       <div class="rectangle">
@@ -1026,7 +1006,7 @@
         <input type="date" id="taskDate" class="task-input">
 
         <label>Time (mins)</label>
-        <input type="text" id="taskTime" class="task-input" placeholder="e.g. 45">
+        <input type="number" id="taskTime" class="task-input" placeholder="e.g. 45" min="1">
 
         <button id="addTaskBtn" class="add-task-btn">Add Task</button>
       </div>
@@ -1075,7 +1055,7 @@
       </div>
 
       <div id="subjectsContainer">
-      </div>
+        </div>
 
 
       <div class="rectangle-6"></div>
@@ -1090,9 +1070,7 @@
       <p class="sun-mon-tue-wen-thu">
         Sun&nbsp;&nbsp;&nbsp;&nbsp; Mon&nbsp;&nbsp;&nbsp;&nbsp; Tue&nbsp;&nbsp;&nbsp;&nbsp;
         Wen&nbsp;&nbsp;&nbsp;&nbsp; Thu&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fri&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sat
-      </p>
-
-      <div class="line"></div>
+      </p><div class="line"></div>
       <div class="line-2"></div>
       <div class="line-3"></div>
       <div class="line-4"></div>
@@ -1130,173 +1108,281 @@
   </div>
 
   <script>
-    // 1. تعريف العناصر (كما هي)
+    // 1. تعريف العناصر
     const addSubjectBtn = document.getElementById('addSubjectBtn');
     const subjectInput = document.getElementById('subjectInput');
     const subjectsContainer = document.getElementById('subjectsContainer');
     const taskSubjectSelect = document.getElementById('taskSubject');
-
     const addTaskBtn = document.getElementById('addTaskBtn');
     const taskName = document.getElementById('taskName');
     const taskTime = document.getElementById('taskTime');
-    const pointsCounter = document.getElementById('pointsCounter');
+    const taskDateInput = document.getElementById('taskDate');
+    // ⭐️ 2. تعريف نقطة نهاية الباك إند (يجب تغييره إلى رابط سيرفرك الحي)
+    const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net/auth/login '; 
 
-    // ----------------------------------------------------
-    // 2. دالة تبديل وضع التكبير (Toggle Expand) - تبقى كما هي
-    // ----------------------------------------------------
-    window.toggleExpand = function (cardId) {
-      const card = document.getElementById(cardId);
-      const currentlyExpanded = document.querySelector('#subjectsContainer > .subject-card.expanded');
+    // 3. متغيرات البيانات
+    let studifyData = [];
+    let totalPoints = 0; // النقاط ستأتي من الباك إند أو ستتم معالجتها هناك
 
-      if (currentlyExpanded && currentlyExpanded.id !== cardId) {
-        currentlyExpanded.classList.remove('expanded');
-        subjectsContainer.appendChild(currentlyExpanded);
-      }
+    // ------------------------------------------------------------------
+    // ⭐️ دوال الاتصال بالباك إند (API Calls)
+    // ------------------------------------------------------------------
 
-      card.classList.toggle('expanded');
-
-      if (card.classList.contains('expanded')) {
-        subjectsContainer.insertBefore(card, subjectsContainer.firstChild);
-      } else {
-        subjectsContainer.appendChild(card);
-      }
-    }
-
-
-    // ----------------------------------------------------
-    // 3. دالة إكمال المهمة (Complete Task) - مُعدَّلة: تظهر "Completed!" وتبقى في القائمة
-    // ----------------------------------------------------
-    window.completeTask = function (buttonElement) {
-      const taskItem = buttonElement.closest('.task-entry');
-
-      // منع الإكمال المتعدد إذا كانت المهمة مكتملة بالفعل
-      if (taskItem.classList.contains('completed')) return;
-
-      // 1. إعطاء المهمة حالة الاكتمال
-      taskItem.classList.add('completed');
-
-      // 2. تغيير نص الوقت إلى "Completed!"
-      taskItem.querySelector('.task-time').innerText = 'Completed!';
-
-      // 3. تعطيل زر الإكمال بدلاً من حذفه
-      buttonElement.disabled = true;
-      buttonElement.style.backgroundColor = '#ccc';
-
-      // تعطيل النقر مرة أخرى على زر الإكمال
-      buttonElement.onclick = null;
-    }
-
-
-    // ----------------------------------------------------
-    // 4. دالة إضافة تاسك (مُعدلة لزر الـ ✓) - تبقى كما هي
-    // ----------------------------------------------------
-    addTaskBtn.addEventListener('click', function () {
-      const name = taskName.value.trim();
-      const subject = taskSubjectSelect.value;
-      const time = taskTime.value;
-
-      if (name && subject && subject !== "") {
-        const listContainer = document.getElementById(`list-${subject}`);
-
-        if (listContainer.children[0] && listContainer.children[0].innerText === "No tasks") {
-          listContainer.innerHTML = "";
+    // دالة لجلب جميع البيانات (المواد والمهام) عند التحميل
+    async function fetchAllData() {
+        try {
+            const response = await fetch(`${BASE_API_URL}/data`);
+            if (!response.ok) throw new Error('Failed to fetch data');
+            
+            const data = await response.json();
+            // يجب أن يكون الـ JSON بهذا الشكل تقريباً: { subjects: [...], totalPoints: 100 }
+            studifyData = data.subjects || []; 
+            totalPoints = data.totalPoints || 0; 
+            
+            renderAllData(); // إعادة رسم الواجهة بالبيانات الجديدة
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // يمكنك تخصيص رسالة الخطأ للمستخدم هنا
+            // alert('Could not connect to the server or load data. Check console for details.'); 
         }
+    }
 
+    // دالة لإضافة مادة جديدة
+    async function addSubject(subName) {
+        try {
+            const response = await fetch(`${BASE_API_URL}/subjects`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: subName })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to add subject');
+            }
+            
+            await fetchAllData(); 
+            subjectInput.value = "";
+        } catch (error) {
+            console.error('Error adding subject:', error.message);
+            alert(`Failed to add subject: ${error.message}`);
+        }
+    }
+
+    // دالة لإضافة مهمة جديدة
+    async function addTask(taskData) {
+        try {
+            const response = await fetch(`${BASE_API_URL}/tasks`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(taskData)
+            });
+            
+            if (!response.ok) {
+                 const errorData = await response.json();
+                 throw new Error(errorData.message || 'Failed to add task');
+            }
+            
+            await fetchAllData(); 
+            taskName.value = ""; taskTime.value = ""; taskDateInput.value = "";
+        } catch (error) {
+            console.error('Error adding task:', error.message);
+            alert(`Failed to add task: ${error.message}`);
+        }
+    }
+
+    // دالة إتمام المهمة
+    window.completeTask = async function (buttonElement, taskId) {
+        try {
+            const response = await fetch(`${BASE_API_URL}/tasks/${taskId}/complete`, {
+                method: 'PUT'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to complete task');
+            }
+
+            await fetchAllData(); 
+            
+        } catch (error) {
+            console.error('Error completing task:', error.message);
+            alert(`Failed to complete task: ${error.message}`);
+        }
+    }
+    
+    // دالة حذف المادة
+    window.removeSubject = async function (subName) {
+        if (!confirm(`Are you sure you want to delete ${subName} and all its tasks?`)) return;
+        try {
+            const response = await fetch(`${BASE_API_URL}/subjects/${encodeURIComponent(subName)}`, {
+                method: 'DELETE'
+            });if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete subject');
+            }
+            
+            await fetchAllData(); 
+        } catch (error) {
+            console.error('Error deleting subject:', error.message);
+            alert(`Failed to delete subject: ${error.message}`);
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // التشغيل عند التحميل
+    // ------------------------------------------------------------------
+    window.onload = function() {
+        const today = new Date().toISOString().split('T')[0];
+        taskDateInput.setAttribute('min', today);
+        
+        // ⭐️ جلب البيانات من الباك إند عند التحميل
+        fetchAllData(); 
+        
+        checkOverdueTasks();
+        // التحقق من المهام الفائتة كل دقيقة
+        setInterval(checkOverdueTasks, 60000); 
+    };
+
+    // ------------------------------------------------------------------
+    // دوال الرسم والعرض
+    // ------------------------------------------------------------------
+    function renderAllData() {
+        subjectsContainer.innerHTML = '';
+        taskSubjectSelect.innerHTML = '<option value="" disabled selected>Select Subject</option>';
+        
+        studifyData.forEach(subject => {
+            // 1. إنشاء بطاقة المادة
+            createSubjectCard(subject.name);
+            
+            // 2. إضافة المادة لقائمة الـ Select
+            const option = document.createElement('option');
+            option.value = subject.name; option.innerText = subject.name;
+            taskSubjectSelect.appendChild(option);
+            
+            // 3. ملء قائمة المهام داخل البطاقة
+            const listContainer = document.getElementById(`list-${subject.name}`);
+            if (listContainer) {
+                 if (subject.tasks.length > 0) listContainer.innerHTML = '';
+                 else listContainer.innerHTML = '<div style="text-align:center; color:#ccc; margin-top:20px; font-style:italic;">No tasks</div>';
+
+                 // ترتيب المهام: غير المكتملة أولاً، ثم المكتملة
+                 subject.tasks.sort((a, b) => a.completed - b.completed);
+                 
+                 subject.tasks.forEach(task => createTaskElement(task, listContainer));
+            }
+        });
+    }
+
+    function createSubjectCard(subName) {
+        const cardId =`card-${subName.replace(/\s/g, '-')}`;
+        const card = document.createElement('div');
+        card.className = 'subject-card'; card.id = cardId;
+        card.innerHTML =` <button class="delete-sub-btn" onclick="removeSubject(${subName})">×</button><div class="subject-title">${subName}</div><div class="tasks-list" id="list-${subName}"></div>`;
+        
+        card.addEventListener('click', (e) => { 
+             // التأكد من عدم الضغط على زر الحذف
+             if (!e.target.classList.contains('delete-sub-btn') && e.target.tagName !== 'BUTTON') {
+                 toggleExpand(cardId); 
+             }
+        });
+        subjectsContainer.appendChild(card);
+    }
+
+    function createTaskElement(task, container) {
         const taskItem = document.createElement('div');
         taskItem.className = 'task-entry';
+        taskItem.id = `task-${task.id}`; 
+        taskItem.setAttribute('data-due-date', task.date);
 
-        // زر علامة الصح (✓)
-        taskItem.innerHTML = `
-                <span style="flex-grow: 1;">${name}</span> 
-                <span class="task-time">${time ? time + 'm' : ''}</span>
-                <button 
-                    onclick="completeTask(this)" 
-                    style="background: #00a8a0; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">
-                    ✓
-                </button>
-            `;
+        let formattedDate = task.date;
+        try { 
+            const dateObj = new Date(task.date);
+            formattedDate = dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }); 
+        } catch (e) {}
 
-        listContainer.appendChild(taskItem);
-
-        taskName.value = "";
-        taskTime.value = "";
-        document.getElementById('taskDate').value = "";
-      } else {
-        alert("Please fill task name and select a subject!");
-      }
-    });
-
-    // ----------------------------------------------------
-    // 5. دالة إضافة مادة جديدة (مُعدَّلة: إضافة خاصية عدم التكرار)
-    // ----------------------------------------------------
-    addSubjectBtn.addEventListener('click', function () {
-      const subName = subjectInput.value.trim();
-
-      if (subName) {
-        // ** خاصية عدم تكرار الأسماء **
-        const subjectExists = Array.from(taskSubjectSelect.options).some(
-          option => option.value.toLowerCase() === subName.toLowerCase()
-        );
-
-        if (subjectExists) {
-          alert(`The subject "${subName}" already exists!`);
-          subjectInput.value = "";
-          return;
+        let buttonHTML = <button onclick="completeTask(this, '${task.id}')" style="background: #00a8a0; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">✓</button>;
+        let timeText = `${task.time}m`;
+        if (task.completed) {
+            taskItem.classList.add('completed');
+            timeText = 'Completed!';
+            buttonHTML = <button disabled style="background-color: #ccc; border: none; border-radius: 5px; padding: 2px 8px;">✓</button>;
         }
-        // ****************************
-
-        const cardId = `card-${subName.replace(/\s/g, '-')}`;
-        const card = document.createElement('div');
-        card.className = 'subject-card';
-        card.id = cardId;
-
-        card.innerHTML = `
-                <button class="delete-sub-btn" onclick="removeSubject('${subName}')">×</button>
-                <div class="subject-title">${subName}</div>
-                <div class="tasks-list" id="list-${subName}">
-                    <div style="text-align:center; color:#ccc; margin-top:20px; font-style:italic;">No tasks</div>
-                </div>
-            `;
-
-        // إضافة معالج حدث النقر لتكبير البطاقة
-        card.addEventListener('click', (event) => {
-          if (!event.target.classList.contains('delete-sub-btn') && event.target.tagName !== 'BUTTON') {
-            toggleExpand(cardId);
-          }
-        });
-
-        subjectsContainer.appendChild(card);
-
-        // إضافة المادة للقائمة المنسدلة
-        const option = document.createElement('option');
-        option.value = subName;
-        option.innerText = subName;
-        taskSubjectSelect.appendChild(option);
-
-        subjectInput.value = "";
-      } else {
-        alert("Please enter a subject name!");
-      }
-    });
-
-    // ----------------------------------------------------
-    // 6. دالة حذف المادة (تبقى كما هي)
-    // ----------------------------------------------------
-    window.removeSubject = function (subName) {
-      if (!confirm(`Are you sure you want to delete ${subName} and all its tasks?`)) return;
-
-      const card = document.getElementById(`card-${subName.replace(/\s/g, '-')}`);
-      if (card) card.remove();
-
-      for (let i = 0; i < taskSubjectSelect.options.length; i++) {
-        if (taskSubjectSelect.options[i].value === subName) {
-          taskSubjectSelect.remove(i);
-          break;
+        
+        taskItem.innerHTML =` 
+            <span style="flex-grow: 1;">
+                ${task.name} <span style="font-size:0.9em; color:#555;">(Due: ${formattedDate})</span>
+            </span>
+            <span class="task-time">${timeText}</span>
+            ${task.completed ? '' : buttonHTML}
+        ;`
+        
+        // التحقق من المهام الفائتة فور إنشائها (للتلوين)
+        const now = new Date(); now.setHours(0,0,0,0);
+        const dueDate = new Date(task.date);
+        if (dueDate < now && !task.completed) {
+             taskItem.classList.add('failed');
+             taskItem.querySelector('.task-time').innerText = 'Failed';
         }
-      }
+        
+        container.appendChild(taskItem);
     }
-  </script>
 
+    // ------------------------------------------------------------------
+    // دوال مساعدة
+    // ------------------------------------------------------------------
+    window.toggleExpand = function(id){
+        const card = document.getElementById(id);
+        const current = document.querySelector('.expanded');
+        if(current && current!==card) { current.classList.remove('expanded'); subjectsContainer.appendChild(current); }
+        card.classList.toggle('expanded');
+        if(card.classList.contains('expanded')) subjectsContainer.insertBefore(card, subjectsContainer.firstChild);
+        else subjectsContainer.appendChild(card);
+    }
+    
+    function containsArabic(t){return /[\u0600-\u06FF]/.test(t);}
+    
+    // هذه الدالة تعمل على عناصر DOM الموجودة فقط
+    function checkOverdueTasks(){
+        const tasks = document.querySelectorAll('.task-entry');
+        const now = new Date(); now.setHours(0,0,0,0);
+        
+        tasks.forEach(t => {
+            if(t.classList.contains('completed') || t.classList.contains('failed')) return;
+            
+            const d = new Date(t.getAttribute('data-due-date'));
+            if(d < now) {
+                t.classList.add('failed');
+                t.querySelector('.task-time').innerText = 'Failed';
+                t.querySelector('button')?.remove();
+            }
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // معالجات أزرار الإضافة (تستدعي دوال الـ API)
+    // ------------------------------------------------------------------
+    addSubjectBtn.addEventListener('click', function () {
+        const subName = subjectInput.value.trim();
+        if (subName) {
+            if (containsArabic(subName)) { alert("Subject names must be in English."); subjectInput.value = ""; return; }
+            addSubject(subName);
+        }
+    });
+
+    addTaskBtn.addEventListener('click', function () {
+        const name = taskName.value.trim(); 
+        const subjectName = taskSubjectSelect.value;
+        const dateValue = taskDateInput.value; 
+        const time = taskTime.value;
+        
+        if (!name || subjectName === "" || !dateValue || !time) { alert("Please fill all task fields."); return; }
+        if (containsArabic(name)) { alert("Task names must be in English."); taskName.value = ""; return; }
+
+        const taskData = { name: name, subject: subjectName, date: dateValue, time: time };
+        addTask(taskData);
+    });
+</script>
 </body>
 
 </html>
