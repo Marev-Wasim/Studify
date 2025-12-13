@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template
 from flask_cors import CORS
-from extensions import db  
+from extensions import db, bcrypt  
 from sqlalchemy import text
 
 app = Flask(__name__)
@@ -15,7 +15,6 @@ app.config.from_object('config.Config')
 
 # Initialize db with app
 db.init_app(app)
-from extensions import bcrypt 
 bcrypt.init_app(app)
 
 # Test connection
@@ -63,6 +62,7 @@ if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
