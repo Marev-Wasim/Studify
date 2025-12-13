@@ -15,6 +15,11 @@ def signup():
     password = request.form.get('password')
     confirm_password = request.form.get('confirm_password')
     
+    # Input validation
+    if not username or not email or not password or not confirm_password:
+        flash('Missing required fields')
+        return redirect(url_for('auth.signup'))  
+        
     if password != confirm_password:
         flash('Passwords do not match')
         return redirect(url_for('auth.signup'))
@@ -48,7 +53,6 @@ def login():
         password = request.form.get('password')
     
     user = User.query.filter_by(email=email).first()
-    
     if user and user.check_password(password):
         session['user_id'] = user.id
         return redirect(url_for('dashboard.dashboard_page'))  # Go to dashboard
@@ -62,3 +66,4 @@ def logout():
     session.pop('user_id', None)
     flash('You have been logged out')
     return redirect(url_for('auth.login'))
+
