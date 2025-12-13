@@ -42,7 +42,7 @@ def signup():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('index.html')  # Create login.html
+        return render_template('index.html')
     
     if request.is_json:
         data = request.get_json()
@@ -55,10 +55,16 @@ def login():
     user = User.query.filter_by(email=email).first()
     if user and user.check_password(password):
         session['user_id'] = user.id
+
+        if request.is_json:
+            return jsonify({'success':True, 'message': 'Logged in'})
         return redirect(url_for('dashboard.dashboard_page'))  # Go to dashboard
+        
+if request.is_json:
+    return jsonify({'success':False, 'message': 'Invalid credentials'}), 401    
     
-    flash('Invalid credentials')
-    return redirect(url_for('auth.login'))
+flash('Invalid credentials')
+return redirect(url_for('auth.login'))
 
 # Logout
 @auth_bp.route('/logout')
@@ -66,4 +72,5 @@ def logout():
     session.pop('user_id', None)
     flash('You have been logged out')
     return redirect(url_for('auth.login'))
+
 
