@@ -1,3 +1,4 @@
+
 from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for, session
 from extensions import db
 from models.user import User
@@ -18,7 +19,7 @@ def signup():
     # Input validation
     if not username or not email or not password or not confirm_password:
         flash('Missing required fields')
-        return redirect(url_for('auth.signup'))  
+        return redirect(url_for('auth.signup'))
         
     if password != confirm_password:
         flash('Passwords do not match')
@@ -53,18 +54,20 @@ def login():
         password = request.form.get('password')
     
     user = User.query.filter_by(email=email).first()
+    
     if user and user.check_password(password):
         session['user_id'] = user.id
 
         if request.is_json:
-            return jsonify({'success':True, 'message': 'Logged in'})
+            return jsonify({'success': True, 'message': 'Logged in'})
         return redirect(url_for('dashboard.dashboard_page'))  # Go to dashboard
-        
-if request.is_json:
-    return jsonify({'success':False, 'message': 'Invalid credentials'}), 401    
     
-flash('Invalid credentials')
-return redirect(url_for('auth.login'))
+    # The following lines are for handling failed login attempts
+    if request.is_json:
+        return jsonify({'success': False, 'message': 'Invalid credentials'}), 401
+        
+    flash('Invalid credentials')
+    return redirect(url_for('auth.login'))
 
 # Logout
 @auth_bp.route('/logout')
@@ -72,5 +75,4 @@ def logout():
     session.pop('user_id', None)
     flash('You have been logged out')
     return redirect(url_for('auth.login'))
-
 
