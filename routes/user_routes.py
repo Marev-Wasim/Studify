@@ -37,7 +37,7 @@ def get_user_profile():
         'id': user.id,
         'username': user.username,
         'email': user.email,
-        'points': getattr(user, 'points', 0),
+        'points': user.total_coins,
         
         # New Consolidated Stats
         'total_hours_studied': float(total_hours_studied),
@@ -78,4 +78,5 @@ def update_user_profile():
     except Exception:
         db.session.rollback()
         return jsonify({'error': 'Failed to update profile due to database error'}), 500
+
 
