@@ -1,10 +1,12 @@
-# study_routes.py (Replaces activity_routes.py)
 
 from flask import Blueprint, request, jsonify, session
 from extensions import db
-from models.study_log import StudyLog # <-- Updated model import
+from models.study_log import StudyLog 
 from models.user import User
 from datetime import datetime
+from sqlalchemy.exc import IntegrityError # Ensure this is imported for better error handling
+# Import func for sum operation (optional but cleaner)
+from sqlalchemy import func
 
 study_bp = Blueprint('study', __name__, url_prefix='/study')
 
@@ -17,6 +19,7 @@ def calculate_points(hours_logged):
     """Calculates points based on study hours."""
     try:
         hours_float = float(hours_logged)
+        # Rule: 6 points per hour (1 point per 10 minutes)
         return int(hours_float * 6)
     except ValueError:
         return 0
@@ -45,6 +48,7 @@ def log_study():
         study_date = datetime.strptime(study_date_str, '%Y-%m-%d').date() if study_date_str else datetime.utcnow().date()
         
     except ValueError:
+        # NOTE: Ensure IntegrityError is imported at the top
         return jsonify({'message': 'Invalid format for hours_studied or study_date'}), 400
     
     try:
@@ -95,11 +99,21 @@ def get_study_logs():
         
     logs = query.order_by(StudyLog.study_date.desc()).all()
     
-    return jsonify([{
+    # Calculate the total hours for the user (ignoring the optional subject filter)
+
+    total_hours_query = db.session.query(func.sum(StudyLog.hours_studied)).filter(StudyLog.user_id == user_id)
+    total_hours_studied = total_hours_query.scalar() or 0.0
+    
+    formatted_logs = [{
         'id': log.id,
         'task_id': log.task_id,
         'subject_id': log.subject_id,
         'study_date': log.study_date.isoformat(),
-        'hours_studied': str(log.hours_studied), # Convert Numeric to string for JSON
+        'hours_studied': str(log.hours_studied),
         'points_earned': calculate_points(log.hours_studied)
-    } for log in logs])
+    } for log in logs]
+    
+    return jsonify({
+        'logs': formatted_logs,
+        'total_hours_studied': float(total_hours_studied)
+    })
