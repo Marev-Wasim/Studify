@@ -4,8 +4,7 @@ from extensions import db
 from models.study_log import StudyLog 
 from models.user import User
 from datetime import datetime
-from sqlalchemy.exc import IntegrityError # Ensure this is imported for better error handling
-# Import func for sum operation (optional but cleaner)
+from sqlalchemy.exc import IntegrityError 
 from sqlalchemy import func
 
 study_bp = Blueprint('study', __name__, url_prefix='/study')
@@ -117,3 +116,4 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
