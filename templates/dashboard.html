@@ -1149,11 +1149,12 @@
 
     // دالة لإضافة مادة جديدة
     async function addSubject(subName) {
+      const userId = getCurrentUserId();
         try {
             const response = await fetch(${BASE_API_URL}/subjects, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: subName })
+                body: JSON.stringify({ name: subName, user_id: userId })
             });
             
             if (!response.ok) {
@@ -1386,6 +1387,7 @@
 </body>
 
 </html>
+
 
 
 
