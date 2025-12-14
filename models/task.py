@@ -2,15 +2,19 @@ from extensions import db
 
 class Task(db.Model):
     __tablename__ = 'tasks'
-    task_id = db.Column('task_id', db.Integer, primary_key=True)
-    name = db.Column('name', db.String(150), nullable=False)
-    #description = db.Column(db.Text)
-    #user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    due_date = db.Column('due_date', db.Date, nullable=True)
-    est_min = db.Column('est_min', db.Integer, nullable=True)
-    # status = db.Column(db.String(20), default='to do')  # to do / in progress / done
+    task_id = db.Column(db.Integer, primary_key=True)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), nullable=False)
+    name = db.Column(db.String(150), nullable=False)
+    
+    due_date = db.Column(db.Date, nullable=True)
+    est_min = db.Column(db.Integer, nullable=True)
+    __table_args__ = (CheckConstraint(est_min > 0, name='est_min_positive_check'))
+
     completed = db.Column(db.Boolean, default=False)
     completed_at = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column('created_at', db.DateTime, default=db.func.now())
-    subject_id = db.Column('subject_id', db.Integer, db.ForeignKey('subjects.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+    
+    #description = db.Column(db.Text)
+    #user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    #status = db.Column(db.String(20), default='to do')  # to do / in progress / done
     #priority = db.Column(db.String(20), default='medium')  # low / medium / high
