@@ -1118,7 +1118,7 @@
     const taskTime = document.getElementById('taskTime');
     const taskDateInput = document.getElementById('taskDate');
     // ⭐️ 2. تعريف نقطة نهاية الباك إند (يجب تغييره إلى رابط سيرفرك الحي)
-    const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net/auth/dashboard'; 
+    const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net'; 
 
     // 3. متغيرات البيانات
     let studifyData = [];
@@ -1149,7 +1149,7 @@
 
     // دالة لإضافة مادة جديدة
     async function addSubject(subName) {
-      const userId = getCurrentUserId();
+      //const userId = getCurrentUserId();
         try {
             const response = await fetch(`${BASE_API_URL}/subjects`, {
                 method: 'POST',
@@ -1383,76 +1383,77 @@
         const taskData = { name: name, subject: subjectName, date: dateValue, time: time };
         addTask(taskData);
     });
-    //kkokok
-           document.addEventListener('DOMContentLoaded', (event) => {
-        // تحديد العناصر الرئيسية في الصفحة
-        const subjectInput = document.querySelector('.subject-input');
-        // هنا نغير المحدد ليتناسب مع زر الإضافة الذي لم يكن له كلاس محدد في كودك،
-        // ولكن تم تعريفه على أنه button.add-btn
-        const addBtn = document.querySelector('button.add-btn'); 
-        const subjectsContainer = document.getElementById('subjectsContainer');
+    // //kkokok
+    //        document.addEventListener('DOMContentLoaded', (event) => {
+    //     // تحديد العناصر الرئيسية في الصفحة
+    //     const subjectInput = document.querySelector('.subject-input');
+    //     // هنا نغير المحدد ليتناسب مع زر الإضافة الذي لم يكن له كلاس محدد في كودك،
+    //     // ولكن تم تعريفه على أنه button.add-btn
+    //     const addBtn = document.querySelector('button.add-btn'); 
+    //     const subjectsContainer = document.getElementById('subjectsContainer');
 
-        /**
-         * دالة إضافة مادة جديدة
-         */
-        function addSubject() {
-            const subjectName = subjectInput.value.trim();
+    //     /**
+    //      * دالة إضافة مادة جديدة
+    //      */
+    //     function addSubject() {
+    //         const subjectName = subjectInput.value.trim();
 
-            if (subjectName === "") {
-                alert("الرجاء إدخال اسم المادة.");
-                return;
-            }
+    //         if (subjectName === "") {
+    //             alert("الرجاء إدخال اسم المادة.");
+    //             return;
+    //         }
 
-            // إنشاء عنصر البطاقة الجديدة (subject-card)
-            const newCard = document.createElement('div');
-            newCard.className = 'subject-card';
+    //         // إنشاء عنصر البطاقة الجديدة (subject-card)
+    //         const newCard = document.createElement('div');
+    //         newCard.className = 'subject-card';
 
-            // إنشاء المحتوى الداخلي للبطاقة
-            newCard.innerHTML = `
-                <h3 class="subject-title">${subjectName}</h3>
-                <button class="delete-sub-btn">X</button>
-                <div class="tasks-list">
-                    <p style="text-align: center; color: #999; font-size: 14px; padding: 10px;">لا توجد مهام حاليًا لهذه المادة.</p>
-                </div>
-            `;
+    //         // إنشاء المحتوى الداخلي للبطاقة
+    //         newCard.innerHTML = `
+    //             <h3 class="subject-title">${subjectName}</h3>
+    //             <button class="delete-sub-btn">X</button>
+    //             <div class="tasks-list">
+    //                 <p style="text-align: center; color: #999; font-size: 14px; padding: 10px;">لا توجد مهام حاليًا لهذه المادة.</p>
+    //             </div>
+    //         `;
             
-            // إضافة معالج حدث لزر الحذف (X)
-            const deleteButton = newCard.querySelector('.delete-sub-btn');
-            deleteButton.addEventListener('click', (e) => {
-                e.stopPropagation(); // منع توسيع/تصغير البطاقة عند الضغط على زر الحذف
-                subjectsContainer.removeChild(newCard); // إزالة البطاقة من الحاوية
-            });
+    //         // إضافة معالج حدث لزر الحذف (X)
+    //         const deleteButton = newCard.querySelector('.delete-sub-btn');
+    //         deleteButton.addEventListener('click', (e) => {
+    //             e.stopPropagation(); // منع توسيع/تصغير البطاقة عند الضغط على زر الحذف
+    //             subjectsContainer.removeChild(newCard); // إزالة البطاقة من الحاوية
+    //         });
             
-            // (اختياري) إضافة خاصية توسيع/تصغير البطاقة عند النقر عليها
-            newCard.addEventListener('click', () => {
-                newCard.classList.toggle('expanded');
-            });
+    //         // (اختياري) إضافة خاصية توسيع/تصغير البطاقة عند النقر عليها
+    //         newCard.addEventListener('click', () => {
+    //             newCard.classList.toggle('expanded');
+    //         });
 
-            // إضافة البطاقة الجديدة إلى حاوية المواد
-            subjectsContainer.appendChild(newCard);
+    //         // إضافة البطاقة الجديدة إلى حاوية المواد
+    //         subjectsContainer.appendChild(newCard);
 
-            // مسح حقل الإدخال بعد الإضافة
-            subjectInput.value = '';
-        }
+    //         // مسح حقل الإدخال بعد الإضافة
+    //         subjectInput.value = '';
+    //     }
 
-        // ربط دالة addSubject بحدث النقر على زر الإضافة
-        if (addBtn) {
-            addBtn.addEventListener('click', addSubject);
-        }
+    //     // ربط دالة addSubject بحدث النقر على زر الإضافة
+    //     if (addBtn) {
+    //         addBtn.addEventListener('click', addSubject);
+    //     }
         
-        // ربط دالة addSubject بحدث الضغط على زر Enter داخل حقل الإدخال
-        if (subjectInput) {
-            subjectInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    addSubject();
-                }
-            });
-        }
-    });
+    //     // ربط دالة addSubject بحدث الضغط على زر Enter داخل حقل الإدخال
+    //     if (subjectInput) {
+    //         subjectInput.addEventListener('keypress', function (e) {
+    //             if (e.key === 'Enter') {
+    //                 addSubject();
+    //             }
+    //         });
+    //     }
+    // });
 </script>
 </body>
 
 </html>
+
 
 
 
