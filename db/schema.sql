@@ -82,6 +82,15 @@ CREATE TABLE friends (
 );
 GO
 
+CREATE TABLE badges (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NOT NULL,
+    badge_name NVARCHAR(100) NOT NULL,
+    earned_date DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+GO
+
 -- Indexes for performance
 CREATE INDEX idx_study_logs_user_date ON study_logs(user_id, study_date);
 CREATE INDEX idx_friends_user ON friends(user_id1, status);
@@ -90,5 +99,6 @@ CREATE INDEX idx_tasks_subject_id ON tasks(subject_id);
 CREATE INDEX idx_tasks_due_date ON tasks(due_date);
 CREATE INDEX idx_study_logs_task_id ON study_logs(task_id);
 GO
+
 
 PRINT 'All 6 tables created successfully!';
