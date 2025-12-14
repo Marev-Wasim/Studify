@@ -986,7 +986,7 @@
       <div class="text-wrapper-3">studify</div>
       <img class="download" src="https://c.animaapp.com/9RpxXRdg/img/download222-1@2x.png" />
       <div class="nav-links">
-        <a href="Profile.html">Profile</a>
+         <a href="/profile-page">Profile</a>
         <a href="friends.html">Friends</a>
         <a href="index.html">Log out</a>
       </div>
@@ -1216,7 +1216,7 @@
     window.removeSubject = async function (subName) {
         if (!confirm(`Are you sure you want to delete ${subName} and all its tasks?`)) return;
         try {
-            const response = await fetch(`${BASE_API_URL}/subjects/${encodeURIComponent(subName)`}, {
+            const response = await fetch(`${BASE_API_URL}/subjects/${encodeURIComponent(subName)}`, {
                 method: 'DELETE'
             });if (!response.ok) {
                 const errorData = await response.json();
@@ -1262,7 +1262,7 @@
             taskSubjectSelect.appendChild(option);
             
             // 3. ملء قائمة المهام داخل البطاقة
-            const listContainer = document.getElementById(list-${subject.name});
+            const listContainer = document.getElementById(`list-${subject.name}`);
             if (listContainer) {
                  if (subject.tasks.length > 0) listContainer.innerHTML = '';
                  else listContainer.innerHTML = '<div style="text-align:center; color:#ccc; margin-top:20px; font-style:italic;">No tasks</div>';
@@ -1387,6 +1387,7 @@
 </body>
 
 </html>
+
 
 
 
