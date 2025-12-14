@@ -603,218 +603,362 @@
         </main>
     </div>
 
-  <script>
-        // --------------------------------------------------------
-        // ⭐ 1. الإعدادات ونقاط النهاية (API Endpoints)
-        // --------------------------------------------------------
-        // رابط Azure الأساسي
-        const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net';
+ <script>
+    // --------------------------------------------------------
+    // ⭐ 1. الإعدادات ونقاط النهاية (API Endpoints)
+    // --------------------------------------------------------
+    // رابط Azure الأساسي
+    const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net';
 
-        // نقطة نهاية جلب/تحديث الملف الشخصي (مسار الـ Blueprint هو /profile)
-        const PROFILE_API_URL = `${BASE_API_URL}/profile`;
+    // نقطة نهاية الملف الشخصي - الافتراضي أنه في /auth/profile
+    const PROFILE_API_URL = `${BASE_API_URL}/auth/profile`;
 
-        // عناصر واجهة المستخدم
-        const profileNameElement = document.getElementById('profileName');
-        const profileEmailElement = document.getElementById('profileEmail');
-        const profilePasswordSpan = document.getElementById('profilePassword');
-        const passwordLabelContainer = document.getElementById('passwordLabel');
-        const editBtn = document.getElementById('editBtn');
-        const hoursValueElement = document.querySelector('.hours-value');
-        const progressFillElement = document.querySelector('.progress-fill');
-        const hoursTextElement = document.querySelector('.hours-text');
-        const pointsDisplayElement = document.getElementById('pointsDisplay');
-        const carousel = document.getElementById('carousel');
-        const CIRCUMFERENCE = 251.2;
+    // عناصر واجهة المستخدم
+    const profileNameElement = document.getElementById('profileName');
+    const profileEmailElement = document.getElementById('profileEmail');
+    const profilePasswordSpan = document.getElementById('profilePassword');
+    const passwordLabelContainer = document.getElementById('passwordLabel');
+    const editBtn = document.getElementById('editBtn');
+    const hoursValueElement = document.querySelector('.hours-value');
+    const progressFillElement = document.querySelector('.progress-fill');
+    const hoursTextElement = document.querySelector('.hours-text');
+    const pointsDisplayElement = document.getElementById('pointsDisplay');
+    const carousel = document.getElementById('carousel');
+    const CIRCUMFERENCE = 251.2;
 
-        let isEditing = false;
+    let isEditing = false;
+    let currentUserId = null;
 
-        // --------------------------------------------------------
-        // ⭐ 2. دوال الاتصال بالخادم (API Calls)
-        // --------------------------------------------------------
+    // --------------------------------------------------------
+    // ⭐ 2. دوال الاتصال بالخادم (API Calls)
+    // --------------------------------------------------------
 
-        // A. جلب بيانات الملف الشخصي (GET /profile/)
-        async function fetchProfileData() {
-            try {
-                // استخدام المسار الأساسي '/' للـ Blueprint لجلب البيانات
-                const response = await fetch(`${PROFILE_API_URL}/`);
+    // دالة لاسترجاع التوكن من localStorage
+    function getAuthToken() {
+        return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    }
 
-                if (response.status === 401) {
-                    // توجيه لصفحة تسجيل الدخول إذا لم يكن مسجل الدخول
-                    window.location.href = 'index.html';
+    // دالة للتحقق من حالة تسجيل الدخول
+    function checkAuthStatus() {
+        const token = getAuthToken();
+        if (!token) {
+            // إذا لم يكن هناك توكن، توجيه لصفحة تسجيل الدخول
+            window.location.href = 'index.html';
+            return false;
+        }
+        return true;
+    }
+
+    // A. جلب بيانات الملف الشخصي
+    async function fetchProfileData() {
+        // التحقق من حالة تسجيل الدخول أولاً
+        if (!checkAuthStatus()) return;
+        
+        try {
+            const token = getAuthToken();
+            
+            // استخدام المسار الصحيح مع التوكن في الـ headers
+            const response = await fetch(`${PROFILE_API_URL}/`, {
+                method: 'GET',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                // إذا كان التوكن غير صالح، توجيه لصفحة تسجيل الدخول
+                localStorage.removeItem('auth_token');
+                sessionStorage.removeItem('auth_token');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            if (!response.ok) {
+                throw new Error(`Failed to fetch profile data. Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            // تخزين ID المستخدم للاستخدام لاحقاً
+            currentUserId = data.id || data.user_id;
+            
+            // تحديث معلومات الملف الشخصي
+            updateProfileUI(data);
+
+        } catch (error) {
+            console.error('Error loading profile data:', error);
+            
+            // محاولة استرجاع البيانات من localStorage إذا كان API غير متاح
+            const cachedProfile = localStorage.getItem('user_profile');
+            if (cachedProfile) {
+                const data = JSON.parse(cachedProfile);
+                updateProfileUI(data);
+                alert('Using cached profile data. Some features may be limited.');
+            } else {
+                alert('Unable to load profile data. Please try again later.');
+            }
+        }
+    }
+
+    // دالة لتحديث واجهة المستخدم بالبيانات
+    function updateProfileUI(data) {
+        // تحديث الاسم - استخدم أي من هذه الحقول المتاحة
+        const userName = data.username || data.name || data.full_name || 'Name Of Account';
+        profileNameElement.innerText = userName;
+        
+        // تحديث الإيميل
+        const userEmail = data.email || 'email@address.com';
+        profileEmailElement.innerText = userEmail;
+        
+        // تحديث ساعات التعلم
+        const totalHours = data.total_hours_studied || data.total_hours || data.study_hours || 0;
+        updateHoursDisplay(totalHours);
+        
+        // تحديث النقاط
+        const totalPoints = data.points || data.reward_points || data.total_points || 0;
+        pointsDisplayElement.innerText = totalPoints;
+        
+        // حفظ البيانات محلياً للاستخدام عند عدم توفر الاتصال
+        localStorage.setItem('user_profile', JSON.stringify({
+            username: userName,
+            email: userEmail,
+            total_hours: totalHours,
+            points: totalPoints
+        }));
+    }
+
+    // B. إرسال طلب تحديث الاسم و/أو كلمة المرور
+    async function updateProfile(newUsername, newPassword) {
+        if (!checkAuthStatus()) return;
+        
+        const updateData = {};
+        if (newUsername && newUsername.trim() !== '') {
+            updateData.username = newUsername.trim();
+        }
+        if (newPassword && newPassword.trim() !== '') {
+            updateData.password = newPassword.trim();
+        }
+
+        if (Object.keys(updateData).length === 0) {
+            alert("No changes to save.");
+            return;
+        }
+
+        try {
+            const token = getAuthToken();
+            
+            const response = await fetch(`${PROFILE_API_URL}/`, {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(updateData)
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                alert('Session expired. Please login again.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || errorData.message || 'Failed to update profile');
+            }
+
+            const result = await response.json();
+            
+            alert(result.message || "Profile updated successfully!");
+            
+            // تحديث البيانات المحلية
+            if (updateData.username) {
+                const cachedProfile = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                cachedProfile.username = updateData.username;
+                localStorage.setItem('user_profile', JSON.stringify(cachedProfile));
+            }
+            
+            // إعادة جلب البيانات لتحديث الواجهة
+            await fetchProfileData();
+
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            alert(`Error updating profile: ${error.message}`);
+            
+            // حتى إذا فشل الاتصال، تحديث الواجهة بالبيانات المحلية
+            if (updateData.username) {
+                profileNameElement.innerText = updateData.username;
+                const cachedProfile = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                cachedProfile.username = updateData.username;
+                localStorage.setItem('user_profile', JSON.stringify(cachedProfile));
+            }
+        }
+    }
+
+    // --------------------------------------------------------
+    // 3. دوال الرسم وعناصر التحكم
+    // --------------------------------------------------------
+
+    function updateHoursDisplay(totalHours) {
+        const goalHours = 200;
+        const hoursDisplay = parseFloat(totalHours).toFixed(1);
+
+        let progressPercentage = (totalHours / goalHours) * 100;
+        if (progressPercentage > 100) progressPercentage = 100;
+
+        hoursValueElement.innerText = `${hoursDisplay} Hours`;
+        progressFillElement.style.width = `${progressPercentage}%`;
+        hoursTextElement.innerText = `Next Reward at ${goalHours} Hours`;
+    }
+
+    // --------------------------------------------------------
+    // 4. معالج زر التعديل والحفظ
+    // --------------------------------------------------------
+    editBtn.addEventListener('click', async function () {
+        if (!checkAuthStatus()) return;
+        
+        if (!isEditing) {
+            // وضع التعديل (Edit Mode)
+            const currentName = profileNameElement.innerText;
+            const currentEmail = profileEmailElement.innerText;
+
+            profileNameElement.innerHTML = `<input type="text" class="edit-input" id="nameInput" value="${currentName}">`;
+            profileEmailElement.innerHTML = `<input type="text" class="edit-input" id="emailInput" value="${currentEmail}" disabled>`;
+
+            // إضافة حقول كلمة المرور الجديدة
+            passwordLabelContainer.innerHTML = `
+                <input type="password" class="edit-input" id="passwordInput" placeholder="New Password (leave empty to keep current)">
+                <input type="password" class="edit-input" id="confirmPasswordInput" placeholder="Confirm Password">
+                <div id="passwordError" style="color: #ff4d4d; font-size: 0.9rem; font-weight: normal; margin-top: 5px;"></div>
+            `;
+
+            editBtn.innerText = "Save Changes";
+            editBtn.style.background = "#34BDAD";
+            isEditing = true;
+            
+            // التركيز على حقل الاسم
+            setTimeout(() => {
+                document.getElementById('nameInput').focus();
+            }, 100);
+        } else {
+            // وضع الحفظ (Save Mode)
+            const nameInput = document.getElementById('nameInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const errorDiv = document.getElementById('passwordError');
+
+            const newUsername = nameInput.value.trim();
+            let newPassword = null;
+
+            // التحقق من الاسم
+            if (!newUsername) {
+                errorDiv.innerText = "Name cannot be empty.";
+                nameInput.focus();
+                return;
+            }
+
+            // تحقق من تطابق كلمة المرور الجديدة
+            if (passwordInput && passwordInput.value) {
+                if (passwordInput.value.length < 6) {
+                    errorDiv.innerText = "Password must be at least 6 characters.";
+                    passwordInput.focus();
                     return;
                 }
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch profile data. Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                // 2.1. تحديث معلومات الملف الشخصي
-                // نستخدم 'username' القادم من الخادم
-                profileNameElement.innerText = data.username || 'N/A';
-                profileEmailElement.innerText = data.email || 'N/A';
-
-                // 2.2. تحديث قسم الساعات والنقاط
-                // نستخدم 'total_hours_studied' القادم من الخادم
-                const totalHours = data.total_hours_studied || 0.0; 
-                const totalPoints = data.points || 0;
-
-                updateHoursDisplay(totalHours);
-                pointsDisplayElement.innerText = totalPoints;
                 
-                // يمكنك استخدام data.badge_count لتحديث الشارات هنا إذا لزم الأمر
-
-            } catch (error) {
-                console.error('Error loading profile data:', error);
-                // يمكنك عرض رسالة خطأ هنا
-            }
-        }
-
-        // B. إرسال طلب تحديث الاسم و/أو كلمة المرور (PUT /profile/)
-        async function updateProfile(newUsername, newPassword) {
-            const updateData = {};
-            if (newUsername) updateData.username = newUsername;
-            if (newPassword) updateData.password = newPassword;
-
-            if (Object.keys(updateData).length === 0) {
-                alert("No changes to save.");
-                return;
-            }
-
-            try {
-                // استخدام طريقة PUT للتحديث كما هو محدد في الـ Flask Blueprint
-                const response = await fetch(`${PROFILE_API_URL}/`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(updateData)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to update profile');
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    errorDiv.innerText = "Passwords do not match.";
+                    passwordInput.focus();
+                    return;
                 }
-
-                alert("Profile updated successfully!");
-                // إعادة جلب البيانات لتحديث الواجهة بالاسم الجديد (يتم استدعاؤها في معالج الزر)
-                await fetchProfileData();
-
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                alert(`Error updating profile: ${error.message}`);
+                newPassword = passwordInput.value;
             }
+
+            errorDiv.innerText = ""; // مسح أي رسائل خطأ
+
+            // إرسال التحديث إلى الخادم
+            await updateProfile(newUsername, newPassword); 
+            
+            // العودة إلى عرض البيانات الافتراضي
+            profileEmailElement.innerHTML = `<span id="profileEmail">${profileEmailElement.innerText}</span>`;
+            passwordLabelContainer.innerHTML = `
+                Password: <span id="profilePassword" style="font-weight: normal; color: rgba(0,0,0,0.6);">********</span>
+            `;
+            editBtn.innerText = "Edit Profile";
+            editBtn.style.background = "#4a7fb8";
+            isEditing = false;
         }
+    });
 
-        // --------------------------------------------------------
-        // 3. دوال الرسم وعناصر التحكم (Render & Logic)
-        // --------------------------------------------------------
+    // --------------------------------------------------------
+    // 5. كود تحريك الكروت (Carousel)
+    // --------------------------------------------------------
+    const btnLeftCarousel = document.getElementById('btnLeft');
+    const btnRightCarousel = document.getElementById('btnRight');
 
-        function updateHoursDisplay(totalHours) {
-            const goalHours = 200;
-            const hoursDisplay = totalHours.toFixed(1);
+    btnLeftCarousel.addEventListener('click', () => {
+        const width = carousel.clientWidth;
+        carousel.scrollBy({ left: -width, behavior: 'smooth' });
+    });
 
-            let progressPercentage = (totalHours / goalHours) * 100;
-            if (progressPercentage > 100) progressPercentage = 100;
+    btnRightCarousel.addEventListener('click', () => {
+        const width = carousel.clientWidth;
+        carousel.scrollBy({ left: width, behavior: 'smooth' });
+    });
 
-            hoursValueElement.innerText = `${hoursDisplay} Hours`;
-            progressFillElement.style.width = `${progressPercentage}%`;
-            hoursTextElement.innerText = `Next Reward at ${goalHours} Hours`;
+    // --------------------------------------------------------
+    // 6. التشغيل عند التحميل
+    // --------------------------------------------------------
+    window.addEventListener('load', function() {
+        // التحقق من التوكن أولاً
+        if (!getAuthToken()) {
+            window.location.href = 'index.html';
+            return;
         }
-
-        function renderProgressCards(subjects) {
-            carousel.innerHTML = '';
-            if (subjects.length === 0) {
-                carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888; padding: 20px;">No subjects found.</p>';
-                return;
+        
+        fetchProfileData();
+        
+        // إضافة رسالة ترحيبية
+        setTimeout(() => {
+            const userName = profileNameElement.innerText;
+            if (userName && userName !== 'Name Of Account') {
+                console.log(`Welcome back, ${userName}!`);
             }
-            // ... (منطق رسم الكروت هنا)
-        }
+        }, 1000);
+    });
 
+    // دالة تسجيل الخروج
+    function logout() {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_profile');
+        sessionStorage.removeItem('auth_token');
+        window.location.href = 'index.html';
+    }
 
-        // --------------------------------------------------------
-        // 4. معالج زر التعديل والحفظ (Logic)
-        // --------------------------------------------------------
-        editBtn.addEventListener('click', async function () {
-            if (!isEditing) {
-                // وضع التعديل (Edit Mode)
-                const currentName = profileNameElement.innerText;
-
-                profileNameElement.innerHTML = `<input type="text" class="edit-input" id="nameInput" value="${currentName}">`;
-                profileEmailElement.style.display = 'none';
-
-                // إضافة حقول كلمة المرور الجديدة
-                passwordLabelContainer.innerHTML = `
-                    <input type="password" class="edit-input" id="passwordInput" placeholder="New Password">
-                    <input type="password" class="edit-input" id="confirmPasswordInput" placeholder="Confirm Password">
-                    <div id="passwordError" style="color: #ff4d4d; font-size: 0.9rem; font-weight: normal; margin-top: 5px;"></div>
-                `;
-
-                editBtn.innerText = "Save Changes";
-                editBtn.style.background = "#34BDAD";
-                isEditing = true;
-            } else {
-                // وضع الحفظ (Save Mode)
-                const nameInput = document.getElementById('nameInput');
-                const passwordInput = document.getElementById('passwordInput');
-                const confirmPasswordInput = document.getElementById('confirmPasswordInput');
-                const errorDiv = document.getElementById('passwordError');
-
-                const newUsername = nameInput.value;
-                let newPassword = null;
-
-                // تحقق من تطابق كلمة المرور الجديدة
-                if (passwordInput && passwordInput.value) {
-                    if (passwordInput.value !== confirmPasswordInput.value) {
-                        errorDiv.innerText = "Passwords do not match.";
-                        passwordInput.focus();
-                        return;
-                    }
-                    newPassword = passwordInput.value;
+    // إضافة زر تسجيل الخروج ديناميكياً
+    document.addEventListener('DOMContentLoaded', function() {
+        const nav = document.querySelector('nav');
+        if (nav) {
+            const logoutLink = document.createElement('a');
+            logoutLink.href = '#';
+            logoutLink.textContent = 'Logout';
+            logoutLink.style.cursor = 'pointer';
+            logoutLink.style.color = '#ff4444';
+            logoutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    logout();
                 }
-
-                // إرسال التحديث إلى الخادم
-                await updateProfile(newUsername, newPassword); 
-
-                // العودة إلى عرض البيانات الافتراضي
-                // يتم استدعاء fetchProfileData داخل updateProfile لتحديث الاسم والإيميل
-                
-                // تنظيف الواجهة وإعادة الضبط
-                profileEmailElement.style.display = 'block';
-                passwordLabelContainer.innerHTML = `
-                    Password: <span id="profilePassword" style="font-weight: normal; color: rgba(0,0,0,0.6);">********</span>
-                `;
-                editBtn.innerText = "Edit Profile";
-                editBtn.style.background = "#4a7fb8";
-                isEditing = false;
-            }
-        });
-
-
-        // --------------------------------------------------------
-        // 5. كود تحريك الكروت (Carousel)
-        // --------------------------------------------------------
-        const btnLeftCarousel = document.getElementById('btnLeft');
-        const btnRightCarousel = document.getElementById('btnRight');
-
-        btnLeftCarousel.addEventListener('click', () => {
-            const width = carousel.clientWidth;
-            carousel.scrollBy({ left: -width, behavior: 'smooth' });
-        });
-
-        btnRightCarousel.addEventListener('click', () => {
-            const width = carousel.clientWidth;
-            carousel.scrollBy({ left: width, behavior: 'smooth' });
-        });
-
-
-        // --------------------------------------------------------
-        // 6. التشغيل عند التحميل
-        // --------------------------------------------------------
-        window.addEventListener('load', fetchProfileData);
-    </script>
+            });
+            nav.appendChild(logoutLink);
+        }
+    });
+</script>
 </body>
 
 
 </html>
+
 
 
 
