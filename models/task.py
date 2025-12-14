@@ -10,7 +10,7 @@ class Task(db.Model):
     
     due_date = db.Column(db.Date, nullable=True)
     est_min = db.Column(db.Integer, nullable=True)
-    __table_args__ = (CheckConstraint(est_min > 0, name='est_min_positive_check')و)
+    __table_args__ = (CheckConstraint(est_min > 0, name='est_min_positive_check'),)
 
     completed = db.Column(db.Boolean, default=False)
     completed_at = db.Column(db.DateTime, nullable=True)
@@ -20,6 +20,7 @@ class Task(db.Model):
     #user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     #status = db.Column(db.String(20), default='to do')  # to do / in progress / done
     #priority = db.Column(db.String(20), default='medium')  # low / medium / high
+
 
 
 
