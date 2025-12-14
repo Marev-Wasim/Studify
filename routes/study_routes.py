@@ -98,7 +98,7 @@ def get_study_logs():
         
     logs = query.order_by(StudyLog.study_date.desc()).all()
     
-    # Calculate the total hours for the user (ignoring the optional subject filter)
+    # Calculate the total hours for the user 
 
     total_hours_query = db.session.query(func.sum(StudyLog.hours_studied)).filter(StudyLog.user_id == user_id)
     total_hours_studied = total_hours_query.scalar() or 0.0
@@ -116,4 +116,5 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
