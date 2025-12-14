@@ -1131,7 +1131,7 @@
     // دالة لجلب جميع البيانات (المواد والمهام) عند التحميل
     async function fetchAllData() {
         try {
-            const response = await fetch(${BASE_API_URL}/data);
+            const response = await fetch(`${BASE_API_URL}/data`);
             if (!response.ok) throw new Error('Failed to fetch data');
             
             const data = await response.json();
@@ -1151,7 +1151,7 @@
     async function addSubject(subName) {
       const userId = getCurrentUserId();
         try {
-            const response = await fetch(${BASE_API_URL}/subjects, {
+            const response = await fetch(`${BASE_API_URL}/subjects`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: subName, user_id: userId })
@@ -1166,14 +1166,14 @@
             subjectInput.value = "";
         } catch (error) {
             console.error('Error adding subject:', error.message);
-            alert(Failed to add subject: ${error.message});
+            alert(`Failed to add subject: ${error.message}`);
         }
     }
 
     // دالة لإضافة مهمة جديدة
     async function addTask(taskData) {
         try {
-            const response = await fetch(${BASE_API_URL}/tasks, {
+            const response = await fetch(`${BASE_API_URL}/tasks`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(taskData)
@@ -1188,14 +1188,14 @@
             taskName.value = ""; taskTime.value = ""; taskDateInput.value = "";
         } catch (error) {
             console.error('Error adding task:', error.message);
-            alert(Failed to add task: ${error.message});
+            alert(`Failed to add task: ${error.message}`);
         }
     }
 
     // دالة إتمام المهمة
     window.completeTask = async function (buttonElement, taskId) {
         try {
-            const response = await fetch(${BASE_API_URL}/tasks/${taskId}/complete, {
+            const response = await fetch(`${BASE_API_URL}/tasks/${taskId}/complete`, {
                 method: 'PUT'
             });
 
@@ -1208,15 +1208,15 @@
             
         } catch (error) {
             console.error('Error completing task:', error.message);
-            alert(Failed to complete task: ${error.message});
+            alert(`Failed to complete task: ${error.message}`);
         }
     }
     
     // دالة حذف المادة
     window.removeSubject = async function (subName) {
-        if (!confirm(Are you sure you want to delete ${subName} and all its tasks?)) return;
+        if (!confirm(`Are you sure you want to delete ${subName} and all its tasks?`)) return;
         try {
-            const response = await fetch(${BASE_API_URL}/subjects/${encodeURIComponent(subName)}, {
+            const response = await fetch(`${BASE_API_URL}/subjects/${encodeURIComponent(subName)`}, {
                 method: 'DELETE'
             });if (!response.ok) {
                 const errorData = await response.json();
@@ -1226,7 +1226,7 @@
             await fetchAllData(); 
         } catch (error) {
             console.error('Error deleting subject:', error.message);
-            alert(Failed to delete subject: ${error.message});
+            alert(`Failed to delete subject: ${error.message}`);
         }
     }
 
@@ -1276,7 +1276,7 @@
     }
 
     function createSubjectCard(subName) {
-        const cardId =card-${subName.replace(/\s/g, '-')};
+        const cardId =`card-${subName.replace(/\s/g, '-')`};
         const card = document.createElement('div');
         card.className = 'subject-card'; card.id = cardId;
         card.innerHTML =` <button class="delete-sub-btn" onclick="removeSubject(${subName})">×</button><div class="subject-title">${subName}</div><div class="tasks-list" id="list-${subName}"></div>`;
@@ -1293,7 +1293,7 @@
     function createTaskElement(task, container) {
         const taskItem = document.createElement('div');
         taskItem.className = 'task-entry';
-        taskItem.id = task-${task.id}; 
+        taskItem.id = `task-${task.id}`; 
         taskItem.setAttribute('data-due-date', task.date);
 
         let formattedDate = task.date;
@@ -1303,7 +1303,7 @@
         } catch (e) {}
 
         let buttonHTML = <button onclick="completeTask(this, '${task.id}')" style="background: #00a8a0; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">✓</button>;
-        let timeText = ${task.time}m;
+        let timeText =` ${task.time}m`;
         if (task.completed) {
             taskItem.classList.add('completed');
             timeText = 'Completed!';
@@ -1387,6 +1387,7 @@
 </body>
 
 </html>
+
 
 
 
