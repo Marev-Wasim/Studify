@@ -51,12 +51,16 @@ def index():
 @app.route("/signup")
 def signup_page():
     return render_template("signup.html")
+@app.route('/profile-page')
+def profile_page():
+    return render_template('profile.html')
 
 
 if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
