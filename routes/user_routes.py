@@ -1,6 +1,9 @@
 from flask import Blueprint, request, jsonify, session
 from extensions import db, bcrypt
 from models.user import User
+from models.study_log import StudyLog 
+from models.badge import Badge       
+from sqlalchemy import func
 
 user_bp = Blueprint('user', __name__, url_prefix='/profile')
 
@@ -11,7 +14,8 @@ def get_auth_user_id():
 @user_bp.route('/', methods=['GET'])
 def get_user_profile():
     """
-    Retrieves the authenticated user's profile data (username, email, points).
+    Retrieves the authenticated user's comprehensive profile data, 
+    including aggregated stats (hours, badges, points).
     """
     user_id = get_auth_user_id()
     if not user_id:
@@ -21,12 +25,27 @@ def get_user_profile():
     if not user:
         return jsonify({'error': 'User not found'}), 404
         
-    # Assuming User model has a 'points' attribute
+    
+    # 1. Calculate Total Study Hours
+    total_hours_query = db.session.query(func.sum(StudyLog.hours_studied)).filter(StudyLog.user_id == user_id)
+    total_hours_studied = total_hours_query.scalar() or 0.0
+    
+    # 2. Count Total Badges
+    badge_count = Badge.query.filter_by(user_id=user_id).count()
+
     return jsonify({
         'id': user.id,
         'username': user.username,
         'email': user.email,
-        'points': getattr(user, 'points', 0) # Safely retrieve points
+        'points': getattr(user, 'points', 0),
+        
+        # New Consolidated Stats
+        'total_hours_studied': float(total_hours_studied),
+        'badge_count': badge_count,
+        'task_summary': {
+            'total': total_tasks,
+            'completed': completed_tasks
+        }
     }), 200
 
 
