@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from extensions import db
 from models.subject import Subject
 
@@ -69,5 +69,6 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
 
 
