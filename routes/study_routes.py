@@ -4,7 +4,7 @@ from extensions import db
 from models.study_log import StudyLog 
 from models.user import User
 from datetime import datetime
-from sqlalchemy.exc import IntegrityError 
+from sqlalchemy.exc import IntegrityError # <-- FIX: Ensure IntegrityError is imported
 from sqlalchemy import func
 
 study_bp = Blueprint('study', __name__, url_prefix='/study')
@@ -17,10 +17,11 @@ def get_auth_user_id():
 def calculate_points(hours_logged):
     """Calculates points based on study hours."""
     try:
+        # Convert Numeric type (from DB) or incoming data to float
         hours_float = float(hours_logged)
         # Rule: 6 points per hour (1 point per 10 minutes)
         return int(hours_float * 6)
-    except ValueError:
+    except (ValueError, TypeError):
         return 0
 
 @study_bp.route('/', methods=['POST'])
@@ -44,14 +45,14 @@ def log_study():
         if hours_float <= 0:
             return jsonify({'message': 'Study duration must be positive'}), 400
             
+        # Parse date, default to today's date if not provided
         study_date = datetime.strptime(study_date_str, '%Y-%m-%d').date() if study_date_str else datetime.utcnow().date()
         
     except ValueError:
-        # NOTE: Ensure IntegrityError is imported at the top
         return jsonify({'message': 'Invalid format for hours_studied or study_date'}), 400
     
     try:
-        #  Create the study log record
+        # 1. Create the study log record
         log = StudyLog(
             user_id=user_id,
             subject_id=subject_id,
@@ -61,7 +62,7 @@ def log_study():
         )
         db.session.add(log)
         
-        #  Update user points
+        # 2. Update user points
         points_earned = calculate_points(hours_float)
         user = User.query.get(user_id)
         if user:
@@ -77,6 +78,7 @@ def log_study():
         
     except IntegrityError as e:
         db.session.rollback()
+        # This catches errors like invalid subject_id or task_id (Foreign Key violation)
         return jsonify({'message': 'Database error: Invalid subject or task ID', 'details': str(e)}), 400
     except Exception as e:
         db.session.rollback()
@@ -98,8 +100,6 @@ def get_study_logs():
         
     logs = query.order_by(StudyLog.study_date.desc()).all()
     
-    # Calculate the total hours for the user 
-
     total_hours_query = db.session.query(func.sum(StudyLog.hours_studied)).filter(StudyLog.user_id == user_id)
     total_hours_studied = total_hours_query.scalar() or 0.0
     
@@ -108,13 +108,13 @@ def get_study_logs():
         'task_id': log.task_id,
         'subject_id': log.subject_id,
         'study_date': log.study_date.isoformat(),
-        'hours_studied': str(log.hours_studied),
+        'hours_studied': str(float(log.hours_studied)), 
         'points_earned': calculate_points(log.hours_studied)
     } for log in logs]
     
+    # Return both logs and the total summary
     return jsonify({
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
-
 
