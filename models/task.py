@@ -1,5 +1,6 @@
 from extensions import db
 from sqlalchemy import func
+from sqlalchemy import CheckConstraint
 
 class Task(db.Model):
     __tablename__ = 'tasks'
@@ -19,4 +20,5 @@ class Task(db.Model):
     #user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     #status = db.Column(db.String(20), default='to do')  # to do / in progress / done
     #priority = db.Column(db.String(20), default='medium')  # low / medium / high
+
 
