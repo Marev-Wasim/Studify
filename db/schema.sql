@@ -82,6 +82,7 @@ CREATE TABLE friends (
 );
 GO
 
+-- 7. Badges
 CREATE TABLE badges (
     id INT IDENTITY(1,1) PRIMARY KEY,
     user_id INT NOT NULL,
@@ -101,4 +102,5 @@ CREATE INDEX idx_study_logs_task_id ON study_logs(task_id);
 GO
 
 
-PRINT 'All 6 tables created successfully!';
+PRINT 'All 7 tables created successfully!';
+
