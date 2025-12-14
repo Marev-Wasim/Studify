@@ -1402,12 +1402,12 @@
             const newCard = document.createElement('div');
             newCard.className = 'subject-card';
             newCard.innerHTML = 
-                <h3 class="subject-title">${subjectName}</h3>
+               ` <h3 class="subject-title">${subjectName}</h3>
                 <button class="delete-sub-btn">X</button>
                 <div class="tasks-list">
                     <p style="text-align: center; color: #999;">لا توجد مهام حاليًا.</p>
                 </div>
-            ;
+            `;
             
             // إضافة خاصية لتمكين توسيع/تصغير البطاقة (اختياري)
             newCard.addEventListener('click', (e) => {
@@ -1448,6 +1448,7 @@
 </body>
 
 </html>
+
 
 
 
