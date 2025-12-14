@@ -1154,7 +1154,7 @@
             const response = await fetch(`${BASE_API_URL}/subjects`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: subName, user_id: userId })
+                body: JSON.stringify({ name: subName })
             });
             
             if (!response.ok) {
@@ -1453,6 +1453,7 @@
 </body>
 
 </html>
+
 
 
 
