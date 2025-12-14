@@ -1,5 +1,6 @@
 from extensions import db, bcrypt # bcrypt is initialized in extensions.py
 from werkzeug.security import generate_password_hash, check_password_hash # Keep imports for type hints/backward compatibility
+from sqlalchemy import func
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -31,3 +32,4 @@ class User(db.Model):
     # You should add a to_dict method here if it doesn't exist to match user_routes.py expectations:
     # def to_dict(self):
     #     return { 'id': self.id, 'username': self.username, 'email': self.email, 'points': getattr(self, 'points', 0) }
+
