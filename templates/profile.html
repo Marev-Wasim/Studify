@@ -603,89 +603,217 @@
         </main>
     </div>
 
-    <script>
+   <script>
     // --------------------------------------------------------
-    // إعدادات التشخيص
+    // ⭐ 1. الإعدادات ونقاط النهاية (API Endpoints)
     // --------------------------------------------------------
+    // رابط Azure الأساسي
     const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net';
-    const PROFILE_API_URL = `${BASE_API_URL}/profile`;
     
-    // العناصر
+    // نقطة نهاية جلب/تحديث الملف الشخصي (مسار الـ Blueprint هو /profile)
+    const PROFILE_API_URL = ${BASE_API_URL}/profile;
+    
+    // عناصر واجهة المستخدم
     const profileNameElement = document.getElementById('profileName');
     const profileEmailElement = document.getElementById('profileEmail');
-    const pointsDisplayElement = document.getElementById('pointsDisplay');
+    const profilePasswordSpan = document.getElementById('profilePassword');
+    const passwordLabelContainer = document.getElementById('passwordLabel');
+    const editBtn = document.getElementById('editBtn');
     const hoursValueElement = document.querySelector('.hours-value');
     const progressFillElement = document.querySelector('.progress-fill');
     const hoursTextElement = document.querySelector('.hours-text');
-    const editBtn = document.getElementById('editBtn');
+    const pointsDisplayElement = document.getElementById('pointsDisplay');
+    const carousel = document.getElementById('carousel');
+    const CIRCUMFERENCE = 251.2; 
+    
+    let isEditing = false; 
 
-    // دالة لجلب البيانات مع تقارير أخطاء مفصلة
-    async function debugFetchProfile() {
-        console.log("🚀 1. بدء محاولة الاتصال بالسيرفر...");
-        console.log(`🔗 الرابط المستخدم: ${PROFILE_API_URL}/`);
+    // --------------------------------------------------------
+    // ⭐ 2. دوال الاتصال بالخادم (API Calls)
+    // --------------------------------------------------------
 
+    // A. جلب بيانات الملف الشخصي (GET /profile/)
+    async function fetchProfileData() {
         try {
-            const response = await fetch(`${PROFILE_API_URL}/`, {
-                method: 'GET',
-                // هام: هذا السطر يضمن إرسال الكوكيز (Session) مع الطلب
-                credentials: 'include' 
-            });
-
-            console.log(`2. حالة الرد (Status): ${response.status}`);
+            // استخدام المسار الأساسي '/' للـ Blueprint لجلب البيانات
+            const response = await fetch(${PROFILE_API_URL}/); 
 
             if (response.status === 401) {
-                console.error("❌ خطأ 401: غير مصرح.");
-                alert("اختبار الاتصال: أنت غير مسجل دخول (401). يرجى تسجيل الدخول أولاً.");
-                // window.location.href = 'index.html'; // تم تعطيل التوجيه مؤقتاً لرؤية الخطأ
+                // توجيه لصفحة تسجيل الدخول إذا لم يكن مسجل الدخول
+                window.location.href = 'index.html'; 
                 return;
             }
-
             if (!response.ok) {
-                throw new Error(`خطأ في السيرفر: ${response.status}`);
+                throw new Error(Failed to fetch profile data. Status: ${response.status});
             }
 
             const data = await response.json();
-            console.log("✅ 3. تم استلام البيانات بنجاح:", data);
+            
+            // 2.1. تحديث معلومات الملف الشخصي
+            profileNameElement.innerText = data.username || 'N/A';
+            profileEmailElement.innerText = data.email || 'N/A';
+            
+            // 2.2. تحديث قسم الساعات والنقاط (نفترض أن هذه البيانات تأتي من API آخر أو تم دمجها هنا)
+            // بما أن كود الـ Flask Profile Blueprint أرسل فقط (username, email, points)، سنعتمد عليه.
+            
+            const totalHours = data.total_study_hours || 120; // قيمة وهمية مؤقتة حتى يتم تحديث الـ API
+            const totalPoints = data.points || 0;
+            
+            updateHoursDisplay(totalHours);
+            pointsDisplayElement.innerText = totalPoints;
 
-            // التحقق من وجود الاسم
-            if (data.username) {
-                console.log(`4. تم العثور على الاسم: ${data.username}`);
-                profileNameElement.innerText = data.username;
-                profileNameElement.style.color = "green"; // لون أخضر للتأكيد بصرياً
-            } else {
-                console.warn("⚠️ 4. البيانات وصلت لكن لا يوجد حقل 'username'!", data);
-                profileNameElement.innerText = "No Name Found";
-                profileNameElement.style.color = "red";
-            }
-
-            // تحديث باقي البيانات
-            profileEmailElement.innerText = data.email || 'No Email';
-            pointsDisplayElement.innerText = data.points || 0;
-            updateHoursDisplay(data.total_hours_studied || 0);
+            // 2.3. تحديث كروت التقدم (نفترض أن بياناتها تأتي من API آخر أو تم دمجها هنا)
+            // renderProgressCards(data.subjects || []); // يتم إزالة هذا مؤقتاً لعدم وجود subjects في الـ API الحالي
 
         } catch (error) {
-            console.error("❌ حدث خطأ أثناء الاتصال:", error);
-            alert(`فشل الاتصال: ${error.message}\nتأكدي من تشغيل السيرفر ومن الكونسول.`);
+            console.error('Error loading profile data:', error);
+            // يمكنك عرض رسالة خطأ هنا
         }
     }
 
+    // B. إرسال طلب تحديث الاسم و/أو كلمة المرور (PUT /profile/)
+    async function updateProfile(newUsername, newPassword) {
+        const updateData = {};
+        if (newUsername) updateData.username = newUsername;
+        if (newPassword) updateData.password = newPassword;
+
+        if (Object.keys(updateData).length === 0) {
+            alert("No changes to save.");
+            return;
+        }
+
+        try {
+            // استخدام طريقة PUT للتحديث كما هو محدد في الـ Flask Blueprint
+            const response = await fetch(${PROFILE_API_URL}/, {
+                method: 'PUT', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updateData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to update profile');
+            }
+
+            alert("Profile updated successfully!");
+            // إعادة جلب البيانات لتحديث الواجهة بالاسم الجديد
+            await fetchProfileData();
+
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            alert(Error updating profile: ${error.message});
+        }
+    }
+
+    // --------------------------------------------------------
+    // 3. دوال الرسم وعناصر التحكم (Render & Logic)
+    // --------------------------------------------------------
+
     function updateHoursDisplay(totalHours) {
         const goalHours = 200;
-        const hoursDisplay = parseFloat(totalHours).toFixed(1);
+        const hoursDisplay = totalHours.toFixed(1);
+        
         let progressPercentage = (totalHours / goalHours) * 100;
         if (progressPercentage > 100) progressPercentage = 100;
 
-        if(hoursValueElement) hoursValueElement.innerText = `${hoursDisplay} Hours`;
-        if(progressFillElement) progressFillElement.style.width = `${progressPercentage}%`;
+        hoursValueElement.innerText = ${hoursDisplay} Hours;
+        progressFillElement.style.width = ${progressPercentage}%;
+        hoursTextElement.innerText = Next Reward at ${goalHours} Hours;
     }
 
-    // تشغيل الاختبار عند التحميل
-    window.addEventListener('load', debugFetchProfile);
+    function renderProgressCards(subjects) {
+        carousel.innerHTML = '';
+        if (subjects.length === 0) {
+            carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888; padding: 20px;">No subjects found.</p>';
+            return;
+        }
+        // ... (منطق رسم الكروت هنا)
+    }
+
+
+    // --------------------------------------------------------
+    // 4. معالج زر التعديل والحفظ (Logic)
+    // --------------------------------------------------------
+    editBtn.addEventListener('click', function () {
+        if (!isEditing) {
+            // وضع التعديل
+            const currentName = profileNameElement.innerText;
+            
+            profileNameElement.innerHTML = <input type="text" class="edit-input" id="nameInput" value="${currentName}">;
+            profileEmailElement.style.display = 'none';
+            
+            // إضافة حقول كلمة المرور الجديدة
+            passwordLabelContainer.innerHTML = `
+                <input type="password" class="edit-input" id="passwordInput" placeholder="New Password">
+                <input type="password" class="edit-input" id="confirmPasswordInput" placeholder="Confirm Password">
+                <div id="passwordError" style="color: #ff4d4d; font-size: 0.9rem; font-weight: normal; margin-top: 5px;"></div>
+            `;
+
+            editBtn.innerText = "Save Changes";
+            editBtn.style.background = "#34BDAD";
+            isEditing = true;
+        } else {
+            // وضع الحفظ
+            const nameInput = document.getElementById('nameInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const errorDiv = document.getElementById('passwordError');
+
+            const newUsername = nameInput.value;
+            let newPassword = null;
+            
+            // تحقق من تطابق كلمة المرور الجديدة
+            if (passwordInput && passwordInput.value) {
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    errorDiv.innerText = "Passwords do not match.";
+                    passwordInput.focus();
+                    return; 
+                }
+                newPassword = passwordInput.value;
+            }
+            
+            // إرسال التحديث إلى الخادم
+            updateProfile(newUsername, newPassword);
+
+            // العودة إلى عرض البيانات الافتراضي (سيتم تحديث البيانات عند fetchProfileData)
+            profileEmailElement.style.display = 'block';
+            passwordLabelContainer.innerHTML = `
+                Password: <span id="profilePassword" style="font-weight: normal; color: rgba(0,0,0,0.6);"></span>
+            `;
+            editBtn.innerText = "Edit Profile";
+            editBtn.style.background = "#4a7fb8";
+            isEditing = false;
+        }
+    });
+
+
+    // --------------------------------------------------------
+    // 5. كود تحريك الكروت (Carousel)
+    // --------------------------------------------------------
+    const btnLeftCarousel = document.getElementById('btnLeft');
+    const btnRightCarousel = document.getElementById('btnRight');
+    
+    btnLeftCarousel.addEventListener('click', () => {
+        const width = carousel.clientWidth;
+        carousel.scrollBy({ left: -width, behavior: 'smooth' });
+    });
+
+    btnRightCarousel.addEventListener('click', () => {
+        const width = carousel.clientWidth;
+        carousel.scrollBy({ left: width, behavior: 'smooth' });
+    });
+
+
+    // --------------------------------------------------------
+    // 6. التشغيل عند التحميل
+    // --------------------------------------------------------
+    window.addEventListener('load', fetchProfileData);
 </script>
 </body>
 
 
 </html>
+
 
 
 
