@@ -1154,7 +1154,7 @@
             const response = await fetch(`${BASE_API_URL}/subjects`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: DSA, user_id: 1 })
+                body: JSON.stringify({ name: subName, user_id: userId })
             });
             
             if (!response.ok) {
@@ -1383,10 +1383,72 @@
         const taskData = { name: name, subject: subjectName, date: dateValue, time: time };
         addTask(taskData);
     });
+    //kkokok
+        document.addEventListener('DOMContentLoaded', (event) => {
+        const subjectInput = document.querySelector('.subject-input');
+        const addBtn = document.querySelector('.add-btn');
+        const subjectsContainer = document.getElementById('subjectsContainer');
+
+        // 1. الدالة المسؤولة عن إضافة مادة جديدة
+        function addSubject() {
+            const subjectName = subjectInput.value.trim();
+
+            if (subjectName === "") {
+                alert("الرجاء إدخال اسم المادة.");
+                return;
+            }
+
+            // 2. إنشاء العنصر الجديد (بطاقة المادة)
+            const newCard = document.createElement('div');
+            newCard.className = 'subject-card';
+            newCard.innerHTML = 
+                <h3 class="subject-title">${subjectName}</h3>
+                <button class="delete-sub-btn">X</button>
+                <div class="tasks-list">
+                    <p style="text-align: center; color: #999;">لا توجد مهام حاليًا.</p>
+                </div>
+            ;
+            
+            // إضافة خاصية لتمكين توسيع/تصغير البطاقة (اختياري)
+            newCard.addEventListener('click', (e) => {
+                // التأكد من أن النقر ليس على زر الحذف
+                if (!e.target.classList.contains('delete-sub-btn')) {
+                    newCard.classList.toggle('expanded');
+                }
+            });
+
+            // 3. إضافة معالج حدث لزر الحذف داخل البطاقة الجديدة
+            const deleteButton = newCard.querySelector('.delete-sub-btn');
+            deleteButton.addEventListener('click', () => {
+                subjectsContainer.removeChild(newCard);
+            });
+
+            // 4. إضافة البطاقة إلى الحاوية
+            subjectsContainer.appendChild(newCard);
+
+            // 5. مسح حقل الإدخال
+            subjectInput.value = '';
+        }
+
+        // ربط الدالة بحدث النقر على زر الإضافة
+        if (addBtn) {
+            addBtn.addEventListener('click', addSubject);
+        }
+        
+        // ربط الدالة بحدث الضغط على زر Enter في حقل الإدخال
+        if (subjectInput) {
+            subjectInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    addSubject();
+                }
+            });
+        }
+    });
 </script>
 </body>
 
 </html>
+
 
 
 
