@@ -1,72 +1,167 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from extensions import db
 from models.task import Task
+from models.subject import Subject # Needed to check user ownership via subject
+from datetime import datetime
 
-task_bp = Blueprint('task', __name__, url_prefix='/tasks')
+task_bp = Blueprint('tasks', __name__, url_prefix='/tasks')
+
+def get_auth_user_id():
+    """Retrieves the authenticated user's ID from the session."""
+    return session.get('user_id')
 
 @task_bp.route('/', methods=['GET'])
 def get_tasks():
-    tasks = Task.query.all()
+    user_id = get_auth_user_id()
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+    
+    # Query tasks that belong to a subject owned by the current user
+    tasks = db.session.query(Task).join(Subject).filter(Subject.user_id == user_id).all()
+    
     return jsonify([{
         'id': t.id,
-        'title': t.title,
-        'status': t.status,
+        'name': t.name,
+        'subject_id': t.subject_id,
+        'time': t.time,
+        'date': t.due_date.isoformat() if t.due_date else None,
+        'completed': t.completed,
     } for t in tasks])
 
 
 @task_bp.route('/', methods=['POST'])
 def create_task():
+    user_id = get_auth_user_id()
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+        
     data = request.get_json()
     
-    task = Task(
-        title=data.get('title'),
-        subject_id=data.get('subject_id'),
-        user_id=data.get('user_id'),
-        deadline=data.get('deadline'),
-        required_minutes=data.get('required_minutes', 0),
-        status=data.get('status', 'to do'),
-    )
+    name = data.get('name')
+    subject_id = data.get('subject_id')
+    time = data.get('time')
+    date_str = data.get('date') # Matches dashboard HTML input 'taskDate'
 
-    db.session.add(task)
-    db.session.commit()
+    if not all([name, subject_id, time, date_str]):
+        return jsonify({'message': 'Missing required fields (name, subject_id, time, date)'}), 400
 
-    return jsonify({'message': 'Task created', 'task_id': task.id})
+    try:
+        # Check if the subject belongs to the user
+        if not Subject.query.filter_by(id=subject_id, user_id=user_id).first():
+            return jsonify({'message': 'Invalid Subject ID or unauthorized'}), 403
+            
+        task_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+
+        task = Task(
+            name=name,
+            subject_id=subject_id,
+            due_date=task_date,
+            time=int(time),
+            completed=False
+        )
+        db.session.add(task)
+        db.session.commit()
+
+        return jsonify({'message': 'Task created', 'task_id': task.id}), 201
+    except ValueError:
+        return jsonify({'message': 'Invalid format for time or date (YYYY-MM-DD)'}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'An error occurred during task creation', 'details': str(e)}), 500
+
 
 @task_bp.route('/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
-    task = Task.query.get(task_id)
+    user_id = get_auth_user_id()
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+
+    # Find the task and ensure it belongs to a subject owned by the user
+    task = db.session.query(Task).join(Subject).filter(
+        Task.id == task_id,
+        Subject.user_id == user_id
+    ).first()
 
     if not task:
-        return jsonify({'error': 'Task not found'}), 404
+        return jsonify({'error': 'Task not found or unauthorized'}), 404
 
     db.session.delete(task)
     db.session.commit()
 
-    return jsonify({'message': 'Task deleted successfully'})
+    return jsonify({'message': 'Task deleted successfully'}), 200
+
+
+# PUT: Mark a task as complete (matches client-side window.completeTask)
+@task_bp.route('/<int:task_id>/complete', methods=['PUT'])
+def complete_task(task_id):
+    user_id = get_auth_user_id()
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+    
+    task = db.session.query(Task).join(Subject).filter(
+        Task.id == task_id,
+        Subject.user_id == user_id
+    ).first()
+    
+    if not task:
+        return jsonify({'error': 'Task not found or unauthorized'}), 404
+        
+    if task.completed:
+        return jsonify({'message': 'Task is already completed'}), 200
+
+    try:
+        task.completed = True
+        task.completed_at = datetime.utcnow()
+        db.session.commit()
+        return jsonify({'message': 'Task marked as complete', 'id': task.id}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'An error occurred while updating the task', 'details': str(e)}), 500
 
 
 @task_bp.route('/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
-    task = Task.query.get(task_id)
+    user_id = get_auth_user_id()
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+
+    # Find the task and ensure it belongs to a subject owned by the user
+    task = db.session.query(Task).join(Subject).filter(
+        Task.id == task_id,
+        Subject.user_id == user_id
+    ).first()
 
     if not task:
-        return jsonify({'error': 'Task not found'}), 404
+        return jsonify({'error': 'Task not found or unauthorized'}), 404
 
     data = request.get_json()
 
-    if 'title' in data:
-        task.title = data['title']
+    if 'name' in data:
+        task.name = data['name']
     if 'subject_id' in data:
+        # Ensure new subject also belongs to the user (optional but safer)
+        if not Subject.query.filter_by(id=data['subject_id'], user_id=user_id).first():
+            return jsonify({'message': 'New Subject ID is invalid or unauthorized'}), 403
         task.subject_id = data['subject_id']
-   # if 'user_id' in data:
-       # task.user_id = data['user_id']
-    if 'deadline' in data:
-        task.deadline = data['deadline']
-    if 'required_minutes' in data:
-        task.required_minutes = data['required_minutes']
-    if 'status' in data:
-        task.status = data['status']
+
+    if 'date' in data:
+        try:
+            task.due_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({'message': 'Invalid date format (YYYY-MM-DD)'}), 400
+            
+    if 'time' in data:
+        try:
+            task.time = int(data['time'])
+        except ValueError:
+            return jsonify({'message': 'Time must be an integer'}), 400
+            
+    if 'completed' in data and isinstance(data['completed'], bool):
+        task.completed = data['completed']
+        if data['completed']:
+            task.completed_at = datetime.utcnow()
+        else:
+            task.completed_at = None
 
     db.session.commit()
-
-    return jsonify({'message': 'Task updated successfully'})
+    return jsonify({'message': 'Task updated successfully'}), 200
