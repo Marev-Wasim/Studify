@@ -1118,7 +1118,7 @@
     const taskTime = document.getElementById('taskTime');
     const taskDateInput = document.getElementById('taskDate');
     // ⭐️ 2. تعريف نقطة نهاية الباك إند (يجب تغييره إلى رابط سيرفرك الحي)
-    const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net/auth/dash '; 
+    const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net'; 
 
     // 3. متغيرات البيانات
     let studifyData = [];
@@ -1149,11 +1149,12 @@
 
     // دالة لإضافة مادة جديدة
     async function addSubject(subName) {
+      const userId = getCurrentUserId();
         try {
             const response = await fetch(`${BASE_API_URL}/subjects`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: subName })
+                body: JSON.stringify({ name: subName, user_id: userId })
             });
             
             if (!response.ok) {
@@ -1386,4 +1387,5 @@
 </body>
 
 </html>
+
 
