@@ -5,19 +5,6 @@ from models.subject import Subject
 subject_bp = Blueprint('subject', __name__, url_prefix='/subjects')
 
 
-@subject_bp.route('/', methods=['GET'])
-def get_subjects():
-    user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({'error': 'Authentication required'}), 401
-    subjects = Subject.query.filter_by(user_id=user_id).all()
-    return jsonify([{
-        'id': s.id,
-        'name': s.name,
-        #'color': s.color
-    } for s in subjects])
-
-
 @subject_bp.route('/', methods=['POST'])
 def create_subject():
     user_id = session.get('user_id')
@@ -35,6 +22,19 @@ def create_subject():
     db.session.commit()
 
     return jsonify({'message': 'Subject created', 'subject_id': subject.id})
+
+
+@subject_bp.route('/', methods=['GET'])
+def get_subjects():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+    subjects = Subject.query.filter_by(user_id=user_id).all()
+    return jsonify([{
+        'id': s.id,
+        'name': s.name,
+        #'color': s.color
+    } for s in subjects])
 
 
 @subject_bp.route('/<int:subject_id>', methods=['DELETE'])
@@ -69,4 +69,5 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
 
