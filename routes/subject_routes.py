@@ -7,7 +7,10 @@ subject_bp = Blueprint('subject', __name__, url_prefix='/subjects')
 
 @subject_bp.route('/', methods=['GET'])
 def get_subjects():
-    subjects = Subject.query.all()
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+    subjects = Subject.query.filter_by(user_id=user_id).all()
     return jsonify([{
         'id': s.id,
         'name': s.name,
@@ -17,12 +20,16 @@ def get_subjects():
 
 @subject_bp.route('/', methods=['POST'])
 def create_subject():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
     data = request.get_json()
+    name=data.get('name')
     
     subject = Subject(
-        name=data.get('name'),
+        name=name,
         #color=data.get('color'),
-        user_id=data.get('user_id')
+        user_id=user_id
     )
     db.session.add(subject)
     db.session.commit()
@@ -62,3 +69,4 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
