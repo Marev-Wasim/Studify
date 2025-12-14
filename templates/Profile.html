@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studify - My Profile</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Konkhmer+Sleokchher&family=Lao+Muang+Khong&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #abd1f4;
+            min-height: 118vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1251px;
+            min-height: 86vh;
+            background: #EBF6FF;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            background: white;
+            border-bottom: 1px solid #f3f4f6;
+            margin: -2rem -2rem 2rem -2rem;
+            width: calc(100% + 4rem);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+            margin-right: 500px;
+        }
+
+        .logo-section img {
+            width: 150px;
+            height: auto;
+            margin-bottom: -30px;
+        }
+
+        .logo-section h1 {
+            color: #10203a;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 2.5rem;
+            margin-right: 70px;
+            font-weight: 650;
+            margin-left: -30px;
+            margin-bottom: -30px;
+        }
+
+        nav {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: -30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000;
+            font-family: 'Konkhmer Sleokchher', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #2563eb;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Main Content */
+        main {
+            padding: 2rem;
+            position: relative;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Profile Section */
+        .profile-section h2 {
+            color: #0a2139;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 2.8rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            margin-left: 40px;
+            margin-top: -20px;
+        }
+
+        .profile-card {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+        }
+
+        .avatar {
+            width: 159px;
+            height: 156px;
+            border-radius: 50%;
+            background: #ebf6ff;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .profile-info h3 {
+            color: #0a2139;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 2.8rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info p {
+            color: rgba(0, 0, 0, 0.6);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* تنسيق زر التعديل وحقول الإدخال */
+        .btn-edit {
+            background: #4a7fb8;
+            color: white;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 1.25rem;
+            padding: 0.6rem 2rem;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            transition: background 0.3s;
+            width: fit-content;
+            margin-top: 10px;
+        }
+
+        .btn-edit:hover {
+            background: #3d6a9a;
+        }
+
+        /* تنسيق الحقول عند وضع التعديل */
+        .edit-input {
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 1.3rem;
+            padding: 5px 10px;
+            border: 2px solid #4a7fb8;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 10px;
+            color: #10203a;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Total Learning Hours Card */
+        .hours-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+            padding: 2rem;
+        }
+
+        .hours-card h3 {
+            color: black;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 2.2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .hours-value {
+            color: black;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 2.2rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 15px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 57%;
+            background: #4cd4d0;
+            border-radius: 20px;
+            transition: width 0.3s;
+        }
+
+        .hours-text {
+            color: rgba(0, 0, 0, 0.37);
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        /* Bottom Grid */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Progress Cards & Carousel */
+        .progress-carousel {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .carousel-scroll {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            width: 100%;
+            padding: 10px 5px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .carousel-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .progress-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+            padding: 1rem;
+            min-width: calc((100% - 2rem) / 3);
+            flex: 0 0 calc((100% - 2rem) / 3);
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .progress-card h4 {
+            color: black;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
+
+        .progress-circle {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 1rem;
+            position: relative;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .progress-card p {
+            color: rgba(0, 0, 0, 0.37);
+            font-size: 0.9rem;
+        }
+
+        /* Buttons */
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: #f9fafb;
+        }
+
+        /* Reward Section */
+        .reward-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .reward-icon {
+            position: relative;
+            min-width: 110px;
+            width: 110px;
+            height: 110px;
+        }
+
+        .reward-text h3 {
+            color: black;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-bottom: 0.25rem;
+        }
+
+        .reward-text p {
+            color: black;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 2.2rem;
+            font-weight: 400;
+        }
+
+        /* Decorative Images */
+        .deco-image {
+            position: absolute;
+            opacity: 0.5;
+        }
+
+        .deco-image.left {
+            left: 1.5rem;
+            top: 8rem;
+            width: 148px;
+            height: 65px;
+        }
+
+        .deco-image.bottom-left {
+            left: 340px;
+            bottom: 5rem;
+            width: 187px;
+            height: 82px;
+        }
+
+        .deco-image.top-left {
+            left: 681px;
+            top: 0;
+            width: 187px;
+            height: 82px;
+        }
+
+        .deco-image.right {
+            right: 2rem;
+            top: 13rem;
+            width: 187px;
+            height: 82px;
+        }
+
+        /* Responsive */
+        @keyframes fadeInAnimation {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            opacity: 0;
+            animation: fadeInAnimation 1.5s ease-out forwards;
+        }
+
+        @media (max-width: 1024px) {
+
+            .content-grid,
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                gap: 1.5rem;
+            }
+
+            .deco-image {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0 1rem;
+                height: auto;
+                min-height: 134px;
+            }
+
+            .logo-section h1 {
+                font-size: 1.5rem;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .profile-card {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .profile-info {
+                text-align: center;
+            }
+
+            .reward-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .progress-card {
+                min-width: 100%;
+                flex: 0 0 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-section">
+                <img src="https://api.builder.io/api/v1/image/assets/TEMP/a972516383bf9672b4c04259e76273dcddd61507?width=328"
+                    alt="Studify logo">
+                <h1>studify</h1>
+            </div>
+            <nav>
+                <a href="Home.html">Home</a> <a href="friends.html">Friends</a> <a href="#about">About us</a>
+            </nav>
+            <button class="mobile-menu-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+            <div class="header-blob"></div>
+        </header>
+
+        <main>
+            <img class="deco-image left"
+                src="https://api.builder.io/api/v1/image/assets/TEMP/24375f52f9e1b8b805b0963c3072fcbb6a9bb0df?width=296"
+                alt="">
+            <img class="deco-image bottom-left"
+                src="https://api.builder.io/api/v1/image/assets/TEMP/fa793776abd3adf2301513f8cfb90a229732362f?width=374"
+                alt="">
+            <img class="deco-image top-left"
+                src="https://api.builder.io/api/v1/image/assets/TEMP/fa793776abd3adf2301513f8cfb90a229732362f?width=374"
+                alt="">
+            <img class="deco-image right"
+                src="https://api.builder.io/api/v1/image/assets/TEMP/e847a0dd2b30751e0856b81ae858e79a43d5e4d1?width=374"
+                alt="">
+
+            <div class="content-grid">
+                <div class="profile-section">
+                    <h2>My Profile</h2>
+                    <div class="profile-card">
+                        <div class="avatar-wrapper">
+                            <div class="avatar">
+                                <img src="https://api.builder.io/api/v1/image/assets/TEMP/14b992f93b6150097c71e1c5dd691af6b6bee56e?width=318"
+                                    alt="Profile avatar">
+                            </div>
+                        </div>
+                        <div class="profile-info">
+                            <h3 id="profileName">Name Of Account</h3>
+                            <p id="profileEmail">email@address.com</p>
+                            <p id="passwordLabel" style="font-weight: bold; font-size: 1rem; color: #0a2139;">Password:
+                                <span id="profilePassword"
+                                    style="font-weight: normal; color: rgba(0,0,0,0.6);">********</span>
+                            </p>
+
+                            <button class="btn-edit" id="editBtn">Edit Profile</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hours-card">
+                    <h3>Total Learning Hours</h3>
+                    <p class="hours-value">120 Hours</p>
+                    <div class="progress-container">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p class="hours-text">Next Reward at 200 Hours</p>
+                </div>
+            </div>
+
+            <div class="bottom-grid">
+                <div class="progress-carousel">
+                    <button class="carousel-btn" id="btnLeft">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
+                    </button>
+
+                    <div class="carousel-scroll" id="carousel">
+                    </div>
+
+                    <button class="carousel-btn" id="btnRight">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="reward-card">
+                    <div class="reward-icon">
+                        <svg viewBox="0 0 125 118" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M59.2941 2.06119C60.1996 -0.687026 64.0872 -0.687034 64.9927 2.06118L77.6293 40.4123C78.0346 41.6424 79.1835 42.4735 80.4786 42.4735H121.281C124.197 42.4735 125.399 46.2137 123.028 47.9122L90.0909 71.5103C89.0247 72.2741 88.5784 73.6421 88.9888 74.8878L101.587 113.122C102.495 115.878 99.3496 118.19 96.9903 116.499L63.8906 92.7851C62.8461 92.0367 61.4408 92.0367 60.3962 92.7851L27.2966 116.499C24.9373 118.19 21.7918 115.878 22.7001 113.122L35.298 74.8878C35.7085 73.6421 35.2621 72.2741 34.1959 71.5103L1.25853 47.9122C-1.11215 46.2137 0.0894127 42.4735 3.00573 42.4735H43.8083C45.1034 42.4735 46.2523 41.6424 46.6576 40.4123L59.2941 2.06119Z"
+                                fill="#E5982E" />
+                            <path
+                                d="M55.765 1.38194C56.3637 -0.460681 58.9705 -0.460687 59.5692 1.38193L71.8115 39.0598C72.0792 39.8838 72.8472 40.4417 73.7136 40.4417H113.33C115.268 40.4417 116.073 42.921 114.506 44.0598L82.4553 67.3459C81.7543 67.8552 81.461 68.758 81.7288 69.582L93.971 107.26C94.5697 109.102 92.4608 110.635 90.8934 109.496L58.8427 86.2097C58.1417 85.7004 57.1925 85.7004 56.4915 86.2097L24.4409 109.496C22.8734 110.635 20.7645 109.102 21.3632 107.26L33.6055 69.582C33.8732 68.758 33.5799 67.8552 32.8789 67.3459L0.828241 44.0598C-0.739186 42.921 0.0663619 40.4417 2.00381 40.4417H41.6206C42.4871 40.4417 43.255 39.8838 43.5227 39.0598L55.765 1.38194Z"
+                                fill="#F9C440" />
+                        </svg>
+                    </div>
+                    <div class="reward-text">
+                        <h3>Reward Points Earned</h3>
+                        <p id="pointsDisplay">0</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --------------------------------------------------------
+        // 1. كود تحريك الكروت (Carousel)
+        // --------------------------------------------------------
+        const carousel = document.getElementById('carousel');
+        const btnLeft = document.getElementById('btnLeft');
+        const btnRight = document.getElementById('btnRight');
+
+        btnLeft.addEventListener('click', () => {
+            const width = carousel.clientWidth;
+            carousel.scrollBy({ left: -width, behavior: 'smooth' });
+        });
+
+        btnRight.addEventListener('click', () => {
+            const width = carousel.clientWidth;
+            carousel.scrollBy({ left: width, behavior: 'smooth' });
+        });
+
+        // --------------------------------------------------------
+        // 2. كود تحميل المواد والتقدم من Local Storage
+        // --------------------------------------------------------
+        window.addEventListener('load', function () {
+            const savedData = localStorage.getItem('studifyData');
+
+
+            // 1. نجيب النقاط من الذاكرة
+        const savedPoints = localStorage.getItem('studifyPoints');
+        
+        // 2. نمسك العنصر اللي اديناه ID
+        const pointsElement = document.getElementById('pointsDisplay');
+
+        // 3. نعرض النقاط (لو مفيش نقاط محفوظة، اعرض 0)
+        if (pointsElement) {
+            pointsElement.innerText = savedPoints ? savedPoints : "0";
+        }
+
+            // تفريغ الكاروسيل
+            carousel.innerHTML = '';
+
+            if (savedData) {
+                const studifyData = JSON.parse(savedData);
+
+                // متغير لحساب إجمالي الدقائق المكتملة
+                let totalCompletedMinutes = 0;
+
+                // 1. إنشاء كروت المواد وحساب الوقت
+                studifyData.forEach(subject => {
+                    // حساب التقدم للكروت
+                    const totalTasks = subject.tasks.length;
+                    const completedTasks = subject.tasks.filter(t => t.completed).length;
+
+                    // ** تجميع وقت التاسكات المكتملة **
+                    subject.tasks.forEach(task => {
+                        if (task.completed) {
+                            // نتأكد أن الوقت رقم (ونعتبره 0 لو مش مكتوب)
+                            totalCompletedMinutes += parseInt(task.time) || 0;
+                        }
+                    });
+
+                    // رسم كروت المواد (كما فعلنا سابقاً)
+                    const circumference = 251.2;
+                    const percentage = totalTasks === 0 ? 0 : (completedTasks / totalTasks);
+                    const strokeDashoffset = circumference - (percentage * circumference);
+
+                    const cardHTML = `
+                    <div class="progress-card">
+                        <h4>${subject.name}</h4>
+                        <div class="progress-circle">
+                            <svg class="progress-ring" width="90" height="90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" stroke="#e5e7eb" stroke-width="8" fill="none" />
+                                <circle cx="50" cy="50" r="40" stroke="#4cd4d0" stroke-width="8" fill="none"
+                                    stroke-dasharray="${circumference}" 
+                                    stroke-dashoffset="${strokeDashoffset}"
+                                    stroke-linecap="round" 
+                                    style="transition: stroke-dashoffset 0.5s ease-in-out;"/>
+                            </svg>
+                        </div>
+                        <p>${completedTasks}/${totalTasks} Tasks</p>
+                    </div>
+                `;
+                    carousel.innerHTML += cardHTML;
+                });
+
+                // --------------------------------------------------
+                // 2. تحديث قسم "Total Learning Hours" (الجزء المطلوب)
+                // --------------------------------------------------
+
+                // تحويل الدقائق إلى ساعات (مع رقم عشري واحد)
+                const totalHours = (totalCompletedMinutes / 60).toFixed(1);
+
+                // تحديد الهدف التالي (مثلاً كل 200 ساعة)
+                const goalHours = 200;
+
+                // حساب نسبة الشريط (بحد أقصى 100%)
+                let progressPercentage = (totalHours / goalHours) * 100;
+                if (progressPercentage > 100) progressPercentage = 100;
+
+                // تحديث عناصر HTML
+                document.querySelector('.hours-value').innerText = `${totalHours} Hours`;
+                document.querySelector('.progress-fill').style.width = `${progressPercentage}%`;
+                document.querySelector('.hours-text').innerText = `Next Reward at ${goalHours} Hours`;
+
+            }
+
+            if (carousel.innerHTML === '') {
+                carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888; padding: 20px;">No subjects added yet.</p>';
+            }
+        });
+
+        // --------------------------------------------------------
+        // 3. كود تعديل البروفايل (كما هو)
+        // --------------------------------------------------------
+        const profileName = document.getElementById('profileName');
+        const profileEmail = document.getElementById('profileEmail');
+        const profilePassword = document.getElementById('profilePassword');
+        const editBtn = document.getElementById('editBtn');
+
+        let isEditing = false;
+
+        editBtn.addEventListener('click', function () {
+            if (!isEditing) {
+                const currentName = profileName.innerText;
+                profileName.innerHTML = `<input type="text" class="edit-input" id="nameInput" value="${currentName}">`;
+                profilePassword.innerHTML = `<input type="password" class="edit-input" id="passwordInput" placeholder="New Password">`;
+                editBtn.innerText = "Save Changes";
+                editBtn.style.background = "#34BDAD";
+                isEditing = true;
+            } else {
+                const nameInput = document.getElementById('nameInput');
+                const passwordInput = document.getElementById('passwordInput');
+                profileName.innerText = nameInput.value;
+                profilePassword.innerText = "********";
+                editBtn.innerText = "Edit Profile";
+                editBtn.style.background = "#4a7fb8";
+                isEditing = false;
+            }
+        });
+    </script>
+</body>
+
+</html>
