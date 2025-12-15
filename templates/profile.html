@@ -690,7 +690,7 @@
 
         try {
             // استخدام طريقة PUT للتحديث كما هو محدد في الـ Flask Blueprint
-            const response = await fetch(${PROFILE_API_URL}/, {
+            const response = await fetch(`${PROFILE_API_URL}/`, {
                 method: 'PUT', 
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updateData)
@@ -819,6 +819,7 @@
 
 
 </html>
+
 
 
 
