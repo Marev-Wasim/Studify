@@ -662,7 +662,7 @@
             // 2.2. تحديث قسم الساعات والنقاط (نفترض أن هذه البيانات تأتي من API آخر أو تم دمجها هنا)
             // بما أن كود الـ Flask Profile Blueprint أرسل فقط (username, email, points)، سنعتمد عليه.
             
-            const totalHours = data.total_study_hours || 120; // قيمة وهمية مؤقتة حتى يتم تحديث الـ API
+            const totalHours = data.total_hours_studied || 0; // قيمة وهمية مؤقتة حتى يتم تحديث الـ API
             const totalPoints = data.points || 0;
             
             updateHoursDisplay(totalHours);
@@ -819,6 +819,7 @@
 
 
 </html>
+
 
 
 
