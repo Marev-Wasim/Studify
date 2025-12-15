@@ -743,14 +743,23 @@
             
             profileNameElement.innerHTML = `<input type="text" class="edit-input" id="nameInput" value="${currentName}">`;
             profileEmailElement.style.display = 'none';
-            
-            // إضافة حقول كلمة المرور الجديدة
-            passwordLabelContainer.innerHTML = `
-                <input type="password" class="edit-input" id="passwordInput" placeholder="New Password">
-                <input type="password" class="edit-input" id="confirmPasswordInput" placeholder="Confirm Password">
-                <div id="passwordError" style="color: #ff4d4d; font-size: 0.9rem; font-weight: normal; margin-top: 5px;"></div>
-            `;
 
+
+            // ✅ التصحيح: نستخدم عنصر button الأب لوضع حقول كلمة المرور الجديدة قبله
+           const profileInfoContainer = editBtn.parentElement; 
+    
+            // ❌ كان: passwordLabelContainer.innerHTML = ...
+            // ✅ يصبح: إنشاء عنصر جديد مؤقت لحقول كلمة المرور الجديدة
+           const passwordInputsHTML = `
+               <input type="password" class="edit-input" id="passwordInput" placeholder="New Password">
+               <input type="password" class="edit-input" id="confirmPasswordInput" placeholder="Confirm Password">
+               <div id="passwordError" style="color: #ff4d4d; font-size: 0.9rem; font-weight: normal; margin-top: 5px;"></div>
+                 `;
+
+            // إضافة الحقول قبل زر التعديل
+            editBtn.insertAdjacentHTML('beforebegin', passwordInputsHTML);
+
+            
             editBtn.innerText = "Save Changes";
             editBtn.style.background = "#34BDAD";
             isEditing = true;
@@ -815,6 +824,7 @@
 
 
 </html>
+
 
 
 
