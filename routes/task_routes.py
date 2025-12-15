@@ -132,7 +132,7 @@ def complete_task(task_id):
             # 🟢 2. تحديث نقاط المستخدم (User Points)
             user = User.query.get(user_id)
             if user:
-                points_earned = minutes_studied # نقطة واحدة لكل دقيقة
+                points_earned = minutes_studied // 10 # نقطة واحدة لكل دقيقة
                 user.total_coins = (user.total_coins or 0) + points_earned
                 db.session.add(user)
                 
@@ -189,6 +189,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
