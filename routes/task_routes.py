@@ -63,19 +63,8 @@ def create_task():
             completed=False
         )
         db.session.add(task)
-        minutes_studied = task.est_min
-        if minutes_studied and minutes_studied > 0:
-            # Convert minutes to hours (float)
-            hours_logged = round(minutes_studied / 60.0, 2)
-            study_log = StudyLog(
-                user_id=user_id,
-                subject_id=task.subject_id,
-                study_date=datetime.utcnow().date(), # Log study for today
-                hours_studied=hours_logged,
-                task_id=task.task_id # Link the log back to the completed task
-            )
-            db.session.add(study_log)
-            db.session.commit()
+        
+        db.session.commit()
         return jsonify({'message': 'Task created', 'task_id': task.task_id}), 201
     except ValueError:
         return jsonify({'message': 'Invalid format for time or date (YYYY-MM-DD)'}), 400
@@ -128,6 +117,25 @@ def complete_task(task_id):
         task.completed_at = datetime.utcnow()
         minutes_studied = task.est_min
         
+        if minutes_studied and minutes_studied > 0:
+            hours_logged = round(minutes_studied / 60.0, 2)
+            
+            study_log = StudyLog(
+                user_id=user_id,
+                subject_id=task.subject_id,
+                study_date=datetime.utcnow().date(),
+                hours_studied=hours_logged,
+                task_id=task.task_id 
+            )
+            db.session.add(study_log)
+            
+            # 🟢 2. تحديث نقاط المستخدم (User Points)
+            user = User.query.get(user_id)
+            if user:
+                points_earned = minutes_studied # نقطة واحدة لكل دقيقة
+                user.total_coins = (user.total_coins or 0) + points_earned
+                db.session.add(user)
+                
         db.session.commit()
         return jsonify({'message': 'Task marked as complete', 'id': task.task_id}), 200
     except Exception as e:
@@ -181,6 +189,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
