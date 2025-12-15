@@ -636,7 +636,7 @@
     async function fetchProfileData() {
         try {
             // استخدام المسار الأساسي '/' للـ Blueprint لجلب البيانات
-            const response = await fetch(${PROFILE_API_URL}/); 
+            const response = await fetch(`${PROFILE_API_URL}/`); 
 
             if (response.status === 401) {
                 // توجيه لصفحة تسجيل الدخول إذا لم يكن مسجل الدخول
@@ -819,6 +819,7 @@
 
 
 </html>
+
 
 
 
