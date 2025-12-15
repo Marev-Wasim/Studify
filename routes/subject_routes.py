@@ -45,7 +45,7 @@ def delete_subject(subject_id):
     if not subject:
         return jsonify({'error': 'Subject not found'}), 404
 
-   try:
+    try:
         # ✅ الخطوة 1: حذف المهام المرتبطة أولاً (لتفادي Foreign Key Constraint)
         Task.query.filter_by(subject_id=subject_id).delete()
         
@@ -77,8 +77,3 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
-
-
-
-
-
