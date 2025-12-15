@@ -21,10 +21,10 @@ def get_tasks():
     tasks = db.session.query(Task).join(Subject).filter(Subject.user_id == user_id).all()
     
     return jsonify([{
-        'id': t.id,
+        'id': t.task_id,
         'title': t.name,
         'subject_id': t.subject_id,
-        'time': t.time,
+        'time': t.est_min,
         'due_date': t.due_date.isoformat() if t.due_date else None,
         'is_complete': t.completed,
     } for t in tasks])
@@ -40,10 +40,10 @@ def create_task():
     
     name = data.get('name')
     subject_id = data.get('subject_id')
-    time = data.get('time')
-    date_str = data.get('date') # Matches dashboard HTML input 'taskDate'
+    est_min = data.get('time')
+    due_date = data.get('date') # Matches dashboard HTML input 'taskDate'
 
-    if not all([name, subject_id, time, date_str]):
+    if not all([name, subject_id, est_min, due_date]):
         return jsonify({'message': 'Missing required fields (name, subject_id, time, date)'}), 400
 
     try:
@@ -51,13 +51,13 @@ def create_task():
         if not Subject.query.filter_by(id=subject_id, user_id=user_id).first():
             return jsonify({'message': 'Invalid Subject ID or unauthorized'}), 403
             
-        task_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        task_date = datetime.strptime(due_date, '%Y-%m-%d').date()
 
         task = Task(
             name=name,
             subject_id=subject_id,
             due_date=task_date,
-            time=int(time),
+            est_min=int(time),
             completed=False
         )
         db.session.add(task)
@@ -166,6 +166,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
