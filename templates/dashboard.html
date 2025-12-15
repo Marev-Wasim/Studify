@@ -1346,9 +1346,9 @@
             const taskEntry = document.createElement('div');
             taskEntry.className = 'task-entry';
             taskEntry.id = `task-${task.id}`;
-            taskEntry.setAttribute('data-due-date', task.date);
+            taskEntry.setAttribute('data-due-date', task.due_date);
 
-            const dateObj = new Date(task.date);
+            const dateObj = new Date(task.due_date);
             const formattedDate = dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }); 
             
             let buttonHTML = '';
@@ -1443,6 +1443,7 @@
 
 
 </html>
+
 
 
 
