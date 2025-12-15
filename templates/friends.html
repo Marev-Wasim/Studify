@@ -596,7 +596,7 @@
             }
             // Fetch all users for search (This might be a large operation, 
             // often better to search directly on the server)
-            const fetchedUsers = await fetchData('/users');
+            const fetchedUsers = await fetchData('/friends/users/search');
             if (fetchedUsers) {
                 // Assuming the backend returns an array of user objects: 
                 // [{ id: 201, name: "Omar Hassan", points: 500 }, ...]
@@ -745,7 +745,7 @@
 
             // 2. Call the API
             // Assuming the backend has an endpoint like POST /send-request with the targetUserId in the body
-            const success = await sendMutation(`/requests/send`, 'POST', { targetUserId: targetUserId });
+            const success = await sendMutation(`/friends/request`, 'POST', { targetUserId: targetUserId });
 
             // 3. Handle the result
             if (success) {
@@ -776,7 +776,7 @@
 
             // 2. Call the API
             // Assuming the backend has an endpoint like PUT /requests/accept/:requestId
-            const success = await sendMutation(`/requests/${requestId}/accept`, 'PUT');
+            const success = await sendMutation(`/friends/accept/${requestId}/accept`, 'PUT');
 
             // 3. Handle the result
             if (success) {
@@ -802,7 +802,7 @@
 
             // 2. Call the API
             // Assuming the backend has an endpoint like DELETE /requests/:requestId
-            const success = await sendMutation(`/requests/${requestId}`, 'DELETE');
+            const success = await sendMutation(`/friends/${requestId}`, 'DELETE');
 
             // 3. Handle the result
             if (!success) {
@@ -851,6 +851,7 @@
 </body>
 
 </html>
+
 
 
 
