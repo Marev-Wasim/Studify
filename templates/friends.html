@@ -912,7 +912,7 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(HTTP error! status: ${response.status});
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return await response.json();
             } catch (error) {
@@ -940,10 +940,11 @@
                 return true;
             } catch (error) {
                 console.error(`Error during ${method} operation to ${endpoint}:`, error);
-                alert(فشل إكمال الإجراء: ${error.message});
+                alert(`فشل إكمال الإجراء: ${error.message}`);
                 return false;
             }
         }
+        
         // --- 2. Data Initialization (Loading) ---
 
         async function loadAllData() {
@@ -954,6 +955,7 @@
                     id: f.friend_id,
                     name: f.username,
                     points: f.points || 0,
+                    // 🚨 التعديل: جلب relationship_id من الـ Backend
                     relationship_id: f.relationship_id 
                 }));
             }
@@ -993,7 +995,7 @@
                 return;
             }
 
-            container.innerHTML = friends.map(friend =>` 
+            container.innerHTML = friends.map(friend => `
                 <div class="friend-card">
                     <div class="friend-header">
                         <div class="friend-avatar"></div>
@@ -1006,7 +1008,7 @@
                         <button class="remove-btn" onclick="removeFriend(${friend.id})">حذف</button>
                     </div>
                 </div>
-            `).join('');
+           ` ).join('');
         }
 
         function renderSearchResults(results) {
@@ -1032,10 +1034,11 @@
                 if (myFriendIds.includes(user.id)) {
                     buttonHtml = '<button class="sent-btn" disabled>صديق حالي</button>';
                 } else if (pendingRequestUsernames.includes(user.name)) {
-                    buttonHtml = '<button class="sent-btn" disabled>تم إرسال طلب</button>';
+                    // هذا يعني أن المستخدم الحالي لديه طلب وارد من هذا الشخص
+                    buttonHtml = '<button class="sent-btn" disabled>لديك طلب منه</button>'; 
                 } else {
-                    // نمرر الـ username للـ Backend
-                    buttonHtml = <button class="add-btn-small" onclick="sendFriendRequest(this, '${user.name}')">إضافة صديق</button>;
+                    // ملاحظة: لا يمكننا التحقق من الطلبات الصادرة إلا إذا جلبناها من الـ Backend
+buttonHtml = <button class="add-btn-small" onclick="sendFriendRequest(this, '${user.name}')">إضافة صديق</button>;
                 }
                 return `
                     <div class="friend-card">
@@ -1119,17 +1122,23 @@
 
 
         async function acceptRequest(requestId) {
-            const originalRequest = friendRequests.find(r => r.id === requestId);
-            friendRequests = friendRequests.filter(r => r.id !== requestId);
-            renderRequests(); 
+            // ... (منطق الحذف المؤقت وإعادة العرض عند الفشل) ...
 
             const success = await sendMutation(`/friends/accept/${requestId}`, 'PUT', {
                 user_id: CURRENT_USER_ID
             });
 
             if (success) {
+                // عند القبول، يجب إعادة جلب كل البيانات لتحديث قائمة الأصدقاء والطلبات
                 await loadAllData(); 
-            } else {
+            } 
+            // ... (منطق الإعادة عند الفشل) ...
+// إعادة ترتيب logic Requests
+            const originalRequest = friendRequests.find(r => r.id === requestId);
+            friendRequests = friendRequests.filter(r => r.id !== requestId);
+            renderRequests(); 
+            
+            if (!success) {
                 if (originalRequest) friendRequests.push(originalRequest);
                 renderRequests();
             }
@@ -1139,6 +1148,8 @@
             const originalRequest = friendRequests.find(r => r.id === requestId);
             friendRequests = friendRequests.filter(r => r.id !== requestId);
             renderRequests();
+            
+            // 🚨 استخدام مسار DELETE العام لحذف الطلب المعلق
             const success = await sendMutation(`/friends/${requestId}`, 'DELETE');
 
             if (!success) {
@@ -1147,22 +1158,27 @@
             }
         }
 
+        // 🚨 التعديل الرئيسي لعملية الحذف
         async function removeFriend(friendId) {
+            // نجد الصديق عبر friendId، ثم نستخدم relationship_id لحذفه
             const friendToRemove = friends.find(f => f.id === friendId);
             
             if (!friendToRemove || !friendToRemove.relationship_id) {
-                return alert("خطأ: معرّف العلاقة مفقود.");
+                return alert("خطأ: معرّف العلاقة مفقود. (يرجى التأكد من جلب relationship_id من الـ Backend)");
             }
             
             if (confirm("هل أنت متأكد من حذف هذا الصديق نهائياً؟")) {
+                // الحذف المؤقت للعرض
                 friends = friends.filter(f => f.id !== friendId);
                 renderFriends();
 
+                // 🚨 نستخدم relationship_id كمعرف الصف (Friend.id) في مسار DELETE
                 const success = await sendMutation(`/friends/${friendToRemove.relationship_id}`, 'DELETE');
 
                 if (success) {
                     await loadAllData(); 
                 } else {
+                    // الإعادة عند الفشل
                     friends.push(friendToRemove); 
                     renderFriends();
                 }
@@ -1173,10 +1189,10 @@
         loadAllData();
 
     </script>
-
 </body>
 
 </html>
+
 
 
 
