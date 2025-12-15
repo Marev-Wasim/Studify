@@ -128,7 +128,7 @@ def update_task(task_id):
 
     # Find the task and ensure it belongs to a subject owned by the user
     task = db.session.query(Task).join(Subject).filter(
-        Task.id == task_id,
+        Task.task_id == task_id,
         Subject.user_id == user_id
     ).first()
 
@@ -166,6 +166,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
