@@ -6,6 +6,9 @@ from models.task import Task
 
 subject_bp = Blueprint('subject', __name__, url_prefix='/subjects')
 
+# 🟢 1. تعريف دالة المصادقة (كانت مفقودة وتسبب الانهيار)
+def get_auth_user_id():
+    return session.get('user_id')
 
 @subject_bp.route('/', methods=['POST'])
 def create_subject():
@@ -115,6 +118,7 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
 
 
 
