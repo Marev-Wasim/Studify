@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from extensions import db
 from models.subject import Subject
-
+from models.study_log import StudyLog
 from models.task import Task
 
 subject_bp = Blueprint('subject', __name__, url_prefix='/subjects')
@@ -83,6 +83,7 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
 
 
 
