@@ -42,7 +42,7 @@ def get_subjects():
     } for s in subjects])
 
 
-@subject_bp.route('/<int:subject_id>', methods=['DELETE'])
+
 @subject_bp.route('/<int:subject_id>', methods=['DELETE'])
 def delete_subject(subject_id):
     # قائمة لتخزين تقرير الخطوات
@@ -118,6 +118,7 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
 
 
 
