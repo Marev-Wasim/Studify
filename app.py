@@ -57,12 +57,16 @@ def profile_page():
 @app.route('/dashboard-page')
 def dashboard_page():
     return render_template('dashboard.html')
+@app.route('/friends-page')
+def friends_page():
+    return render_template('friends.html')
 
 
 if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
