@@ -1,10 +1,11 @@
 from extensions import db
 from datetime import datetime
+from sqlalchemy import func
 
 class Badge(db.Model):
     __tablename__ = 'badges'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    description = db.Column(db.String(200))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    date_awarded = db.Column(db.DateTime, default=datetime.utcnow)
+    badge_name = db.Column(db.String(100), nullable=False)
+    earned_date = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    #description = db.Column(db.String(200))
