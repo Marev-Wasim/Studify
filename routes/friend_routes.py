@@ -142,3 +142,18 @@ def delete_friend(request_id):
     return jsonify({'message': 'Friend/Request removed'})
    
 
+# أضيفي هذا في نهاية ملف الباك إند الخاص بالأصدقاء
+@friend_bp.route('/users/search', methods=['GET'])
+def get_all_users_for_search():
+    user_id = get_auth_user_id()
+    if not user_id:
+        return jsonify({'error': 'Auth required'}), 401
+        
+    # جلب كل المستخدمين ماعدا المستخدم الحالي
+    users = User.query.filter(User.id != user_id).all()
+    
+    return jsonify([{
+        'id': u.id,
+        'username': u.username,
+        'points': u.total_coins # أو u.points حسب اسم العمود عندك
+    } for u in users])
