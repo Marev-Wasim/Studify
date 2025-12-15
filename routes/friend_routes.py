@@ -1,4 +1,4 @@
-'''from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify
 from extensions import db
 from models.friend import Friend
 from models.user import User
@@ -162,4 +162,5 @@ def get_all_users_for_search(current_user_id):
         
     return jsonify(users_list)
     
-# ... (بقية مسارات Flask /accept/<int:request_id>, /<int:user_id>, /pending/<int:user_id> تبقى كما هي) ...
+# ... (بقية مسارات Flask /accept/<int:request_id>, /<int:user_id>, /pending/<int:user_id> تبقى كما هي) ...'''
+
