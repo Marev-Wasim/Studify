@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from extensions import db
 from models.subject import Subject
+
 from models.task import Task
 
 subject_bp = Blueprint('subject', __name__, url_prefix='/subjects')
@@ -40,8 +41,11 @@ def get_subjects():
 
 @subject_bp.route('/<int:subject_id>', methods=['DELETE'])
 def delete_subject(subject_id):
-    subject = Subject.query.get(subject_id)
-
+    user_id = get_auth_user_id()
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+        
+    subject = Subject.query.filter_by(id=subject_id, user_id=user_id).first()
     if not subject:
         return jsonify({'error': 'Subject not found'}), 404
 
@@ -75,4 +79,5 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
 
