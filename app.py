@@ -54,12 +54,16 @@ def signup_page():
 @app.route('/profile-page')
 def profile_page():
     return render_template('profile.html')
+@app.route('/dashboard-page')
+def dashboard_page():
+    return render_template('dashboard.html')
 
 
 if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
