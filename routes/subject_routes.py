@@ -40,53 +40,60 @@ def get_subjects():
 
 
 @subject_bp.route('/<int:subject_id>', methods=['DELETE'])
+@subject_bp.route('/<int:subject_id>', methods=['DELETE'])
 def delete_subject(subject_id):
-    print(f"\n🚀 Starting deletion for Subject ID: {subject_id}") # بداية التتبع
+    # قائمة لتخزين تقرير الخطوات
+    debug_report = []
+    debug_report.append(f"1. Start deleting Subject ID: {subject_id}")
 
     user_id = get_auth_user_id()
-    print(f"👤 User ID: {user_id}")
-    
     if not user_id:
-        print("❌ Error: No user ID found in session")
-        return jsonify({'error': 'Authentication required'}), 401
+        return jsonify({'error': 'Auth required', 'trace': debug_report}), 401
         
     subject = Subject.query.filter_by(id=subject_id, user_id=user_id).first()
     
     if not subject:
-        print("❌ Error: Subject not found or unauthorized")
-        return jsonify({'message': 'Subject not found or unauthorized'}), 404
-    
-    print(f"✅ Subject found: {subject.name} (ID: {subject.id})")
+        debug_report.append("2. Subject not found or user not authorized.")
+        return jsonify({'message': 'Not found', 'trace': debug_report}), 404
+
+    debug_report.append(f"2. Found Subject: {subject.name}")
 
     try:
-        # 1. اختبار حذف StudyLog
-        print("⏳ Attempting to delete StudyLogs...")
-        deleted_logs = StudyLog.query.filter_by(subject_id=subject_id).delete(synchronize_session=False)
-        print(f"✅ StudyLogs deleted. Count: {deleted_logs}")
+        # خطوة 1: StudyLog
+        debug_report.append("3. Attempting to delete StudyLogs...")
+        logs_count = StudyLog.query.filter_by(subject_id=subject_id).delete(synchronize_session=False)
+        debug_report.append(f"   -> Deleted {logs_count} StudyLogs.")
         
-        # 2. اختبار حذف Tasks
-        print("⏳ Attempting to delete Tasks...")
-        deleted_tasks = Task.query.filter_by(subject_id=subject_id).delete(synchronize_session=False)
-        print(f"✅ Tasks deleted. Count: {deleted_tasks}")
+        # خطوة 2: Tasks
+        debug_report.append("4. Attempting to delete Tasks...")
+        tasks_count = Task.query.filter_by(subject_id=subject_id).delete(synchronize_session=False)
+        debug_report.append(f"   -> Deleted {tasks_count} Tasks.")
         
-        # 3. اختبار حذف Subject
-        print("⏳ Attempting to delete Subject...")
+        # خطوة 3: Subject
+        debug_report.append("5. Attempting to delete Subject...")
         db.session.delete(subject)
-        print("✅ Subject marked for deletion.")
+        debug_report.append("   -> Subject marked for deletion.")
 
-        # 4. تنفيذ الحذف الفعلي (Commit)
-        print("⏳ Committing changes to database...")
+        # خطوة 4: Commit
+        debug_report.append("6. Committing to DB...")
         db.session.commit()
-        print("🎉 SUCCESS: Database commit successful.")
+        debug_report.append("7. SUCCESS! Commit done.")
         
-        return jsonify({'message': 'Subject and associated records deleted successfully'}), 200
+        # إرسال التقرير مع رسالة النجاح
+        return jsonify({
+            'message': 'Deleted successfully', 
+            'trace': debug_report
+        }), 200
         
     except Exception as e:
         db.session.rollback()
-        print(f"\n💥 CRITICAL ERROR at step: {e}") # سيطبع الخطأ هنا
-        import traceback
-        traceback.print_exc() # سيطبع تفاصيل الخطأ كاملة ومكانه في الملف
-        return jsonify({'message': 'An error occurred during deletion', 'details': str(e)}), 500
+        debug_report.append(f"💥 ERROR HAPPENED: {str(e)}")
+        # إرسال التقرير مع رسالة الخطأ 500
+        return jsonify({
+            'message': 'Server Error', 
+            'error_details': str(e),
+            'trace': debug_report 
+        }), 500
         
 
 @subject_bp.route('/<int:subject_id>', methods=['PUT'])
@@ -108,6 +115,7 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
 
 
 
