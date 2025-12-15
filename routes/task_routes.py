@@ -3,6 +3,7 @@ from extensions import db
 from models.task import Task
 from models.subject import Subject # Needed to check user ownership via subject
 from datetime import datetime
+from sqlalchemy.exc import IntegrityError
 
 task_bp = Blueprint('tasks', __name__, url_prefix='/tasks')
 
@@ -165,4 +166,5 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
