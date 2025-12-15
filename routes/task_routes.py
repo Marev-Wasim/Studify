@@ -57,7 +57,7 @@ def create_task():
             name=name,
             subject_id=subject_id,
             due_date=task_date,
-            est_min=int(time),
+            est_min=int(est_min),
             completed=False
         )
         db.session.add(task)
@@ -153,7 +153,7 @@ def update_task(task_id):
             
     if 'time' in data:
         try:
-            task.time = int(data['time'])
+            task.est_min = int(data['time'])
         except ValueError:
             return jsonify({'message': 'Time must be an integer'}), 400
             
@@ -166,6 +166,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
