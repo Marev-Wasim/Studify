@@ -50,7 +50,11 @@ def delete_subject(subject_id):
         return jsonify({'error': 'Subject not found'}), 404
 
     try:
-        Task.query.filter_by(subject_id=subject_id).delete(synchronize_session='fetch')
+        # 🟢 1. حذف سجلات الدراسة المرتبطة بهذه المادة (إذا وجدت)
+        StudyLog.query.filter_by(subject_id=subject_id).delete(synchronize_session=False) 
+    
+        # 🟢 2. حذف المهام المرتبطة
+        Task.query.filter_by(subject_id=subject_id).delete(synchronize_session=False)
         
         db.session.delete(subject)
         db.session.commit()
@@ -79,6 +83,7 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
 
 
 
