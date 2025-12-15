@@ -1356,10 +1356,10 @@
                 taskEntry.classList.add('completed');
                 timeText = 'Completed!';
                 // Disabled button for completed tasks
-                buttonHTML = <button disabled style="background-color: #ccc; border: none; border-radius: 5px; padding: 2px 8px;">✓</button>;
+                buttonHTML = `<button disabled style="background-color: #ccc; border: none; border-radius: 5px; padding: 2px 8px;">✓</button>`;
             } else {
                 // Active button for pending tasks
-                buttonHTML = <button onclick="completeTask(${task.id})" style="background: #00a8a0; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">✓</button>;
+                buttonHTML = `<button onclick="completeTask(${task.id})" style="background: #00a8a0; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">✓</button>`;
             }
             
             taskEntry.innerHTML = `
@@ -1441,6 +1441,7 @@
 
 
 </html>
+
 
 
 
