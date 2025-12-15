@@ -39,7 +39,7 @@ def create_task():
     data = request.get_json()
     
     name = data.get('name')
-    subject_id = data.get('subjectId')
+    subject_id = data.get('subject_id')
     time = data.get('time')
     date_str = data.get('date') # Matches dashboard HTML input 'taskDate'
 
@@ -166,6 +166,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
