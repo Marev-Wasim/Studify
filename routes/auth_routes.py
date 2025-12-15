@@ -1,4 +1,3 @@
-
 from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for, session
 from extensions import db
 from models.user import User
@@ -75,4 +74,3 @@ def logout():
     session.pop('user_id', None)
     flash('You have been logged out')
     return redirect(url_for('auth.login'))
-
