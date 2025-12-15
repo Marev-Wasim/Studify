@@ -45,11 +45,18 @@ def delete_subject(subject_id):
     if not subject:
         return jsonify({'error': 'Subject not found'}), 404
 
-    db.session.delete(subject)
-    db.session.commit()
-
-    return jsonify({'message': 'Subject deleted successfully'})
-
+   try:
+        # ✅ الخطوة 1: حذف المهام المرتبطة أولاً (لتفادي Foreign Key Constraint)
+        Task.query.filter_by(subject_id=subject_id).delete()
+        
+        # الخطوة 2: حذف المادة
+        db.session.delete(subject)
+        db.session.commit()
+        return jsonify({'message': 'Subject and associated tasks deleted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'An error occurred during deletion', 'details': str(e)}), 500
+        
 
 @subject_bp.route('/<int:subject_id>', methods=['PUT'])
 def update_subject(subject_id):
@@ -70,6 +77,7 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
 
 
 
