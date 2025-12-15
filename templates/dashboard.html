@@ -44,8 +44,9 @@
       position: relative;
       overflow: hidden;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-      /* استخدام Pop-in */
-      animation: popIn 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; 
+     /* ✅ أضيفي هذين السطرين لتفعيل الحركة: */
+    opacity: 0; /* يبدأ مخفياً */
+    animation: fadeInAnimation 1.5s ease-out forwards; /* تطبيق الحركة */
     }
 
     /* Character Elements */
@@ -1429,6 +1430,7 @@
 
 
 </html>
+
 
 
 
