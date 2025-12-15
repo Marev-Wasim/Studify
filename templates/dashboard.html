@@ -1241,7 +1241,8 @@
                 taskSubjectSelect.value = '';
 
             } else {
-                alert(`Addition Failed: ${result.error || result.message || 'Server error'}`);
+                //alert(`Addition Failed: ${result.error || result.message || 'Server error'}`);
+             alert(Addition Failed: ${result.message || 'Server error'}. Details: ${result.details ||  'None provided'});
             }
         } catch (error) {
             console.error('Error adding task:', error);
@@ -1441,6 +1442,7 @@
 
 
 </html>
+
 
 
 
