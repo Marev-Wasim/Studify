@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from extensions import db
 from models.task import Task
+from models.study_log import StudyLog
 from models.subject import Subject # Needed to check user ownership via subject
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
@@ -167,6 +168,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
