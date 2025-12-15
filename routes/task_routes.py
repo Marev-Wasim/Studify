@@ -79,7 +79,7 @@ def delete_task(task_id):
 
     # Find the task and ensure it belongs to a subject owned by the user
     task = db.session.query(Task).join(Subject).filter(
-        Task.id == task_id,
+        Task.task_id == task_id,
         Subject.user_id == user_id
     ).first()
 
@@ -114,7 +114,7 @@ def complete_task(task_id):
         task.completed = True
         task.completed_at = datetime.utcnow()
         db.session.commit()
-        return jsonify({'message': 'Task marked as complete', 'id': task.id}), 200
+        return jsonify({'message': 'Task marked as complete', 'id': task.task_id}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'An error occurred while updating the task', 'details': str(e)}), 500
@@ -166,6 +166,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
