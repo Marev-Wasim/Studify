@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, session
 from extensions import db
 from models.task import Task
 from models.study_log import StudyLog
+from models.user import User
 from models.subject import Subject # Needed to check user ownership via subject
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
@@ -26,7 +27,6 @@ def get_tasks():
         'title': t.name,
         'subject_id': t.subject_id,
         'time': t.est_min,
-        'time_hours': round(t.est_min / 60.0, 2) if t.est_min is not None else 0.0,
         'due_date': t.due_date.isoformat() if t.due_date else None,
         'is_complete': t.completed,
     } for t in tasks])
@@ -63,8 +63,19 @@ def create_task():
             completed=False
         )
         db.session.add(task)
-        db.session.commit()
-
+        minutes_studied = task.est_min
+        if minutes_studied and minutes_studied > 0:
+            # Convert minutes to hours (float)
+            hours_logged = round(minutes_studied / 60.0, 2)
+            study_log = StudyLog(
+                user_id=user_id,
+                subject_id=task.subject_id,
+                study_date=datetime.utcnow().date(), # Log study for today
+                hours_studied=hours_logged,
+                task_id=task.task_id # Link the log back to the completed task
+            )
+            db.session.add(study_log)
+            db.session.commit()
         return jsonify({'message': 'Task created', 'task_id': task.task_id}), 201
     except ValueError:
         return jsonify({'message': 'Invalid format for time or date (YYYY-MM-DD)'}), 400
@@ -115,6 +126,8 @@ def complete_task(task_id):
     try:
         task.completed = True
         task.completed_at = datetime.utcnow()
+        minutes_studied = task.est_min
+        
         db.session.commit()
         return jsonify({'message': 'Task marked as complete', 'id': task.task_id}), 200
     except Exception as e:
@@ -168,6 +181,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
