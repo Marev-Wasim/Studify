@@ -68,15 +68,16 @@ def update_user_profile():
     if new_password:
         user.set_password(new_password)
         
-    try:
+   try:
         db.session.commit()
         return jsonify({
             'message': 'Profile updated successfully',
             'user_id': user.id,
             'username': user.username 
         }), 200
-    except Exception:
+    except Exception as e:  # 👈 1. سمينا الخطأ e
         db.session.rollback()
-        return jsonify({'error': 'Failed to update profile due to database error'}), 500
+        print(f"🔥 Error updating profile: {e}") # 👈 2. هنطبع الخطأ في التيرمينال عشان نشوفه
+        return jsonify({'error': f'Server Error: {str(e)}'}), 500 # 👈 3. هنرجع سبب الخطأ للفرونت إند مؤقتاً
 
 
