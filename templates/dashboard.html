@@ -1182,7 +1182,14 @@
     async function addSubjectAPI() {
         const subjectName = subjectInput.value.trim();
         if (subjectName === "") { alert("Please enter the subject name."); return; }
-        
+     
+        // 2. ⭐️ التحقق من اللغة الإنجليزية (حروف إنجليزية، أرقام، مسافات فقط)
+        const englishRegex = /^[A-Za-z0-9\s]+$/;
+        if (!englishRegex.test(subjectName)) {
+            alert("Subject name must be in English only.");
+            return;
+        }
+     
         try {
             const response = await fetch(`${BASE_API_URL}/subjects/`, {
                 method: 'POST',
@@ -1213,6 +1220,20 @@
 
         if (!name  ||!subjectId || !time || !date) {
             alert("Please fill all task fields.");
+            return;
+        }
+     
+        // 2. ⭐️ التحقق من أن اسم المهمة بالإنجليزية فقط
+        const englishRegex = /^[A-Za-z0-9\s]+$/;
+        if (!englishRegex.test(name)) {
+            alert("Task name must be in English only.");
+            return;
+        }
+
+        // 3. ⭐️ التحقق من أن الوقت أكبر من صفر (ليس سالباً ولا صفراً)
+        const timeValue = parseInt(time);
+        if (timeValue <= 0) {
+            alert("Time must be greater than 0 minutes.");
             return;
         }
         
@@ -1443,6 +1464,7 @@
 
 
 </html>
+
 
 
 
