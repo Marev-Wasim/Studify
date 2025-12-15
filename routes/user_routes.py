@@ -75,9 +75,10 @@ def update_user_profile():
             'user_id': user.id,
             'username': user.username 
         }), 200
-    except Exception as e:  # 👈 1. سمينا الخطأ e
+   except Exception:
         db.session.rollback()
-        print(f"🔥 Error updating profile: {e}") # 👈 2. هنطبع الخطأ في التيرمينال عشان نشوفه
-        return jsonify({'error': f'Server Error: {str(e)}'}), 500 # 👈 3. هنرجع سبب الخطأ للفرونت إند مؤقتاً
+        return jsonify({'error': 'Failed to update profile due to database error'}), 500
+
+ 
 
 
