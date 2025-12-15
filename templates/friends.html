@@ -663,7 +663,7 @@
                     buttonHtml = '<button class="sent-btn" disabled>Request Sent</button>';
                 } else {
                     // Note: Passed 'user.id' to identify the target user
-                    buttonHtml = <button class="add-btn-small" onclick="sendFriendRequest(this, ${user.id})">Add Friend</button>;
+                    buttonHtml = `<button class="add-btn-small" onclick="sendFriendRequest(this, ${user.id})">Add Friend</button>`;
                 }
 
                 return `
@@ -852,3 +852,4 @@
 
 
 </html>
+
