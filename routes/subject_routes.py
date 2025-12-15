@@ -50,7 +50,7 @@ def delete_subject(subject_id):
         return jsonify({'error': 'Subject not found'}), 404
 
     try:
-        Task.query.filter_by(subject_id=subject_id).delete(synchronize_session=False)
+        Task.query.filter_by(subject_id=subject_id).delete(synchronize_session='fetch')
         
         db.session.delete(subject)
         db.session.commit()
@@ -79,6 +79,7 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
+
 
 
 
