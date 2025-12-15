@@ -722,9 +722,9 @@
         let progressPercentage = (totalHours / goalHours) * 100;
         if (progressPercentage > 100) progressPercentage = 100;
 
-        hoursValueElement.innerText = ${hoursDisplay} Hours;
-        progressFillElement.style.width = ${progressPercentage}%;
-        hoursTextElement.innerText = Next Reward at ${goalHours} Hours;
+        hoursValueElement.innerText = `${hoursDisplay} Hours`;
+        progressFillElement.style.width = `${progressPercentage}%`;
+        hoursTextElement.innerText = `Next Reward at ${goalHours} Hours`;
     }
 
     function renderProgressCards(subjects) {
@@ -745,7 +745,7 @@
             // وضع التعديل
             const currentName = profileNameElement.innerText;
             
-            profileNameElement.innerHTML = <input type="text" class="edit-input" id="nameInput" value="${currentName}">;
+            profileNameElement.innerHTML = `<input type="text" class="edit-input" id="nameInput" value="${currentName}">`;
             profileEmailElement.style.display = 'none';
             
             // إضافة حقول كلمة المرور الجديدة
@@ -819,6 +819,7 @@
 
 
 </html>
+
 
 
 
