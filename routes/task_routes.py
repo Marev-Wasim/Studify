@@ -100,7 +100,7 @@ def complete_task(task_id):
         return jsonify({'error': 'Authentication required'}), 401
     
     task = db.session.query(Task).join(Subject).filter(
-        Task.id == task_id,
+        Task.task_id == task_id,
         Subject.user_id == user_id
     ).first()
     
@@ -166,6 +166,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
