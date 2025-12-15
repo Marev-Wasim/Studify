@@ -6,11 +6,15 @@ from sqlalchemy import or_
 
 friend_bp = Blueprint('friend', __name__, url_prefix='/friends')
 
+# 🟢 دالة مساعدة لجلب ID المستخدم من الجلسة (للأمان)
+def get_auth_user_id():
+    return session.get('user_id')
+    
 # Send a Friend Request
 @friend_bp.route('/request', methods=['POST'])
 def send_request():
     data = request.get_json()
-    user_id = data.get('user_id')    # The ID of the person sending the request
+    user_id = get_auth_user_id()    # The ID of the person sending the request
     friend_username = data.get('friend_username')
 
     if not user_id or not friend_username:
@@ -46,15 +50,20 @@ def send_request():
 @friend_bp.route('/accept/<int:request_id>', methods=['PUT'])
 def accept_request(request_id):
     data = request.get_json() 
-    current_user_id = data.get('user_id') 
+    
+    # 🟢 1. التحقق من الهوية
+    current_user_id = get_auth_user_id()
+    if not current_user_id:
+        return jsonify({'error': 'Authentication required'}), 401 
 
     friend_request = Friend.query.get(request_id)
 
     if not friend_request:
         return jsonify({'message': 'Request not found'}), 404
 
+    # 🟢 2. التأكد من أن المستخدم الحالي هو "المستقبل" للطلب
     if friend_request.friend_id != current_user_id:
-        return jsonify({'message': 'Error'}), 403
+        return jsonify({'message': 'Unauthorized: You are not the receiver of this request'}), 403
 
     friend_request.status = 'accepted'
     db.session.commit()
@@ -62,8 +71,14 @@ def accept_request(request_id):
     return jsonify({'message': 'Friend request accepted', 'status': 'accepted'})
 
 # List My Friends
-@friend_bp.route('/<int:user_id>', methods=['GET'])
-def get_friends(user_id):
+@friend_bp.route('/', methods=['GET'])
+def get_friends():
+    
+    # 🟢 نستخدم الـ ID من الجلسة مباشرة
+    user_id = get_auth_user_id()
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+        
     friends_query = Friend.query.filter(
         or_(Friend.user_id == user_id, Friend.friend_id == user_id),
         Friend.status == 'accepted'
@@ -87,8 +102,12 @@ def get_friends(user_id):
     return jsonify(friends_list)
 
 #List Pending Requests 
-@friend_bp.route('/pending/<int:user_id>', methods=['GET'])
-def get_pending_requests(user_id):
+@friend_bp.route('/pending', methods=['GET'])
+def get_pending_requests():
+    user_id = get_auth_user_id()
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+        
     pending_query = Friend.query.filter_by(friend_id=user_id, status='pending').all()
 
     requests_list = []
@@ -106,12 +125,20 @@ def get_pending_requests(user_id):
 # Delete Friend or Reject Request
 @friend_bp.route('/<int:request_id>', methods=['DELETE'])
 def delete_friend(request_id):
+    current_user_id = get_auth_user_id()
+    if not current_user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+        
     friend_request = Friend.query.get(request_id)
     if not friend_request:
         return jsonify({'message': 'Record not found'}), 404
+        
+    if friend_request.user_id != current_user_id and friend_request.friend_id != current_user_id:
+        return jsonify({'message': 'Unauthorized action'}), 403
         
     db.session.delete(friend_request)
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
    
+
