@@ -21,11 +21,11 @@ def get_tasks():
     
     return jsonify([{
         'id': t.id,
-        'name': t.name,
+        'title': t.name,
         'subject_id': t.subject_id,
         'time': t.time,
-        'date': t.due_date.isoformat() if t.due_date else None,
-        'completed': t.completed,
+        'due_date': t.due_date.isoformat() if t.due_date else None,
+        'is_complete': t.completed,
     } for t in tasks])
 
 
@@ -165,3 +165,4 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
