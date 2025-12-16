@@ -58,7 +58,7 @@ def send_request():
 # Accept a Friend Request
 #@friend_bp.route('/accept/<int:request_id>', methods=['PUT'])
 @friend_bp.route('/accept', methods=['PUT'])
-def accept_request(request_id):
+def accept_request():
     data = request.get_json() 
     my_id = session.get('user_id')
     sender_id = data.get('sender_id') # The person who sent me the request
@@ -112,6 +112,7 @@ def search_users():
                 status = "sent_by_me" if rel.sent_by_id == my_id else "sent_to_me"
 
         results.append({
+            'id': user.id,
             'username': user.username,
             'status': status
         })
@@ -143,7 +144,9 @@ def get_friends():
         #     friend_obj = f.requester
         
         # Determine which column holds the other user
-        other_user = f.user2 if f.user_id1 == my_id else f.user1
+        friend_id = f.user_id2 if f.user_id1 == my_id else f.user_id1
+        other_user = User.query.get(friend_id) # Fetch user details
+        #other_user = f.user2 if f.user_id1 == my_id else f.user1
         
         # friends_list.append({
         #     'relationship_id': f.id,
@@ -153,7 +156,7 @@ def get_friends():
         #     'status': f.status
         # })
 
-    friends_list.append({
+        friends_list.append({
             'username': other_user.username,
             'email': other_user.email
         })
@@ -178,7 +181,7 @@ def get_pending_requests():
     
     requests_list = []
     for r in pending_query:
-        sender = r.user2 if r.user_id1 == my_id else r.user1
+        #sender = r.user2 if r.user_id1 == my_id else r.user1
         requests_list.append({
             'sender_username': sender.username,
             'requested_at': r.requested_at
@@ -195,7 +198,7 @@ def delete_friend(other_user_id):
     if not my_id:
         return jsonify({'message': 'Unauthorized'}), 401
         
-    id1, id2 = sorted([current_user_id, other_user_id])
+    id1, id2 = sorted([my_id, other_user_id])
         
     #friend_request = Friend.query.get(request_id)
     friend = Friend.query.filter_by(user_id1=id1, user_id2=id2).first()
@@ -210,3 +213,4 @@ def delete_friend(other_user_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
+
