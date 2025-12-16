@@ -681,6 +681,7 @@
 
         if (Object.keys(updateData).length === 0) {
             alert("No changes to save.");
+            revertToViewMode();
             return;
         }
 
@@ -698,6 +699,7 @@
             }
 
             alert("Profile updated successfully!");
+            revertToViewMode();
             // إعادة جلب البيانات لتحديث الواجهة بالاسم الجديد
             await fetchProfileData();
 
@@ -785,15 +787,6 @@
             
             // إرسال التحديث إلى الخادم
             updateProfile(newUsername, newPassword);
-
-            // العودة إلى عرض البيانات الافتراضي (سيتم تحديث البيانات عند fetchProfileData)
-            profileEmailElement.style.display = 'block';
-            passwordLabelContainer.innerHTML = `
-                Password: <span id="profilePassword" style="font-weight: normal; color: rgba(0,0,0,0.6);"></span>
-            `;
-            editBtn.innerText = "Edit Profile";
-            editBtn.style.background = "#4a7fb8";
-            isEditing = false;
         }
     });
 
@@ -819,11 +812,42 @@
     // 6. التشغيل عند التحميل
     // --------------------------------------------------------
     window.addEventListener('load', fetchProfileData);
+
+// --------------------------------------------------------
+// 5. دوال تنظيف الواجهة واستعادة العرض
+// --------------------------------------------------------
+
+function revertToViewMode() {
+    // 1. استعادة عرض الإيميل الأصلي
+    profileEmailElement.style.display = 'block';
+
+    // 2. إزالة حقل الاسم (الـ input) وإعادة وضع النص الأصلي
+    const nameInput = document.getElementById('nameInput');
+    if (nameInput) {
+        // نضع النص الحالي (الذي تم تحديثه من الخادم بعد الحفظ)
+        profileNameElement.innerText = profileNameElement.querySelector('input').value; 
+    }
+    
+    // 3. إزالة حقول كلمة المرور ورسالة الخطأ
+    const passwordInput = document.getElementById('passwordInput');
+    const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+    const errorDiv = document.getElementById('passwordError');
+
+    if (passwordInput) passwordInput.remove();
+    if (confirmPasswordInput) confirmPasswordInput.remove();
+    if (errorDiv) errorDiv.remove();
+    
+    // 4. استعادة زر التعديل
+    editBtn.innerText = "Edit Profile";
+    editBtn.style.background = "#4a7fb8";
+    isEditing = false;
+}
 </script>
 </body>
 
 
 </html>
+
 
 
 
