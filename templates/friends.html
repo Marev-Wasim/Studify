@@ -517,14 +517,16 @@
             try {
                 // Assuming you might need an Authorization header with a token
                 // const token = localStorage.getItem('authToken'); 
-                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                const response = await fetch(${API_BASE_URL}${endpoint}, {
                     method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include' // 🟢 ضروري جداً للمصادقة
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': Bearer ${token}, // Uncomment if needed
+                    },
                 });
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(HTTP error! status: ${response.status});
                 }
 
                 return await response.json();
@@ -547,22 +549,24 @@
                 
                 // const token = localStorage.getItem('authToken'); // Uncomment if needed
 
-                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                const response = await fetch(${API_BASE_URL}${endpoint}, {
                     method: method,
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': Bearer ${token}, // Uncomment if needed
+                    },
                     body: body,
-                    credentials: 'include' // 🟢 ضروري جداً للمصادقة
                 });
 
                 if (!response.ok) {
                     // Check for specific backend errors if your API returns them
                     // const errorData = await response.json();
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(HTTP error! status: ${response.status});
                 }
 
                 return true;
             } catch (error) {
-                console.error(`Error during ${method} operation to ${endpoint}:, error`);
+                console.error(Error during ${method} operation to ${endpoint}:, error);
                 // alert(Failed to complete action: ${error.message});
                 return false;
             }
@@ -576,7 +580,7 @@
          */
         async function loadAllData() {
             // Fetch friends
-            const fetchedFriends = await fetchData('/friends/');
+            const fetchedFriends = await fetchData('/friends');
             if (fetchedFriends) {
                 // Assuming the backend returns an array of friend objects: 
                 // [{ id: 1, name: "Ahmed Ali", points: 1250 }, ...]
@@ -584,7 +588,7 @@
             }
 
             // Fetch friend requests
-            const fetchedRequests = await fetchData('/friends/pending');
+            const fetchedRequests = await fetchData('/requests');
             if (fetchedRequests) {
                 // Assuming the backend returns an array of request objects: 
                 // [{ id: 101, name: "Pending Friend 1" }, ...]
@@ -592,7 +596,7 @@
             }
             // Fetch all users for search (This might be a large operation, 
             // often better to search directly on the server)
-            const fetchedUsers = await fetchData('/friends/users/search');
+            const fetchedUsers = await fetchData('/users');
             if (fetchedUsers) {
                 // Assuming the backend returns an array of user objects: 
                 // [{ id: 201, name: "Omar Hassan", points: 500 }, ...]
@@ -659,7 +663,7 @@
                     buttonHtml = '<button class="sent-btn" disabled>Request Sent</button>';
                 } else {
                     // Note: Passed 'user.id' to identify the target user
-                    buttonHtml = `<button class="add-btn-small" onclick="sendFriendRequest(this, ${user.id})">Add Friend</button>`;
+                    buttonHtml = <button class="add-btn-small" onclick="sendFriendRequest(this, ${user.id})">Add Friend</button>;
                 }
 
                 return `
@@ -741,7 +745,7 @@
 
             // 2. Call the API
             // Assuming the backend has an endpoint like POST /send-request with the targetUserId in the body
-            const success = await sendMutation(`/friends/request`, 'POST', { targetUserId: targetUserId });
+            const success = await sendMutation(/requests/send, 'POST', { targetUserId: targetUserId });
 
             // 3. Handle the result
             if (success) {
@@ -772,7 +776,7 @@
 
             // 2. Call the API
             // Assuming the backend has an endpoint like PUT /requests/accept/:requestId
-            const success = await sendMutation(`/friends/accept/${requestId}/accept`, 'PUT');
+            const success = await sendMutation(/requests/${requestId}/accept, 'PUT');
 
             // 3. Handle the result
             if (success) {
@@ -798,7 +802,7 @@
 
             // 2. Call the API
             // Assuming the backend has an endpoint like DELETE /requests/:requestId
-            const success = await sendMutation(`/friends/${requestId}`, 'DELETE');
+            const success = await sendMutation(/requests/${requestId}, 'DELETE');
 
             // 3. Handle the result
             if (!success) {
@@ -824,7 +828,7 @@
 
                 // 2. Call the API
                 // Assuming the backend has an endpoint like DELETE /friends/:friendId
-                const success = await sendMutation(`/friends/${friendId}`, 'DELETE');
+                const success = await sendMutation(/friends/${friendId}, 'DELETE');
 
                 // 3. Handle the result
                 if (success) {
@@ -847,10 +851,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
