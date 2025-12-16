@@ -9,7 +9,7 @@
         href="https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&family=KoHo:wght@400;500;600&family=Inter:wght@400;600;700;800&display=swap"
         rel="stylesheet">
     <style>
-        /* نفس التنسيقات السابقة تماماً */
+        /* ... (تنسيقات CSS كما هي) ... */
         * {
             margin: 0;
             padding: 0;
@@ -444,7 +444,7 @@
     </style>
 </head>
 
- <body>
+<body>
     <div class="container">
         <header>
             <div class="logo-section">
@@ -496,7 +496,7 @@
     </div>
     </div>
 
-   
+
     <script>
         // Placeholder for the base API URL. Replace with your actual backend URL.
         const API_BASE_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net';
@@ -504,27 +504,29 @@
         // Global state for friends and requests
         let friends = [];
         let friendRequests = [];
-        let allUsersOnServer = []; // Only for search functionality
+        let allUsersOnServer = []; // لن نعتمد عليها في البحث، لكن نبقيها فارغة
 
         // --- 1. Utility Functions for API Calls ---
 
         /**
          * Fetches data from a given endpoint.
-         * @param {string} endpoint - The API path (e.g., '/friends').
+         * @param {string} endpoint - The API path (e.g., '/friends/').
          * @returns {Promise<Object[] | null>} The fetched data or null on error.
          */
         async function fetchData(endpoint) {
             try {
-                // Assuming you might need an Authorization header with a token
-                // const token = localStorage.getItem('authToken'); 
                 const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 'Authorization': Bearer ${token}, // Uncomment if needed
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                 });
 
+                if (response.status === 401) {
+                    // إذا لم يكن مصرحًا، أعد التوجيه لصفحة الدخول
+                    alert("Error: Authentication required (User must be logged in).");
+                    window.location.href = '/index-page'; 
+                    return null;
+                }
+                
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -546,28 +548,23 @@
         async function sendMutation(endpoint, method, data = null) {
             try {
                 const body = data ? JSON.stringify(data) : undefined;
-                
-                // const token = localStorage.getItem('authToken'); // Uncomment if needed
 
                 const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 'Authorization': Bearer ${token}, // Uncomment if needed
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: body,
                 });
 
                 if (!response.ok) {
-                    // Check for specific backend errors if your API returns them
-                    // const errorData = await response.json();
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    const errorData = await response.json();
+                    const errorMessage = errorData.message || `HTTP error! status: ${response.status}`;
+                    alert(`Failed to complete action: ${errorMessage}`);
+                    throw new Error(errorMessage);
                 }
 
                 return true;
             } catch (error) {
                 console.error(`Error during ${method} operation to ${endpoint}:`, error);
-                // alert(Failed to complete action: ${error.message});
                 return false;
             }
         }
@@ -582,36 +579,37 @@
             // Fetch friends
             const fetchedFriends = await fetchData('/friends/');
             if (fetchedFriends) {
-                // Assuming the backend returns an array of friend objects: 
-                // [{ id: 1, name: "Ahmed Ali", points: 1250 }, ...]
-                friends = fetchedFriends;
+                // نستخدم friend.username كـ friend.name مؤقتاً
+                friends = fetchedFriends.map(f => ({
+                    ...f,
+                    name: f.username,
+                    // نفترض أن ID العلاقة والـ ID الشخصي موجودين في f.id و f.relationship_id
+                    // بما أن الباك إند الحالي لا يرسل ID العلاقة، سنحتاج لتعديل هذا لاحقاً.
+                    // مؤقتاً، سنستخدم الـ username في الـ Remove إذا لم نغير الباك إند.
+                }));
             }
 
             // Fetch friend requests
             const fetchedRequests = await fetchData('/friends/pending');
             if (fetchedRequests) {
-                // Assuming the backend returns an array of request objects: 
-                // [{ id: 101, name: "Pending Friend 1" }, ...]
-                friendRequests = fetchedRequests;
-            }
-            // Fetch all users for search (This might be a large operation, 
-            // often better to search directly on the server)
-            const fetchedUsers = await fetchData('/friends/users/search');
-            if (fetchedUsers) {
-                // Assuming the backend returns an array of user objects: 
-                // [{ id: 201, name: "Omar Hassan", points: 500 }, ...]
-                allUsersOnServer = fetchedUsers;
+                friendRequests = fetchedRequests.map(req => ({
+                    ...req,
+                    name: req.sender_username,
+                    // 🚨 [ملاحظة]: الباك إند لا يرسل request_id أو sender_id. 
+                    // يجب تعديل الباك إند ليرسلها لكي تعمل دوال القبول/الرفض بشكل موثوق.
+                    // مؤقتاً، نفترض أن req.id هو request_id و req.sender_id موجود.
+                }));
             }
             
+            // إلغاء محاولة جلب allUsersOnServer لكي لا تفشل دالة loadAllData()
+            allUsersOnServer = [];
+
             // Render the UI after all data is loaded
             renderFriends();
             renderRequests();
         }
 
-        // --- 3. Rendering Functions (These remain largely the same) ---
-
-        // The rendering functions now rely on the global 'friends', 'friendRequests', 
-        // and 'allUsersOnServer' arrays populated by loadAllData().
+        // --- 3. Rendering Functions ---
 
         function renderFriends() {
             const container = document.getElementById('friendsContainer');
@@ -623,21 +621,30 @@
                 return;
             }
 
-            container.innerHTML = friends.map(friend => `
-                <div class="friend-card">
-                    <div class="friend-header">
-                        <div class="friend-avatar"></div>
-                        <h3 class="friend-name">${friend.name}</h3>
-                    </div>
-                    <div class="friend-footer">
-                        <div class="friend-points">
-                            <svg class="star-icon" viewBox="0 0 24 23" fill="none"><path d="M11.8882 0L14.6946 8.63729H23.7764L16.4291 13.9754L19.2355 22.6127L11.8882 17.2746L4.54089 22.6127L7.34732 13.9754L0 8.63729H9.08178L11.8882 0Z" fill="#FCC65A"/></svg>
-                            <span class="points-text">${friend.points} Points</span>
+            container.innerHTML = friends.map(friend => {
+                // 🚨 بما أن الباك إند لا يرسل relationship_id حالياً، 
+                // يجب أن نرسل شيئاً يمكن للباك إند استخدامه للحذف.
+                // في الباك إند: `delete_friend(other_user_id)` يتوقع ID الصديق الآخر.
+                // لكن الـ friends list في الباك إند الحالي لا يرسل الـ ID. 
+                // سنقوم بحل هذه المشكلة لاحقاً، حالياً الكود سيعرض الـ name و الـ points
+                
+                // سنفترض أن friend.id هو ID الصديق الآخر
+                return `
+                    <div class="friend-card">
+                        <div class="friend-header">
+                            <div class="friend-avatar"></div>
+                            <h3 class="friend-name">${friend.name || friend.username}</h3>
                         </div>
-                        <button class="remove-btn" onclick="removeFriend(${friend.id})">Remove</button>
+                        <div class="friend-footer">
+                            <div class="friend-points">
+                                <svg class="star-icon" viewBox="0 0 24 23" fill="none"><path d="M11.8882 0L14.6946 8.63729H23.7764L16.4291 13.9754L19.2355 22.6127L11.8882 17.2746L4.54089 22.6127L7.34732 13.9754L0 8.63729H9.08178L11.8882 0Z" fill="#FCC65A"/></svg>
+                                <span class="points-text">${friend.points || 0} Points</span>
+                            </div>
+                            <button class="remove-btn" onclick="removeFriend(${friend.id})">Remove</button>
+                        </div>
                     </div>
-                </div>
-           ` ).join('');
+                `;
+            }).join('');
         }
 
         function renderSearchResults(results) {
@@ -650,79 +657,105 @@
                 return;
             }
 
-            // Get IDs of current friends and those who already have a pending request
+            // يتم جلب الأصدقاء والطلبات المعلقة في loadAllData()
             const myFriendIds = friends.map(f => f.id);
             const pendingRequestUserIds = friendRequests.map(r => r.id); 
 
             container.innerHTML = results.map(user => {
                 let buttonHtml = '';
-                if (myFriendIds.includes(user.id)) {
-                    // Should not happen if search logic is correct, but good for safety
+                const isFriend = user.status === 'friends';
+                const isSentByMe = user.status === 'sent_by_me';
+                const isSentToMe = user.status === 'sent_to_me';
+
+                if (isFriend) {
                     buttonHtml = '<button class="sent-btn" disabled>Already Friends</button>';
-                } else if (pendingRequestUserIds.includes(user.id)) {
+                } else if (isSentByMe) {
                     buttonHtml = '<button class="sent-btn" disabled>Request Sent</button>';
+                } else if (isSentToMe) {
+                    // إذا أرسل الطلب إليك، يجب أن يظهر في requestsContainer
+                    // لكن إذا ظهر هنا، نعرض زر القبول
+                     buttonHtml = '<button class="sent-btn" disabled>Request Received</button>';
                 } else {
-                    // Note: Passed 'user.id' to identify the target user
-                    buttonHtml = `<button class="add-btn-small" onclick="sendFriendRequest(this, ${user.id})">Add Friend</button>`;
+                    // 🟢 [تصحيح]: نمرر اسم المستخدم (Username)
+                    buttonHtml = `<button class="add-btn-small" onclick="sendFriendRequest(this, '${user.username}')">Add Friend</button>`;
                 }
 
                 return `
                     <div class="friend-card">
                         <div class="friend-header">
                             <div class="friend-avatar" style="background: #a0aec0;"></div>
-                            <h3 class="friend-name">${user.name}</h3>
+                            <h3 class="friend-name">${user.username}</h3>
                         </div>
                         <div class="friend-footer">
                             <div class="friend-points">
-                                <span class="points-text" style="font-size: 0.9rem; color: #666;">User Points: ${user.points}</span>
+                                <span class="points-text" style="font-size: 0.9rem; color: #666;">User Points: ${user.points || 0}</span>
                             </div>
                             ${buttonHtml}
                         </div>
                     </div>
-                ;   `
+                `;
             }).join('');
         }
-                 function renderRequests() {
+
+        function renderRequests() {
             const container = document.getElementById('requestsContainer');
             if (friendRequests.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #777;">No new requests.</p>';
                 return;
             }
-            container.innerHTML = friendRequests.map(req => `
-                <div class="request-item">
-                    <span class="request-name">${req.name}</span>
-                    <div class="request-actions">
-                        <button class="action-btn accept-btn" onclick="acceptRequest(${req.id})">
-                            <div class="action-circle accept-circle"></div> Accept
-                        </button>
-                        <button class="action-btn decline-btn" onclick="declineRequest(${req.id})">
-                            <div class="action-circle decline-circle"></div> Decline
-                        </button>
+            container.innerHTML = friendRequests.map(req => {
+                // 🚨 [ملاحظة]: req.id غير كافية لعمل accept/decline. 
+                // يجب أن نفترض وجود sender_id (هو ID المرسل) و request_id (هو ID العلاقة للحذف)
+                // مؤقتاً: req.id هو request_id و req.sender_id موجود
+                
+                return `
+                    <div class="request-item">
+                        <span class="request-name">${req.name || req.sender_username}</span>
+                        <div class="request-actions">
+                            <button class="action-btn accept-btn" onclick="acceptRequest(${req.sender_id})">
+                                <div class="action-circle accept-circle"></div> Accept
+                            </button>
+                            <button class="action-btn decline-btn" onclick="declineRequest(${req.request_id})">
+                                <div class="action-circle decline-circle"></div> Decline
+                            </button>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // --- 4. Logic Functions (Now Asynchronous) ---
 
-        // Searching logic remains mostly the same, but relies on 'allUsersOnServer'
-        document.getElementById('searchInput').addEventListener('input', function (e) {
-            const query = e.target.value.toLowerCase();
-            if (query === "") {
-                renderFriends();
+        // 🟢 [تصحيح]: دالة جلب نتائج البحث من الخادم
+        async function fetchAndRenderSearchResults(query) {
+            if (query.length < 3) {
+                if (query === "") {
+                     renderFriends();
+                } else {
+                     document.getElementById('friendsContainer').innerHTML = '<p style="grid-column: span 2; text-align: center; color: #777;">Type at least 3 characters to search.</p>';
+                }
                 return;
             }
             
-            // Get IDs of current friends AND users who have pending requests (to avoid double actions)
-            const myFriendIds = friends.map(f => f.id);
-            const pendingRequestUserIds = friendRequests.map(r => r.id);
-            const excludedIds = [...myFriendIds, ...pendingRequestUserIds];
-            
-            const results = allUsersOnServer.filter(user =>
-                user.name.toLowerCase().includes(query) &&
-                !excludedIds.includes(user.id)
-            );
-            renderSearchResults(results);
+            const fetchedResults = await fetchData(`/friends/users/search?q=${encodeURIComponent(query)}`);
+
+            if (fetchedResults) {
+                renderSearchResults(fetchedResults.map(user => ({
+                    id: user.id,
+                    username: user.username, 
+                    points: user.points || 0,
+                    status: user.status
+                })));
+            } else {
+                renderSearchResults([]);
+            }
+        }
+
+
+        // 🟢 [تصحيح]: معالج البحث الجديد:
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            const query = e.target.value.trim();
+            fetchAndRenderSearchResults(query);
         });
 
         // Tab click to reset search
@@ -735,124 +768,109 @@
         /**
          * Sends a friend request to a user.
          * @param {HTMLElement} btn - The button element clicked.
-         * @param {number} targetUserId - The ID of the user to send the request to.
+         * @param {string} targetUsername - The username of the user to send the request to.
          */
-        async function sendFriendRequest(btn, targetUserId) {
+        async function sendFriendRequest(btn, targetUsername) {
             // 1. Disable button and show loading/pending state immediately for better UX
             const originalText = btn.innerText;
             btn.innerText = "Sending...";
             btn.disabled = true;
 
             // 2. Call the API
-            // Assuming the backend has an endpoint like POST /send-request with the targetUserId in the body
-            const success = await sendMutation('/friends/request', 'POST', { targetUserId: targetUserId });
+            // 🟢 [تصحيح]: نرسل 'friend_username' كما يتوقعه الباك إند
+            const success = await sendMutation('/friends/request', 'POST', { friend_username: targetUsername });
 
             // 3. Handle the result
             if (success) {
                 btn.innerText = "Request Sent";
                 btn.className = "sent-btn";
-                // No need to re-render all users for search, as the state is correct on the server
-                } else {
+                // نُعيد تحميل جميع البيانات لتحديث حالة البحث وطلبات الصداقة
+                await loadAllData(); 
+            } else {
                 // Revert button state on failure
                 btn.innerText = originalText;
                 btn.disabled = false;
-                alert("Failed to send friend request. Please try again.");
             }
         }
 
 
         /**
          * Accepts a friend request.
-         * @param {number} requestId - The ID of the request to accept.
+         * @param {number} senderId - The ID of the user who sent the request.
          */
-        async function acceptRequest(requestId) {
+        async function acceptRequest(senderId) {
+            // 🚨 بما أننا لا نستطيع تحديد الـ request_id من هنا، يجب أن نستخدم senderId
             // 1. Optimistic UI update (optional, but faster feeling)
-            // Save the original request item temporarily
-            const originalRequest = friendRequests.find(r => r.id === requestId);
-            
-            // Filter out the accepted request for immediate visual update
-            friendRequests = friendRequests.filter(r => r.id !== requestId);
-            renderRequests(); // Update the request list
+            const originalRequest = friendRequests.find(r => r.sender_id === senderId);
+            friendRequests = friendRequests.filter(r => r.sender_id !== senderId);
+            renderRequests(); 
 
             // 2. Call the API
-            // Assuming the backend has an endpoint like PUT /requests/accept/:requestId
-            const success = await sendMutation(`/friends/accept/${requestId}`, 'PUT');
+            // 🟢 [تصحيح]: استخدام المسار والـ Body الصحيحين (يتوقع sender_id)
+            const success = await sendMutation('/friends/accept', 'PUT', { sender_id: senderId });
 
             // 3. Handle the result
             if (success) {
-                // If successful, re-fetch all data to ensure friend and request lists are up-to-date
-                await loadAllData(); 
+                await loadAllData();
             } else {
                 // Revert UI update and show an error
                 if (originalRequest) friendRequests.push(originalRequest);
                 renderRequests();
-                alert("Failed to accept request. Please try again.");
             }
         }
 
         /**
          * Declines a friend request.
-         * @param {number} requestId - The ID of the request to decline.
+         * @param {number} requestId - The ID of the relationship record to delete.
          */
         async function declineRequest(requestId) {
-             // 1. Optimistic UI update (optional)
-            const originalRequest = friendRequests.find(r => r.id === requestId);
-            friendRequests = friendRequests.filter(r => r.id !== requestId);
-            renderRequests(); 
+            if (confirm("Reject this friend request?")) {
+                const originalRequest = friendRequests.find(r => r.request_id === requestId);
+                friendRequests = friendRequests.filter(r => r.request_id !== requestId);
+                renderRequests(); 
 
-            // 2. Call the API
-            // Assuming the backend has an endpoint like DELETE /requests/:requestId
-            const success = await sendMutation(`/friends/${requestId}`, 'DELETE');
+                // 2. Call the API
+                // 🟢 [تصحيح]: المسار الصحيح للحذف: /friends/:requestId (يجب أن يكون ID العلاقة)
+                const success = await sendMutation(`/friends/${requestId}`, 'DELETE');
 
-            // 3. Handle the result
-            if (!success) {
-                // Revert UI update and show an error
-                if (originalRequest) friendRequests.push(originalRequest);
-                renderRequests();
-                alert("Failed to decline request. Please try again.");
+                if (!success) {
+                    if (originalRequest) friendRequests.push(originalRequest);
+                    renderRequests();
+                }
+                // إذا نجح، فإن loadAllData() ستقوم بالتحديث
             }
-            // If successful, the UI is already updated, no need to re-fetch unless you want to be extra safe
-            // await loadAllData();
         }
 
         /**
          * Removes a friend.
-         * @param {number} friendId - The ID of the friend to remove.
+         * @param {number} otherUserId - The ID of the friend (the other user's ID).
          */
-        async function removeFriend(friendId) {
+        async function removeFriend(otherUserId) {
             if (confirm("Remove this friend permanently?")) {
                 // 1. Optimistic UI update
-                const originalFriend = friends.find(f => f.id === friendId);
-                friends = friends.filter(f => f.id !== friendId);
+                const originalFriend = friends.find(f => f.id === otherUserId);
+                friends = friends.filter(f => f.id !== otherUserId);
                 renderFriends();
 
                 // 2. Call the API
-                // Assuming the backend has an endpoint like DELETE /friends/:friendId
-                const success = await sendMutation(`/friends/${relationshipId}`, 'DELETE');
+                // 🟢 [تصحيح]: المسار الصحيح للحذف: /friends/:otherUserId (يتوقع ID المستخدم الآخر)
+                const success = await sendMutation(`/friends/${otherUserId}`, 'DELETE');
 
                 // 3. Handle the result
                 if (success) {
-                    // Update the search users list, so the person can be found again
                     await loadAllData(); 
                 } else {
                     // Revert UI update and show an error
                     if (originalFriend) friends.push(originalFriend);
                     renderFriends();
-                    alert("Failed to remove friend. Please try again.");
                 }
             }
         }
 
         // --- 5. Initial Run ---
-        // Start by loading all data from the backend
-        loadAllData();
+        window.addEventListener('load', loadAllData);
 
     </script>
 </body>
 
 </html>
-
-
-
-
-
