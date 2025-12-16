@@ -161,31 +161,36 @@ def get_all_users_for_search():
 
 @app.route('/requests', methods=['GET'])
 def get_requests():
-    # 1. التأكد من أن المستخدم مسجل دخول
+    # 1. التأكد من تسجيل الدخول
     if 'user_id' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
     
     current_user_id = session['user_id']
     
-    # 2. الاستعلام من قاعدة البيانات
-    # نحتاج نجيب الطلبات اللي:
-    # - المستقبل (friend_id) هو المستخدم الحالي
-    # - الحالة (status) هي 'pending'
-    # ملاحظة: هذا الكود يعتمد على SQLAlchemy، لو بتستخدمي SQL مباشر قوليلي أعدله
-    
-    # هذا مثال، تأكدي من أسماء الجداول عندك (FriendRequest أو Friends)
-    pending_requests = FriendRequest.query.filter_by(friend_id=current_user_id, status='pending').all()
-    
-    output = []
-    for req in pending_requests:
-        # بنجيب بيانات الشخص اللي بعت الطلب عشان نعرض اسمه وصورته
-        sender = User.query.get(req.user_id) 
+    try:
+        # 2. البحث عن الطلبات المعلقة
+        # الشرط: friend_id هو أنا (أنا المستقبل)، والحالة pending
+        pending_requests = Friend.query.filter_by(
+            friend_id=current_user_id, 
+            status='pending'
+        ).all()
         
-        output.append({
-            'request_id': req.id,          # عشان لما توافقي أو ترفضي تستخدمي الـ ID ده
-            'sender_id': sender.id,
-            'name': sender.username,       # اسم اللي بعت الطلب
-            'profile_image': sender.profile_image # صورته
-        })
-        
-    return jsonify(output)
+        output = []
+        for req in pending_requests:
+            # هنا نستخدم العلاقة requester اللي موجودة في الـ Model
+            # عشان نجيب بيانات الشخص اللي بعت الطلب بسهولة
+            sender = req.requester 
+            
+            output.append({
+                'request_id': req.id,            # ID الخاص بجدول الأصدقاء (مهم عشان القبول والرفض)
+                'sender_id': sender.id,          # ID الشخص المرسل
+                'name': sender.username,         # اسم المرسل (تأكدي أن العمود في User اسمه username)
+                'profile_image': sender.profile_image if hasattr(sender, 'profile_image') else None # صورة المرسل
+            })
+            
+        return jsonify(output)
+
+    except Exception as e:
+        print(f"Error in get_requests: {e}") # عشان يظهر في الـ Logs لو حصلت مشكلة
+        return jsonify({'error': 'Internal Server Error'}), 500
+
