@@ -776,7 +776,7 @@
 
             // 2. Call the API
             // Assuming the backend has an endpoint like PUT /requests/accept/:requestId
-            const success = await sendMutation(`/requests/accept$/{requestId}`, 'PUT');
+            const success = await sendMutation(`/friends/accept/${requestId}`, 'PUT');
 
             // 3. Handle the result
             if (success) {
@@ -851,6 +851,7 @@
 </body>
 
 </html>
+
 
 
 
