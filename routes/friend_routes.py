@@ -4,7 +4,7 @@ from models.friend import Friend
 from models.user import User
 from sqlalchemy import or_
 
-friend_bp = Blueprint('friend', _name_, url_prefix='/friends')
+friend_bp = Blueprint('friend', __name__, url_prefix='/friends')
     
 # Send a Friend Request
 @friend_bp.route('/request', methods=['POST'])
@@ -212,3 +212,4 @@ def delete_friend(other_user_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
+
