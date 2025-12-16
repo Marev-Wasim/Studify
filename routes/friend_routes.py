@@ -11,7 +11,7 @@ def get_auth_user_id():
     return session.get('user_id')
     
 # Send a Friend Request
-@friend_bp.route('/request', methods=['POST'])
+@friend_bp.route('/requests', methods=['POST'])
 def send_request():
     data = request.get_json()
     user_id = get_auth_user_id()    # The ID of the person sending the request
@@ -157,3 +157,35 @@ def get_all_users_for_search():
         'username': u.username,
         'points': u.total_coins # أو u.points حسب اسم العمود عندك
     } for u in users])
+
+
+@app.route('/requests', methods=['GET'])
+def get_requests():
+    # 1. التأكد من أن المستخدم مسجل دخول
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    current_user_id = session['user_id']
+    
+    # 2. الاستعلام من قاعدة البيانات
+    # نحتاج نجيب الطلبات اللي:
+    # - المستقبل (friend_id) هو المستخدم الحالي
+    # - الحالة (status) هي 'pending'
+    # ملاحظة: هذا الكود يعتمد على SQLAlchemy، لو بتستخدمي SQL مباشر قوليلي أعدله
+    
+    # هذا مثال، تأكدي من أسماء الجداول عندك (FriendRequest أو Friends)
+    pending_requests = FriendRequest.query.filter_by(friend_id=current_user_id, status='pending').all()
+    
+    output = []
+    for req in pending_requests:
+        # بنجيب بيانات الشخص اللي بعت الطلب عشان نعرض اسمه وصورته
+        sender = User.query.get(req.user_id) 
+        
+        output.append({
+            'request_id': req.id,          # عشان لما توافقي أو ترفضي تستخدمي الـ ID ده
+            'sender_id': sender.id,
+            'name': sender.username,       # اسم اللي بعت الطلب
+            'profile_image': sender.profile_image # صورته
+        })
+        
+    return jsonify(output)
