@@ -241,27 +241,48 @@ input.input-error {
     // **جلب عنصر رسالة الخطأ الجديد**
     const errorMsgDiv = document.getElementById('password-error-msg');
 
+    function validatePassword(password) {
+        if (password.length < 8) {
+            return "Password must be at least 8 characters long.";
+        }
+        // تحقق من وجود حرف كبير (Upper Case)
+        if (!/[A-Z]/.test(password)) {
+            return "Password must contain at least one uppercase letter.";
+        }
+        // تحقق من وجود رقم (Digit)
+        if (!/\d/.test(password)) {
+            return "Password must contain at least one number.";
+        }
+      return null; // تعود بـ null إذا كانت قوية
+    }
+
     form.addEventListener('submit', function(event) {
         
         // 1. إزالة أي أخطاء سابقة
         passwordInput.classList.remove('input-error');
         confirmPasswordInput.classList.remove('input-error');
-        errorMsgDiv.textContent = ''; // إفراغ الرسالة المرئية
+        errorMsgDiv.textContent = '';
+      // إفراغ الرسالة المرئية
 
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        const passwordError = validatePassword(password);
+        if (passwordError) {
+            event.preventDefault(); // منع الإرسال
+            errorMsgDiv.textContent = `Error: ${passwordError}`;
+            passwordInput.classList.add('input-error');
+            passwordInput.focus();
+            return; // إيقاف التنفيذ
+            }
+      
         // ** شرط التحقق **
         if (passwordInput.value !== confirmPasswordInput.value) {
             
-            // 2. منع الإرسال
-            event.preventDefault(); 
-            
-            // 3. **عرض التنبيه كجملة تحت المربعين**
+            event.preventDefault();
             errorMsgDiv.textContent = 'Error: The password and confirmation password do not match!';
-            
-            // 4. تطبيق الحركة (إضافة الكلاس الأحمر)
             passwordInput.classList.add('input-error');
             confirmPasswordInput.classList.add('input-error');
-            
-            // 5. وضع التركيز
             passwordInput.focus();
 
         }
@@ -269,6 +290,7 @@ input.input-error {
 </script>
 </body>
 </html>
+
 
 
 
