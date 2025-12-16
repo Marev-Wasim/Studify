@@ -15,6 +15,8 @@ class Friend(db.Model):
     
     user_id1 = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     user_id2 = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+
+    sent_by_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     # Status: 'pending' or 'accepted'
     status = db.Column(db.String(20), default='pending', nullable=False)
     
@@ -26,7 +28,9 @@ class Friend(db.Model):
         CheckConstraint('user_id1 < user_id2', name='check_user_order'),
     )
 
-    # Relationships to access user details easily
+    # Relationships to access who sent the request
+    sender = db.relationship('User', foreign_keys=[sent_by_id], backref='initiated_friendships')
     #requester = db.relationship('User', foreign_keys=[user_id], backref='sent_requests')
 
     #receiver = db.relationship('User', foreign_keys=[friend_id], backref='received_requests')
+
