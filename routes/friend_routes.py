@@ -155,7 +155,6 @@ def get_friends():
         #     'email': friend_obj.email,
         #     'status': f.status
         # })
-
         friends_list.append({
             'username': other_user.username,
             'email': other_user.email
@@ -213,4 +212,5 @@ def delete_friend(other_user_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
+
 
