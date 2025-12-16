@@ -10,7 +10,8 @@ friend_bp = Blueprint('friend', __name__, url_prefix='/friends')
 @friend_bp.route('/request', methods=['POST'])
 def send_request():
     data = request.get_json()
-    user_id = session.get('user_id')    # The ID of the person sending the request
+    #user_id = session.get('user_id')
+    my_id = session.get('user_id')        # The ID of the person sending the request
     friend_username = data.get('friend_username')
 
     if not user_id or not friend_username:
@@ -23,16 +24,20 @@ def send_request():
     if not friend_user:
         return jsonify({'message': 'User not found'}), 404
 
-    if friend_user.id == user_id:
+    if friend_user.id == my_id:
         return jsonify({'message': 'You cannot add yourself'}), 400
 
-    # Check if request already exists 
-    existing_request = Friend.query.filter(
-        or_(
-            (Friend.user_id == user_id) & (Friend.friend_id == friend_user.id),
-            (Friend.user_id == friend_user.id) & (Friend.friend_id == user_id)
-        )
-    ).first()
+    # MUST handle the user_id1 < user_id2 constraint
+    id1, id2 = sorted([my_id, friend_user.id])
+
+    # Check if request already exists
+    existing_request = Friend.query.filter_by(user_id1=id1, user_id2=id2).first()
+    # existing_request = Friend.query.filter(
+    #     or_(
+    #         (Friend.user_id == user_id) & (Friend.friend_id == friend_user.id),
+    #         (Friend.user_id == friend_user.id) & (Friend.friend_id == user_id)
+    #     )
+    # ).first()
 
     if existing_request:
         return jsonify({'message': f'Friendship status is already {existing_request.status}'}), 400
@@ -149,3 +154,4 @@ def delete_friend(request_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
+
