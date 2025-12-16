@@ -519,10 +519,8 @@
                 // const token = localStorage.getItem('authToken'); 
                 const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 'Authorization': Bearer ${token}, // Uncomment if needed
-                    },
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include' // 🟢 ضروري جداً للمصادقة
                 });
 
                 if (!response.ok) {
@@ -551,11 +549,9 @@
 
                 const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 'Authorization': Bearer ${token}, // Uncomment if needed
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: body,
+                    credentials: 'include' // 🟢 ضروري جداً للمصادقة
                 });
 
                 if (!response.ok) {
@@ -580,7 +576,7 @@
          */
         async function loadAllData() {
             // Fetch friends
-            const fetchedFriends = await fetchData('/friends');
+            const fetchedFriends = await fetchData('/friends/');
             if (fetchedFriends) {
                 // Assuming the backend returns an array of friend objects: 
                 // [{ id: 1, name: "Ahmed Ali", points: 1250 }, ...]
@@ -588,7 +584,7 @@
             }
 
             // Fetch friend requests
-            const fetchedRequests = await fetchData('/requests');
+            const fetchedRequests = await fetchData('/friends/pending');
             if (fetchedRequests) {
                 // Assuming the backend returns an array of request objects: 
                 // [{ id: 101, name: "Pending Friend 1" }, ...]
@@ -851,6 +847,7 @@
 </body>
 
 </html>
+
 
 
 
