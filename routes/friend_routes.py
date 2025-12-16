@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from extensions import db
 from models.friend import Friend
 from models.user import User
@@ -17,7 +17,9 @@ def send_request():
         return jsonify({'message': 'Missing data'}), 400
 
     # Find the friend
-    friend_user = User.query.get(friend_id)
+    #friend_user = User.query.get(friend_id)
+    friend_user = User.query.filter_by(username=friend_username).first()
+    
     if not friend_user:
         return jsonify({'message': 'User not found'}), 404
 
@@ -61,9 +63,29 @@ def accept_request(request_id):
 
     return jsonify({'message': 'Friend request accepted', 'status': 'accepted'})
 
+# Search For A Friend
+@friend_bp.route('/users/search', methods=['GET'])
+def search_users():
+    query = request.args.get('q', '')
+    if not query:
+        return jsonify([])
+    
+    # Find users whose username contains the query string (excluding yourself)
+    current_user_id = session.get('user_id')
+    users = User.query.filter(
+        User.username.contains(query),
+        User.id != current_user_id
+    ).limit(10).all()
+    
+    return jsonify([{'id': u.id, 'username': u.username} for u in users])
+
 # List My Friends
 @friend_bp.route('/', methods=['GET'])
-def get_friends(user_id):
+def get_friends():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'message': 'Unauthorized'}), 401
+        
     friends_query = Friend.query.filter(
         or_(Friend.user_id == user_id, Friend.friend_id == user_id),
         Friend.status == 'accepted'
@@ -88,7 +110,11 @@ def get_friends(user_id):
 
 #List Pending Requests 
 @friend_bp.route('/pending', methods=['GET'])
-def get_pending_requests(user_id):
+def get_pending_requests():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'message': 'Unauthorized'}), 401
+        
     pending_query = Friend.query.filter_by(friend_id=user_id, status='pending').all()
 
     requests_list = []
@@ -123,5 +149,3 @@ def delete_friend(request_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
-
-
