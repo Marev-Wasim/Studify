@@ -10,14 +10,14 @@ friend_bp = Blueprint('friend', __name__, url_prefix='/friends')
 @friend_bp.route('/request', methods=['POST'])
 def send_request():
     data = request.get_json()
-    user_id = data.get('user_id')    # The ID of the person sending the request
+    user_id = session.get('user_id')    # The ID of the person sending the request
     friend_username = data.get('friend_username')
 
     if not user_id or not friend_username:
         return jsonify({'message': 'Missing data'}), 400
 
     # Find the friend
-    friend_user = User.query.filter_by(username=friend_username).first()
+    friend_user = User.query.get(friend_id)
     if not friend_user:
         return jsonify({'message': 'User not found'}), 404
 
@@ -46,7 +46,7 @@ def send_request():
 @friend_bp.route('/accept/<int:request_id>', methods=['PUT'])
 def accept_request(request_id):
     data = request.get_json() 
-    current_user_id = data.get('user_id') 
+    current_user_id = session.get('user_id')
 
     friend_request = Friend.query.get(request_id)
 
@@ -62,7 +62,7 @@ def accept_request(request_id):
     return jsonify({'message': 'Friend request accepted', 'status': 'accepted'})
 
 # List My Friends
-@friend_bp.route('/<int:user_id>', methods=['GET'])
+@friend_bp.route('/', methods=['GET'])
 def get_friends(user_id):
     friends_query = Friend.query.filter(
         or_(Friend.user_id == user_id, Friend.friend_id == user_id),
@@ -87,7 +87,7 @@ def get_friends(user_id):
     return jsonify(friends_list)
 
 #List Pending Requests 
-@friend_bp.route('/pending/<int:user_id>', methods=['GET'])
+@friend_bp.route('/pending', methods=['GET'])
 def get_pending_requests(user_id):
     pending_query = Friend.query.filter_by(friend_id=user_id, status='pending').all()
 
@@ -106,12 +106,22 @@ def get_pending_requests(user_id):
 # Delete Friend or Reject Request
 @friend_bp.route('/<int:request_id>', methods=['DELETE'])
 def delete_friend(request_id):
+    current_user_id = session.get('user_id')
+    
+    if not current_user_id:
+        return jsonify({'message': 'Unauthorized'}), 401
+        
     friend_request = Friend.query.get(request_id)
     if not friend_request:
         return jsonify({'message': 'Record not found'}), 404
         
+    # 🟢 حماية: التأكد أن المستخدم الحالي هو طرف في العلاقة قبل الحذف
+    if current_user_id not in [friend_request.user_id, friend_request.friend_id]:
+         return jsonify({'message': 'Permission denied'}), 403
+         
     db.session.delete(friend_request)
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
+
 
