@@ -624,6 +624,22 @@
     
     let isEditing = false; 
 
+    function validatePassword(password) {
+        if (!password) {
+            return null; // لا يوجد خطأ إذا كان الحقل فارغاً (لأن التعديل اختياري)
+        }
+        if (password.length < 8) {
+            return "Password must be at least 8 characters long.";
+        }
+        if (!/[A-Z]/.test(password)) {
+            return "Password must contain at least one uppercase letter.";
+        }
+        if (!/\d/.test(password)) {
+            return "Password must contain at least one number.";
+        }
+        return null; 
+    }
+
     // --------------------------------------------------------
     // ⭐ 2. دوال الاتصال بالخادم (API Calls)
     // --------------------------------------------------------
@@ -774,6 +790,25 @@
 
             const newUsername = nameInput.value;
             let newPassword = null;
+
+            // 🚨 [التصحيح 1]: إعادة تعيين الأخطاء أولاً
+            errorDiv.innerText = ''; 
+            passwordInput.classList.remove('input-error');
+            confirmPasswordInput.classList.remove('input-error');
+
+            // 1. التحقق من قوة كلمة المرور الجديدة (إذا تم إدخالها)
+            if (passwordInput && passwordInput.value) {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+
+                // 🟢 [التصحيح 2]: التحقق من القوة
+                const strengthError = validatePassword(password);
+                if (strengthError) {
+                    errorDiv.innerText = `Error: ${strengthError}`;
+                    passwordInput.classList.add('input-error');
+                    passwordInput.focus();
+                    return; 
+                }
             
             // تحقق من تطابق كلمة المرور الجديدة
             if (passwordInput && passwordInput.value) {
@@ -811,7 +846,7 @@
     // --------------------------------------------------------
     // 6. التشغيل عند التحميل
     // --------------------------------------------------------
-    window.addEventListener('load', fetchProfileData);
+window.addEventListener('load', fetchProfileData);
 
 // --------------------------------------------------------
 // 5. دوال تنظيف الواجهة واستعادة العرض
@@ -847,6 +882,7 @@ function revertToViewMode() {
 
 
 </html>
+
 
 
 
