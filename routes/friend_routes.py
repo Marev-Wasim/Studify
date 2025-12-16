@@ -4,7 +4,7 @@ from models.friend import Friend
 from models.user import User
 from sqlalchemy import or_
 
-friend_bp = Blueprint('friend', __name__, url_prefix='/friends')
+friend_bp = Blueprint('friend', _name_, url_prefix='/friends')
     
 # Send a Friend Request
 @friend_bp.route('/request', methods=['POST'])
@@ -162,15 +162,16 @@ def get_friends():
 
     return jsonify(friends_list)
 
-# List Pending Requests
+#List Pending Requests 
 @friend_bp.route('/pending', methods=['GET'])
 def get_pending_requests():
     my_id = session.get('user_id')
     if not my_id:
         return jsonify({'message': 'Unauthorized'}), 401
         
+    #pending_query = Friend.query.filter_by(friend_id=user_id, status='pending').all()
+    
     # Logic: Status is pending && was NOT sent by me
-    # البحث عن أي علاقة معلقة أنا طرف فيها، ولم أقم أنا بإرسالها
     pending_query = Friend.query.filter(
         ((Friend.user_id1 == my_id) | (Friend.user_id2 == my_id)),
         Friend.status == 'pending',
@@ -179,19 +180,9 @@ def get_pending_requests():
     
     requests_list = []
     for r in pending_query:
-        # تحديد هوية المرسل: المرسل هو sent_by_id
-        # (بما أننا نعلم أن sent_by_id != my_id)
-        sender_id = r.sent_by_id
-        
-        # جلب بيانات المرسل (هنا نحتاج أن يكون لديك علاقة 'sender' معرفة في Friend model)
-        # إذا لم يكن لديك علاقة مباشرة، يمكنك جلب المستخدم باستخدام ID
-        # سنستخدم الطريقة الأكثر أماناً:
-        sender_user = User.query.get(sender_id) 
-
+        #sender = r.user2 if r.user_id1 == my_id else r.user1
         requests_list.append({
-            'request_id': r.id,                   # 👈 ID العلاقة (مهم للرفض)
-            'sender_id': sender_id,               # 👈 ID المرسل (مهم للقبول في مسار /accept)
-            'sender_username': sender_user.username, # 👈 اسم المرسل للعرض
+            'sender_username': sender.username,
             'requested_at': r.requested_at
         })
 
@@ -221,6 +212,3 @@ def delete_friend(other_user_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
-
-
-
