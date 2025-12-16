@@ -9,7 +9,9 @@
         href="https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&family=KoHo:wght@400;500;600&family=Inter:wght@400;600;700;800&display=swap"
         rel="stylesheet">
     <style>
-        /* ... (تنسيقات CSS كما هي) ... */
+        /* * هذا الجزء يحتوي على تنسيقات CSS الخاصة بالصفحة
+         * تم الإبقاء عليه كما أرسلته سابقاً
+         */
         * {
             margin: 0;
             padding: 0;
@@ -523,10 +525,10 @@
                 if (response.status === 401) {
                     // إذا لم يكن مصرحًا، أعد التوجيه لصفحة الدخول
                     alert("Error: Authentication required (User must be logged in).");
-                    window.location.href = '/index-page'; 
+                    window.location.href = '/index-page';
                     return null;
                 }
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -583,9 +585,7 @@
                 friends = fetchedFriends.map(f => ({
                     ...f,
                     name: f.username,
-                    // نفترض أن ID العلاقة والـ ID الشخصي موجودين في f.id و f.relationship_id
-                    // بما أن الباك إند الحالي لا يرسل ID العلاقة، سنحتاج لتعديل هذا لاحقاً.
-                    // مؤقتاً، سنستخدم الـ username في الـ Remove إذا لم نغير الباك إند.
+                    // سنفترض أن ID العلاقة والـ ID الشخصي موجودين في f.id و f.relationship_id
                 }));
             }
 
@@ -595,9 +595,8 @@
                 friendRequests = fetchedRequests.map(req => ({
                     ...req,
                     name: req.sender_username,
-                    // 🚨 [ملاحظة]: الباك إند لا يرسل request_id أو sender_id. 
-                    // يجب تعديل الباك إند ليرسلها لكي تعمل دوال القبول/الرفض بشكل موثوق.
-                    // مؤقتاً، نفترض أن req.id هو request_id و req.sender_id موجود.
+                    // 🚨 [تذكير]: يجب أن يُرجع الباك إند: request_id و sender_id (الذي هو ID المرسل)
+                    // نفترض هنا أن هذه الحقول موجودة (req.request_id و req.sender_id)
                 }));
             }
             
@@ -622,13 +621,9 @@
             }
 
             container.innerHTML = friends.map(friend => {
-                // 🚨 بما أن الباك إند لا يرسل relationship_id حالياً، 
-                // يجب أن نرسل شيئاً يمكن للباك إند استخدامه للحذف.
-                // في الباك إند: `delete_friend(other_user_id)` يتوقع ID الصديق الآخر.
-                // لكن الـ friends list في الباك إند الحالي لا يرسل الـ ID. 
-                // سنقوم بحل هذه المشكلة لاحقاً، حالياً الكود سيعرض الـ name و الـ points
+                // 🚨 [ملاحظة]: هنا نعتمد على أن friend.id هو ID الصديق الآخر، 
+                // وهو ما يتوقعه الباك إند في مسار الحذف /friends/:otherUserId
                 
-                // سنفترض أن friend.id هو ID الصديق الآخر
                 return `
                     <div class="friend-card">
                         <div class="friend-header">
@@ -672,9 +667,7 @@
                 } else if (isSentByMe) {
                     buttonHtml = '<button class="sent-btn" disabled>Request Sent</button>';
                 } else if (isSentToMe) {
-                    // إذا أرسل الطلب إليك، يجب أن يظهر في requestsContainer
-                    // لكن إذا ظهر هنا، نعرض زر القبول
-                     buttonHtml = '<button class="sent-btn" disabled>Request Received</button>';
+                    buttonHtml = '<button class="sent-btn" disabled>Request Received</button>';
                 } else {
                     // 🟢 [تصحيح]: نمرر اسم المستخدم (Username)
                     buttonHtml = `<button class="add-btn-small" onclick="sendFriendRequest(this, '${user.username}')">Add Friend</button>`;
@@ -704,9 +697,7 @@
                 return;
             }
             container.innerHTML = friendRequests.map(req => {
-                // 🚨 [ملاحظة]: req.id غير كافية لعمل accept/decline. 
-                // يجب أن نفترض وجود sender_id (هو ID المرسل) و request_id (هو ID العلاقة للحذف)
-                // مؤقتاً: req.id هو request_id و req.sender_id موجود
+                // 🚨 [ملاحظة]: هنا نعتمد على وجود sender_id (المرسل) و request_id (رقم العلاقة) في بيانات الطلبات
                 
                 return `
                     <div class="request-item">
@@ -726,17 +717,19 @@
 
         // --- 4. Logic Functions (Now Asynchronous) ---
 
-        // 🟢 [تصحيح]: دالة جلب نتائج البحث من الخادم
+        /**
+         * 🟢 [التعديل]: دالة جلب نتائج البحث من الخادم
+         * تم تغيير الشرط ليقبل حرفاً واحداً (أو أكثر)
+         */
         async function fetchAndRenderSearchResults(query) {
-            if (query.length < 3) {
-                if (query === "") {
-                     renderFriends();
-                } else {
-                     document.getElementById('friendsContainer').innerHTML = '<p style="grid-column: span 2; text-align: center; color: #777;">Type at least 3 characters to search.</p>';
-                }
+            
+            // 🚨 [التعديل]: إذا كان فارغاً (أقل من حرف)، نعود لقائمة الأصدقاء
+            if (query.length === 0) {
+                renderFriends();
                 return;
             }
             
+            // يتم إرسال الطلب مع وجود حرف واحد على الأقل
             const fetchedResults = await fetchData(`/friends/users/search?q=${encodeURIComponent(query)}`);
 
             if (fetchedResults) {
@@ -752,13 +745,13 @@
         }
 
 
-        // 🟢 [تصحيح]: معالج البحث الجديد:
+        // 🟢 [التعديل]: معالج البحث الجديد:
         document.getElementById('searchInput').addEventListener('input', function (e) {
             const query = e.target.value.trim();
             fetchAndRenderSearchResults(query);
         });
 
-        // Tab click to reset search
+        // Tab click to reset search (كما هو)
         document.getElementById('tabBtn').addEventListener('click', function () {
             document.getElementById('searchInput').value = "";
             renderFriends();
@@ -785,7 +778,7 @@
                 btn.innerText = "Request Sent";
                 btn.className = "sent-btn";
                 // نُعيد تحميل جميع البيانات لتحديث حالة البحث وطلبات الصداقة
-                await loadAllData(); 
+                await loadAllData();
             } else {
                 // Revert button state on failure
                 btn.innerText = originalText;
@@ -799,7 +792,6 @@
          * @param {number} senderId - The ID of the user who sent the request.
          */
         async function acceptRequest(senderId) {
-            // 🚨 بما أننا لا نستطيع تحديد الـ request_id من هنا، يجب أن نستخدم senderId
             // 1. Optimistic UI update (optional, but faster feeling)
             const originalRequest = friendRequests.find(r => r.sender_id === senderId);
             friendRequests = friendRequests.filter(r => r.sender_id !== senderId);
@@ -858,7 +850,7 @@
 
                 // 3. Handle the result
                 if (success) {
-                    await loadAllData(); 
+                    await loadAllData();
                 } else {
                     // Revert UI update and show an error
                     if (originalFriend) friends.push(originalFriend);
