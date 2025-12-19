@@ -687,7 +687,8 @@
             console.error('Error loading profile data:', error);
             // يمكنك عرض رسالة خطأ هنا
         }
-    }*/async function fetchProfileData() {
+    }*/
+       /*async function fetchProfileData() {
     try {
         // 1. تعديل السطر الأول لجلب البروفايل والمواد معاً
         const [profileRes, subjectsRes] = await Promise.all([
@@ -717,6 +718,35 @@
 
         // 3. تفعيل هذا السطر ليرسم المربعات فعلياً
         renderProgressCards(subjectsData); 
+
+    } catch (error) {
+        console.error('Error loading profile data:', error);
+    }
+}*/
+async function fetchProfileData() {
+    try {
+        const response = await fetch(`${PROFILE_API_URL}/`); 
+
+        if (response.status === 401) {
+            window.location.href = 'index.html'; 
+            return;
+        }
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
+
+        const data = await response.json();
+        console.log("✅ Consolidated Data received:", data);
+
+        // Update basic info
+        profileNameElement.innerText = data.username || 'N/A';
+        profileEmailElement.innerText = data.email || 'N/A';
+        pointsDisplayElement.innerText = data.points || 0;
+        
+        // Update hours and progress bar
+        updateHoursDisplay(data.total_hours_studied || 0);
+
+        // FIX: Pass the subjects list directly from the profile data
+        // This list contains the 'progress_percentage' calculated by the backend
+        renderProgressCards(data.subjects || []); 
 
     } catch (error) {
         console.error('Error loading profile data:', error);
@@ -947,6 +977,7 @@ document.getElementById('btnRight').addEventListener('click', () => {
 
 
 </html>
+
 
 
 
