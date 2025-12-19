@@ -270,37 +270,65 @@
             gap: 2rem;
         }
 
-       /* 🟢 الكاروسيل وتنسيق 3 مواد */
-        .bottom-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; align-items: start; }
-        .carousel-wrapper { display: flex; align-items: center; gap: 10px; width: 100%; position: relative; }
-        
-        .carousel-container {
-            display: flex; gap: 20px; overflow: hidden; width: 100%; padding: 10px;
+        /* Progress Cards & Carousel */
+        .progress-carousel {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .carousel-scroll {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
             scroll-behavior: smooth;
+            width: 100%;
+            padding: 10px 5px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .carousel-scroll::-webkit-scrollbar {
+            display: none;
         }
 
         .progress-card {
-            background: white; border-radius: 25px; padding: 20px;
-            min-width: calc((100% - 40px) / 3); /* عرض يضمن ظهور 3 كروت */
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column; align-items: center; text-align: center;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+            padding: 1rem;
+            min-width: calc((100% - 2rem) / 3);
+            flex: 0 0 calc((100% - 2rem) / 3);
+            text-align: center;
+            box-sizing: border-box;
         }
 
-        .progress-card h4 { font-family: 'Inter'; font-weight: 800; margin-bottom: 15px; color: #10203a; }
-        
-        /* تنسيق الدائرة SVG */
-        .circle-box { position: relative; width: 100px; height: 100px; margin-bottom: 15px; }
-        svg { transform: rotate(-90deg); }
-        .circle-bg { fill: none; stroke: #f1f1f1; stroke-width: 8; }
-        .circle-progress { fill: none; stroke: #4cd4d0; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s; }
-        
-        .tasks-count { color: #ccc; font-weight: 600; font-size: 0.9rem; margin-top: 5px; }
-
-        .nav-btn {
-            width: 45px; height: 45px; border-radius: 50%; background: white;
-            border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: flex; align-items: center; justify-content: center; z-index: 10;
+        .progress-card h4 {
+            color: black;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
         }
+
+        .progress-circle {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 1rem;
+            position: relative;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .progress-card p {
+            color: rgba(0, 0, 0, 0.37);
+            font-size: 0.9rem;
+        }
+
         /* Buttons */
         .carousel-btn {
             width: 40px;
@@ -653,7 +681,7 @@
             pointsDisplayElement.innerText = totalPoints;
 
             // 2.3. تحديث كروت التقدم (نفترض أن بياناتها تأتي من API آخر أو تم دمجها هنا)
-            renderProgressCards(data.subjects || [] ); // يتم إزالة هذا مؤقتاً لعدم وجود subjects في الـ API الحالي
+            renderProgressCards(data.subjects); // يتم إزالة هذا مؤقتاً لعدم وجود subjects في الـ API الحالي
 
         } catch (error) {
             console.error('Error loading profile data:', error);
@@ -662,49 +690,30 @@
     }
       
 
-     // 2. دالة رسم كروت المواد (الدوائر)
-    function renderSubjects(subjects) {
-            carousel.innerHTML = '';
-            if (subjects.length === 0) {
-                carousel.innerHTML = '<p style="color:#888; width:100%; text-align:center;">No subjects yet.</p>';
-                return;
-            }
+function renderProgressCards(subjects) {
+    const carousel = document.getElementById('carousel');
+    carousel.innerHTML = ''; // مسح المحتوى القديم
 
-            subjects.forEach(sub => {
-                const percent = sub.progress_percentage || 0;
-                const radius = 40;
-                const circumference = 2 * Math.PI * radius;
-                const offset = circumference - (percent / 100) * circumference;
+    if (!subjects || subjects.length === 0) {
+        carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888;">No subjects added yet.</p>';
+        return;
+    }
 
-                const card = document.createElement('div');
-                card.className = 'progress-card';
-                card.innerHTML = `
-                    <h4>${sub.name}</h4>
-                    <div class="circle-box">
-                        <svg width="100" height="100">
-                            <circle class="circle-bg" cx="50" cy="50" r="${radius}"></circle>
-                            <circle class="circle-progress" cx="50" cy="50" r="${radius}" 
-                                    stroke-dasharray="${circumference}" 
-                                    stroke-dashoffset="${offset}"></circle>
-                        </svg>
-                    </div>
-                    <p class="tasks-count">${sub.progress_percentage}% Complete</p>
-                `;
-                carousel.appendChild(card);
-            });
-        }
-
-        // 🟢 تحريك الكاروسيل (مادة مادة)
-        document.getElementById('goRight').addEventListener('click', () => {
-            const cardWidth = carousel.querySelector('.progress-card').offsetWidth + 20;
-            carousel.scrollBy({ left: cardWidth, behavior: 'smooth' });
-        });
-
-        document.getElementById('goLeft').addEventListener('click', () => {
-            const cardWidth = carousel.querySelector('.progress-card').offsetWidth + 20;
-            carousel.scrollBy({ left: -cardWidth, behavior: 'smooth' });
-        });
-      
+    subjects.forEach(subject => {
+        const progress = subject.progress_percentage || 0;
+        const card = document.createElement('div');
+        card.className = 'progress-card'; // سيأخذ التنسيق المربع من الـ CSS الخاص بكِ
+        
+        card.innerHTML =` 
+            <h4>${subject.name}</h4>
+            <div class="progress-container" style="height: 10px; margin-bottom: 10px;">
+                <div class="progress-fill" style="width: ${progress}%"></div>
+            </div>
+            <p>${progress}% Complete</p>
+        `;
+        carousel.appendChild(card);
+    });
+}
     // B. إرسال طلب تحديث الاسم و/أو كلمة المرور (PUT /profile/)
     async function updateProfile(newUsername, newPassword) {
         const updateData = {};
@@ -884,18 +893,15 @@ function revertToViewMode() {
     editBtn.style.background = "#4a7fb8";
     isEditing = false;
 }
-  /*     document.getElementById('btnLeft').addEventListener('click', () => {
+       document.getElementById('btnLeft').addEventListener('click', () => {
     carousel.scrollBy({ left: -200, behavior: 'smooth' });
 });
 
 document.getElementById('btnRight').addEventListener('click', () => {
     carousel.scrollBy({ left: 200, behavior: 'smooth' });
-});*/
+});
 </script>
 </body>
 
 
 </html>
-
-
-
