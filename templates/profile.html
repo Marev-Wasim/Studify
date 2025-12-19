@@ -5,26 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Studify - My Profile</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Konkhmer+Sleokchher&family=Lao+Muang+Khong&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Konkhmer+Sleokchher&family=Lao+Muang+Khong&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* ---------------------------------------------------- */
+        /* 1. التنسيقات الأساسية (CSS) */
+        /* ---------------------------------------------------- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', system-ui, sans-serif;
             background: #abd1f4;
-            min-height: 105vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1rem;
         }
-
         .container {
             width: 100%;
             max-width: 1251px;
@@ -33,8 +28,8 @@
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
             overflow: hidden;
+            padding-bottom: 2rem;
         }
-
         /* Header */
         header {
             height: 150px;
@@ -44,453 +39,112 @@
             padding: 0 2rem;
             background: white;
             border-bottom: 1px solid #f3f4f6;
-            margin: -2rem -2rem 2rem -2rem;
-            width: calc(100% + 4rem);
-            border-radius: 15px 15px 0 0;
+            width: 100%;
         }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            margin-left: 10px;
-            margin-right: 500px;
-        }
-
-        .logo-section img {
-            width: 150px;
-            height: auto;
-            margin-bottom: -30px;
-        }
-
+        .logo-section { display: flex; align-items: center; }
+        .logo-section img { width: 150px; margin-bottom: -30px; }
         .logo-section h1 {
             color: #10203a;
             font-family: 'Konkhmer Sleokchher', serif;
             font-size: 2.5rem;
-            margin-right: 70px;
             font-weight: 650;
             margin-left: -30px;
             margin-bottom: -30px;
         }
-
-        nav {
-            display: flex;
-            gap: 3rem;
-            align-items: center;
-            margin-bottom: -30px;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #000;
-            font-family: 'Konkhmer Sleokchher', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 400;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #2563eb;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .mobile-menu-btn svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        /* Main Content */
-        main {
-            padding: 2rem;
-            position: relative;
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
+        nav { display: flex; gap: 3rem; align-items: center; margin-bottom: -30px; }
+        nav a { text-decoration: none; color: #000; font-family: 'Konkhmer Sleokchher'; font-size: 1.4rem; }
+        
+        /* Main Layout */
+        main { padding: 2rem; }
+        .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem; }
+        
         /* Profile Section */
-        .profile-section h2 {
-            color: #0a2139;
-            font-family: 'Konkhmer Sleokchher', serif;
-            font-size: 2.8rem;
-            font-weight: 400;
-            margin-bottom: 2rem;
-            margin-left: 40px;
-            margin-top: -20px;
-        }
-
-        .profile-card {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .avatar-wrapper {
-            position: relative;
-        }
-
+        .profile-section h2 { color: #0a2139; font-family: 'Konkhmer Sleokchher'; font-size: 2.8rem; margin-bottom: 2rem; }
+        .profile-card { display: flex; gap: 1.5rem; }
         .avatar {
-            width: 159px;
-            height: 156px;
-            border-radius: 50%;
-            background: #ebf6ff;
-            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            width: 159px; height: 156px; border-radius: 50%;
+            background: #ebf6ff; box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
-
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-info {
-            flex: 1;
-            min-width: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .profile-info h3 {
-            color: #0a2139;
-            font-family: 'Konkhmer Sleokchher', serif;
-            font-size: 2.8rem;
-            font-weight: 400;
-            margin-bottom: 0.5rem;
-        }
-
-        .profile-info p {
-            color: rgba(0, 0, 0, 0.6);
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* تنسيق زر التعديل وحقول الإدخال */
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-info h3 { color: #0a2139; font-family: 'Konkhmer Sleokchher'; font-size: 2.8rem; margin-bottom: 0.5rem; }
+        .profile-info p { color: rgba(0,0,0,0.6); font-size: 1.2rem; }
+        
+        /* Edit Button */
         .btn-edit {
-            background: #4a7fb8;
-            color: white;
-            font-family: 'Konkhmer Sleokchher', serif;
-            font-size: 1.25rem;
-            padding: 0.6rem 2rem;
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-            cursor: pointer;
-            transition: background 0.3s;
-            width: fit-content;
-            margin-top: 10px;
+            background: #4a7fb8; color: white; font-family: 'Konkhmer Sleokchher';
+            font-size: 1.25rem; padding: 0.6rem 2rem; border: none; border-radius: 20px;
+            box-shadow: 0 4px 4px rgba(0,0,0,0.25); cursor: pointer; margin-top: 10px;
         }
-
-        .btn-edit:hover {
-            background: #3d6a9a;
-        }
-
-        /* تنسيق الحقول عند وضع التعديل */
         .edit-input {
-            font-family: 'Konkhmer Sleokchher', serif;
-            font-size: 1.3rem;
-            padding: 5px 10px;
-            border: 2px solid #4a7fb8;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 300px;
-            margin-bottom: 10px;
-            color: #10203a;
-            outline: none;
-            background: rgba(255, 255, 255, 0.9);
+            padding: 5px; border: 2px solid #4a7fb8; border-radius: 10px;
+            font-size: 1.2rem; width: 100%; max-width: 300px; margin-bottom: 5px;
         }
 
-        /* Total Learning Hours Card */
-        .hours-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-            padding: 2rem;
-        }
+        /* Hours Card */
+        .hours-card { background: white; border-radius: 20px; box-shadow: 0 4px 4px rgba(0,0,0,0.25); padding: 2rem; }
+        .hours-card h3, .hours-value { font-family: 'Konkhmer Sleokchher'; font-size: 2.2rem; margin-bottom: 1rem; }
+        .progress-container { width: 100%; height: 15px; background: #e5e7eb; border-radius: 20px; overflow: hidden; margin-bottom: 1rem; }
+        .progress-fill { height: 100%; width: 0%; background: #4cd4d0; border-radius: 20px; transition: width 0.5s; }
+        .hours-text { color: rgba(0,0,0,0.37); font-size: 1.25rem; text-align: center; }
 
-        .hours-card h3 {
-            color: black;
-            font-family: 'Konkhmer Sleokchher', serif;
-            font-size: 2.2rem;
-            font-weight: 400;
-            margin-bottom: 1rem;
-        }
-
-        .hours-value {
-            color: black;
-            font-family: 'Konkhmer Sleokchher', serif;
-            font-size: 2.2rem;
-            font-weight: 400;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            position: relative;
-            width: 100%;
-            height: 15px;
-            background: #e5e7eb;
-            border-radius: 20px;
-            margin-bottom: 0.75rem;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: #4cd4d0;
-            border-radius: 20px;
-            transition: width 0.3s;
-        }
-
-        .hours-text {
-            color: rgba(0, 0, 0, 0.37);
-            font-size: 1.25rem;
-            text-align: center;
-        }
-
-        /* Bottom Grid */
-        .bottom-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        /* Progress Cards & Carousel */
-        .progress-carousel {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            width: 100%;
-        }
-
+        /* Carousel & Cards (الجزء المهم لتصحيح المواد) */
+        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .progress-carousel { display: flex; align-items: center; gap: 1rem; width: 100%; }
         .carousel-scroll {
-            display: flex;
-            gap: 1rem;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            width: 100%;
-            padding: 10px 5px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            display: flex; gap: 1rem; overflow-x: auto; scroll-behavior: smooth;
+            width: 100%; padding: 10px 5px; scrollbar-width: none;
+        }
+        .carousel-scroll::-webkit-scrollbar { display: none; }
+        .carousel-btn {
+            width: 40px; height: 40px; border-radius: 50%; background: white;
+            box-shadow: 0 4px 4px rgba(0,0,0,0.25); border: none; cursor: pointer; flex-shrink: 0;
         }
 
-        .carousel-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
+        /* 🟢 تنسيق كروت المواد (الدوائر) */
         .progress-card {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             padding: 1rem;
-            min-width: calc((100% - 2rem) / 3);
-            flex: 0 0 calc((100% - 2rem) / 3);
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        .progress-card h4 {
-            color: black;
-            font-family: 'Konkhmer Sleokchher', serif;
-            font-size: 0.8rem;
-            font-weight: 400;
-            margin-bottom: 2rem;
-        }
-
-        .progress-circle {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 1rem;
-            position: relative;
-        }
-
-        .progress-ring {
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-
-        .progress-card p {
-            color: rgba(0, 0, 0, 0.37);
-            font-size: 0.9rem;
-        }
-        /* Buttons */
-        .carousel-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: white;
-            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-            border: none;
-            cursor: pointer;
+            min-width: 160px;
+            width: 160px;
+            height: 230px;
+            flex-shrink: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: background 0.3s;
-            flex-shrink: 0;
-            z-index: 10;
+            text-align: center;
         }
-
-        .carousel-btn:hover {
-            background: #f9fafb;
+        .progress-card h4 {
+            color: #10203a; font-family: 'Konkhmer Sleokchher'; font-size: 1.1rem;
+            margin-bottom: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;
         }
+        .circle-container {
+            position: relative; width: 100px; height: 100px; margin-bottom: 15px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        svg { transform: rotate(-90deg); width: 100px; height: 100px; }
+        .progress-bg { fill: none; stroke: #f0f0f0; stroke-width: 8; }
+        .progress-bar-circle {
+            fill: none; stroke: #4cd4d0; stroke-width: 8; stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+        .progress-text { font-family: 'Inter'; font-size: 0.9rem; color: #888; font-weight: bold; }
 
-        /* Reward Section */
+        /* Reward Card */
         .reward-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-            padding: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
+            background: white; border-radius: 20px; box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+            padding: 2rem; display: flex; align-items: center; gap: 1.5rem;
         }
-
-        .reward-icon {
-            position: relative;
-            min-width: 110px;
-            width: 110px;
-            height: 110px;
-        }
-
-        .reward-text h3 {
-            color: black;
-            font-family: 'Konkhmer Sleokchher', serif;
-            font-size: 1.25rem;
-            font-weight: 400;
-            margin-bottom: 0.25rem;
-        }
-
-        .reward-text p {
-            color: black;
-            font-family: 'Konkhmer Sleokchher', serif;
-            font-size: 2.2rem;
-            font-weight: 400;
-        }
-
-        /* Decorative Images */
-        .deco-image {
-            position: absolute;
-            opacity: 0.5;
-        }
-
-        .deco-image.left {
-            left: 1.5rem;
-            top: 8rem;
-            width: 148px;
-            height: 65px;
-        }
-
-        .deco-image.bottom-left {
-            left: 340px;
-            bottom: 5rem;
-            width: 187px;
-            height: 82px;
-        }
-
-        .deco-image.top-left {
-            left: 681px;
-            top: 0;
-            width: 187px;
-            height: 82px;
-        }
-
-        .deco-image.right {
-            right: 2rem;
-            top: 13rem;
-            width: 187px;
-            height: 82px;
-        }
+        .reward-icon { width: 110px; height: 110px; }
+        .reward-text h3 { font-family: 'Konkhmer Sleokchher'; font-size: 1.25rem; }
+        .reward-text p { font-family: 'Konkhmer Sleokchher'; font-size: 2.2rem; }
 
         /* Responsive */
-        @keyframes fadeInAnimation {
-            0% {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .container {
-            opacity: 0;
-            animation: fadeInAnimation 1.5s ease-out forwards;
-        }
-
         @media (max-width: 1024px) {
-
-            .content-grid,
-            .bottom-grid {
-                grid-template-columns: 1fr;
-            }
-
-            nav {
-                gap: 1.5rem;
-            }
-
-            .deco-image {
-                display: none;
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                padding: 0 1rem;
-                height: auto;
-                min-height: 134px;
-            }
-
-            .logo-section h1 {
-                font-size: 1.5rem;
-            }
-
-            nav {
-                display: none;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            main {
-                padding: 1rem;
-            }
-
-            .profile-card {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .profile-info {
-                text-align: center;
-            }
-
-            .reward-card {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .progress-card {
-                min-width: 100%;
-                flex: 0 0 100%;
-            }
+            .content-grid, .bottom-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -499,50 +153,25 @@
     <div class="container">
         <header>
             <div class="logo-section">
-                <img src="https://api.builder.io/api/v1/image/assets/TEMP/a972516383bf9672b4c04259e76273dcddd61507?width=328"
-                    alt="Studify logo">
+                <img src="https://api.builder.io/api/v1/image/assets/TEMP/a972516383bf9672b4c04259e76273dcddd61507?width=328" alt="Studify logo">
                 <h1>studify</h1>
             </div>
             <nav>
                 <a href="/dashboard-page">Home</a> <a href="/friends-page">Friends</a> <a href="/auth/logout">Log out</a>
             </nav>
-            <button class="mobile-menu-btn">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-                    </path>
-                </svg>
-            </button>
-            <div class="header-blob"></div>
         </header>
 
         <main>
-            <img class="deco-image left"
-                src="https://api.builder.io/api/v1/image/assets/TEMP/24375f52f9e1b8b805b0963c3072fcbb6a9bb0df?width=296"
-                alt="">
-            <img class="deco-image bottom-left"
-                src="https://api.builder.io/api/v1/image/assets/TEMP/fa793776abd3adf2301513f8cfb90a229732362f?width=374"
-                alt="">
-            <img class="deco-image top-left"
-                src="https://api.builder.io/api/v1/image/assets/TEMP/fa793776abd3adf2301513f8cfb90a229732362f?width=374"
-                alt="">
-            <img class="deco-image right"
-                src="https://api.builder.io/api/v1/image/assets/TEMP/e847a0dd2b30751e0856b81ae858e79a43d5e4d1?width=374"
-                alt="">
-
             <div class="content-grid">
                 <div class="profile-section">
                     <h2>My Profile</h2>
                     <div class="profile-card">
-                        <div class="avatar-wrapper">
-                            <div class="avatar">
-                                <img src="https://api.builder.io/api/v1/image/assets/TEMP/14b992f93b6150097c71e1c5dd691af6b6bee56e?width=318"
-                                    alt="Profile avatar">
-                            </div>
+                        <div class="avatar">
+                            <img src="https://api.builder.io/api/v1/image/assets/TEMP/14b992f93b6150097c71e1c5dd691af6b6bee56e?width=318" alt="Avatar">
                         </div>
                         <div class="profile-info">
-                            <h3 id="profileName">Name Of Account</h3>
-                            <p id="profileEmail">email@address.com</p>
-
+                            <h3 id="profileName">Loading...</h3>
+                            <p id="profileEmail">...</p>
                             <button class="btn-edit" id="editBtn">Edit Profile</button>
                         </div>
                     </div>
@@ -561,32 +190,19 @@
             <div class="bottom-grid">
                 <div class="progress-carousel">
                     <button class="carousel-btn" id="btnLeft">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
-                            </path>
-                        </svg>
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
                     </button>
-
                     <div class="carousel-scroll" id="carousel">
-                    </div>
-
+                        </div>
                     <button class="carousel-btn" id="btnRight">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                            </path>
-                        </svg>
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
                     </button>
                 </div>
 
                 <div class="reward-card">
                     <div class="reward-icon">
                         <svg viewBox="0 0 125 118" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M59.2941 2.06119C60.1996 -0.687026 64.0872 -0.687034 64.9927 2.06118L77.6293 40.4123C78.0346 41.6424 79.1835 42.4735 80.4786 42.4735H121.281C124.197 42.4735 125.399 46.2137 123.028 47.9122L90.0909 71.5103C89.0247 72.2741 88.5784 73.6421 88.9888 74.8878L101.587 113.122C102.495 115.878 99.3496 118.19 96.9903 116.499L63.8906 92.7851C62.8461 92.0367 61.4408 92.0367 60.3962 92.7851L27.2966 116.499C24.9373 118.19 21.7918 115.878 22.7001 113.122L35.298 74.8878C35.7085 73.6421 35.2621 72.2741 34.1959 71.5103L1.25853 47.9122C-1.11215 46.2137 0.0894127 42.4735 3.00573 42.4735H43.8083C45.1034 42.4735 46.2523 41.6424 46.6576 40.4123L59.2941 2.06119Z"
-                                fill="#E5982E" />
-                            <path
-                                d="M55.765 1.38194C56.3637 -0.460681 58.9705 -0.460687 59.5692 1.38193L71.8115 39.0598C72.0792 39.8838 72.8472 40.4417 73.7136 40.4417H113.33C115.268 40.4417 116.073 42.921 114.506 44.0598L82.4553 67.3459C81.7543 67.8552 81.461 68.758 81.7288 69.582L93.971 107.26C94.5697 109.102 92.4608 110.635 90.8934 109.496L58.8427 86.2097C58.1417 85.7004 57.1925 85.7004 56.4915 86.2097L24.4409 109.496C22.8734 110.635 20.7645 109.102 21.3632 107.26L33.6055 69.582C33.8732 68.758 33.5799 67.8552 32.8789 67.3459L0.828241 44.0598C-0.739186 42.921 0.0663619 40.4417 2.00381 40.4417H41.6206C42.4871 40.4417 43.255 39.8838 43.5227 39.0598L55.765 1.38194Z"
-                                fill="#F9C440" />
+                            <path d="M59.29 2.06C60.2 -0.69 64.09 -0.69 64.99 2.06L77.63 40.41H121.28C124.2 40.41 125.4 46.21 123.03 47.91L90.09 71.51L101.59 113.12C102.5 115.88 99.35 118.19 96.99 116.5L63.89 92.79L27.3 116.5C24.94 118.19 21.79 115.88 22.7 113.12L35.3 74.89L1.26 47.91C-1.11 46.21 0.09 42.47 3 42.47H46.66L59.29 2.06Z" fill="#F9C440"/>
                         </svg>
                     </div>
                     <div class="reward-text">
@@ -598,374 +214,117 @@
         </main>
     </div>
 
-  <script>
-    // --------------------------------------------------------
-    // ⭐ 1. الإعدادات ونقاط النهاية (API Endpoints)
-    // --------------------------------------------------------
-    // رابط Azure الأساسي
-    const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net';
-    
-    // نقطة نهاية جلب/تحديث الملف الشخصي (مسار الـ Blueprint هو /profile)
-    const PROFILE_API_URL = `${BASE_API_URL}/profile`;
-    
-    // عناصر واجهة المستخدم
-    const profileNameElement = document.getElementById('profileName');
-    const profileEmailElement = document.getElementById('profileEmail');
-    const profilePasswordSpan = document.getElementById('profilePassword');
-    const passwordLabelContainer = document.getElementById('passwordLabel');
-    const editBtn = document.getElementById('editBtn');
-    const hoursValueElement = document.querySelector('.hours-value');
-    const progressFillElement = document.querySelector('.progress-fill');
-    const hoursTextElement = document.querySelector('.hours-text');
-    const pointsDisplayElement = document.getElementById('pointsDisplay');
-    const carousel = document.getElementById('carousel');
-    const CIRCUMFERENCE = 251.2; 
-    
-    let isEditing = false; 
+    <script>
+        const BASE_API_URL = 'https://studify-dye7gqa7hfchgzdk.italynorth-01.azurewebsites.net';
+        const PROFILE_API_URL = `${BASE_API_URL}/profile`;
+        
+        const profileNameElement = document.getElementById('profileName');
+        const profileEmailElement = document.getElementById('profileEmail');
+        const editBtn = document.getElementById('editBtn');
+        const hoursValueElement = document.querySelector('.hours-value');
+        const progressFillElement = document.querySelector('.progress-fill');
+        const pointsDisplayElement = document.getElementById('pointsDisplay');
+        const carousel = document.getElementById('carousel');
+        
+        let isEditing = false; 
 
-    function validatePassword(password) {
-        if (!password) {
-            return null; // لا يوجد خطأ إذا كان الحقل فارغاً (لأن التعديل اختياري)
-        }
-        if (password.length < 8) {
-            return "Password must be at least 8 characters long.";
-        }
-        if (!/[A-Z]/.test(password)) {
-            return "Password must contain at least one uppercase letter.";
-        }
-        if (!/\d/.test(password)) {
-            return "Password must contain at least one number.";
-        }
-        return null; 
-    }
+        // جلب البيانات
+        async function fetchProfileData() {
+            try {
+                const response = await fetch(`${PROFILE_API_URL}/`); 
+                if (response.status === 401) { window.location.href = '/index-page'; return; }
+                
+                const data = await response.json();
+                console.log("✅ Data received:", data);
 
-    // --------------------------------------------------------
-    // ⭐ 2. دوال الاتصال بالخادم (API Calls)
-    // --------------------------------------------------------
+                profileNameElement.innerText = data.username || 'N/A';
+                profileEmailElement.innerText = data.email || 'N/A';
+                pointsDisplayElement.innerText = data.points || 0;
+                
+                updateHoursDisplay(data.total_hours_studied || 0);
+                
+                // 🟢 رسم المواد (الدوائر)
+                renderProgressCards(data.subjects || []); 
 
-    // A. جلب بيانات الملف الشخصي (GET /profile/)
-    async function fetchProfileData() {
-        try {
-            // استخدام المسار الأساسي '/' للـ Blueprint لجلب البيانات
-            const response = await fetch(`${PROFILE_API_URL}/`); 
+            } catch (error) { console.error('Error:', error); }
+        }
 
-            if (response.status === 401) {
-                // توجيه لصفحة تسجيل الدخول إذا لم يكن مسجل الدخول
-                window.location.href = 'index.html'; 
+        // دالة رسم الدوائر
+        function renderProgressCards(subjects) {
+            carousel.innerHTML = ''; 
+            if (!subjects || subjects.length === 0) {
+                carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888; margin-top:20px;">No subjects added.</p>';
                 return;
             }
-            if (!response.ok) {
-                throw new Error(`Failed to fetch profile data. Status: ${response.status}`);
-            }
 
-            const data = await response.json();
+            subjects.forEach(subject => {
+                const percent = Math.min(Math.max(subject.progress_percentage || 0, 0), 100);
+                const radius = 40;
+                const circumference = 2 * Math.PI * radius; 
+                const offset = circumference - (percent / 100) * circumference;
 
-            
-            // 👇👇👇 ضعي هذا السطر للاختبار 👇👇👇
-            console.log("✅ البيانات وصلت بنجاح:", data);
-
-
-            
-            // 2.1. تحديث معلومات الملف الشخصي
-            profileNameElement.innerText = data.username || 'N/A';
-            profileEmailElement.innerText = data.email || 'N/A';
-            
-            // 2.2. تحديث قسم الساعات والنقاط (نفترض أن هذه البيانات تأتي من API آخر أو تم دمجها هنا)
-            // بما أن كود الـ Flask Profile Blueprint أرسل فقط (username, email, points)، سنعتمد عليه.
-            
-            const totalHours = data.total_hours_studied || 0; // قيمة وهمية مؤقتة حتى يتم تحديث الـ API
-            const totalPoints = data.points || 0;
-            
-            updateHoursDisplay(totalHours);
-            pointsDisplayElement.innerText = totalPoints;
-
-            // 2.3. تحديث كروت التقدم (نفترض أن بياناتها تأتي من API آخر أو تم دمجها هنا)
-            renderProgressCards(data.subjects || [] ); // يتم إزالة هذا مؤقتاً لعدم وجود subjects في الـ API الحالي
-
-        } catch (error) {
-            console.error('Error loading profile data:', error);
-            // يمكنك عرض رسالة خطأ هنا
-        }
-    }
-      
-
-     // 2. دالة رسم كروت المواد (الدوائر)
-    function renderProgressCards(subjects) {
-        carousel.innerHTML = ''; 
-
-        if (subjects.length === 0) {
-            carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888; margin-top: 20px;">No subjects added yet.</p>';
-            return;
-        }
-
-        subjects.forEach(subject => {
-            // ضمان النسبة بين 0 و 100
-            const percent = Math.min(Math.max(subject.progress_percentage || 0, 0), 100);
-            
-            // حسابات الدائرة (نصف القطر 40)
-            const radius = 40;
-            const circumference = 2 * Math.PI * radius; 
-            const offset = circumference - (percent / 100) * circumference;
-
-            const card = document.createElement('div');
-            card.className = 'progress-card';
-            
-            card.innerHTML = `
-                <h4>${subject.name}</h4>
-                <div class="circle-container">
-                    <svg width="100" height="100">
-                        <circle class="progress-bg" cx="50" cy="50" r="${radius}"></circle>
-                        <circle class="progress-bar-circle" cx="50" cy="50" r="${radius}" 
-                                style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${offset};"></circle>
-                    </svg>
-                    <div style="position:absolute; color:#4cd4d0; font-weight:bold;">
-                        ${Math.round(percent)}%
+                const card = document.createElement('div');
+                card.className = 'progress-card';
+                
+                card.innerHTML = `
+                    <h4>${subject.name}</h4>
+                    <div class="circle-container">
+                        <svg width="100" height="100">
+                            <circle class="progress-bg" cx="50" cy="50" r="${radius}"></circle>
+                            <circle class="progress-bar-circle" cx="50" cy="50" r="${radius}" 
+                                    style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${offset};"></circle>
+                        </svg>
+                        <div style="position:absolute; color:#4cd4d0; font-weight:bold;">
+                            ${Math.round(percent)}%
+                        </div>
                     </div>
-                </div>
-                <p class="progress-text">${Math.round(percent)}% Complete</p>
-            `;
-            carousel.appendChild(card);
-        });
-    }
-      
-    // B. إرسال طلب تحديث الاسم و/أو كلمة المرور (PUT /profile/)
-    async function updateProfile(newUsername, newPassword) {
-        const updateData = {};
-        if (newUsername) updateData.username = newUsername;
-        if (newPassword) updateData.password = newPassword;
-
-        if (Object.keys(updateData).length === 0) {
-            alert("No changes to save.");
-            revertToViewMode();
-            return;
-        }
-
-        try {
-            // استخدام طريقة PUT للتحديث كما هو محدد في الـ Flask Blueprint
-            const response = await fetch(`${PROFILE_API_URL}/`, {
-                method: 'PUT', 
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updateData)
+                    <p class="progress-text">${Math.round(percent)}% Complete</p>
+                `;
+                carousel.appendChild(card);
             });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to update profile');
-            }
-
-            alert("Profile updated successfully!");
-            revertToViewMode();
-            // إعادة جلب البيانات لتحديث الواجهة بالاسم الجديد
-            await fetchProfileData();
-
-        } catch (error) {
-            console.error('Error updating profile:', error);
-            alert(`Error updating profile: ${error.message}`);
         }
-    }
 
-    // --------------------------------------------------------
-    // 3. دوال الرسم وعناصر التحكم (Render & Logic)
-    // --------------------------------------------------------
-
-    function updateHoursDisplay(totalHours) {
-        const goalHours = 200;
-        const hoursDisplay = totalHours.toFixed(1);
-        
-        let progressPercentage = (totalHours / goalHours) * 100;
-        if (progressPercentage > 100) progressPercentage = 100;
-
-        hoursValueElement.innerText = `${hoursDisplay} Hours`;
-        progressFillElement.style.width = `${progressPercentage}%`;
-        hoursTextElement.innerText = `Next Reward at ${goalHours} Hours`;
-    }
-
-    function renderProgressCards(subjects) {
-        carousel.innerHTML = '';
-        if (subjects.length === 0) {
-            carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888; padding: 20px;">No subjects found.</p>';
-            return;
+        function updateHoursDisplay(totalHours) {
+            const goalHours = 200;
+            let progressPercentage = Math.min((totalHours / goalHours) * 100, 100);
+            hoursValueElement.innerText = `${totalHours.toFixed(1)} Hours`;
+            progressFillElement.style.width = `${progressPercentage}%`;
         }
-        // ... (منطق رسم الكروت هنا)
-    }
 
-
-    // --------------------------------------------------------
-    // 4. معالج زر التعديل والحفظ (Logic)
-    // --------------------------------------------------------
-    editBtn.addEventListener('click', function () {
-        if (!isEditing) {
-            // وضع التعديل
-            const currentName = profileNameElement.innerText;
-            
-            profileNameElement.innerHTML = `<input type="text" class="edit-input" id="nameInput" value="${currentName}">`;
-            profileEmailElement.style.display = 'none';
-
-
-            // ✅ التصحيح: نستخدم عنصر button الأب لوضع حقول كلمة المرور الجديدة قبله
-           const profileInfoContainer = editBtn.parentElement; 
-    
-            // ❌ كان: passwordLabelContainer.innerHTML = ...
-            // ✅ يصبح: إنشاء عنصر جديد مؤقت لحقول كلمة المرور الجديدة
-           const passwordInputsHTML = `
-               <input type="password" class="edit-input" id="passwordInput" placeholder="New Password">
-               <input type="password" class="edit-input" id="confirmPasswordInput" placeholder="Confirm Password">
-               <div id="passwordError" style="color: #ff4d4d; font-size: 0.9rem; font-weight: normal; margin-top: 5px;"></div>
-                 `;
-
-            // إضافة الحقول قبل زر التعديل
-            editBtn.insertAdjacentHTML('beforebegin', passwordInputsHTML);
-
-            
-            editBtn.innerText = "Save Changes";
-            editBtn.style.background = "#34BDAD";
-            isEditing = true;
-        } else {
-            // وضع الحفظ
-            const nameInput = document.getElementById('nameInput');
-            const passwordInput = document.getElementById('passwordInput');
-            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
-            const errorDiv = document.getElementById('passwordError');
-
-            const newUsername = nameInput.value;
-            let newPassword = null;
-
-            // 🚨 [التصحيح 1]: إعادة تعيين الأخطاء أولاً
-            errorDiv.innerText = ''; 
-            passwordInput.classList.remove('input-error');
-            confirmPasswordInput.classList.remove('input-error');
-
-            // 1. التحقق من قوة كلمة المرور الجديدة (إذا تم إدخالها)
-            if (passwordInput && passwordInput.value) {
-                const password = passwordInput.value;
-                const confirmPassword = confirmPasswordInput.value;
-
-                // 🟢 [التصحيح 2]: التحقق من القوة
-                const strengthError = validatePassword(password);
-                if (strengthError) {
-                    errorDiv.innerText = `Error: ${strengthError}`;
-                    passwordInput.classList.add('input-error');
-                    passwordInput.focus();
-                    return; 
+        // منطق التعديل
+        editBtn.addEventListener('click', async function () {
+            if (!isEditing) {
+                const currentName = profileNameElement.innerText;
+                profileNameElement.innerHTML = `<input type="text" class="edit-input" id="nameInput" value="${currentName}">`;
+                profileEmailElement.style.display = 'none';
+                const html = `<div id="tempEditFields" style="margin-bottom:10px;"><input type="password" class="edit-input" id="passwordInput" placeholder="New Password"><input type="password" class="edit-input" id="confirmPasswordInput" placeholder="Confirm Password"><div id="passwordError" style="color:red; font-size:0.8rem;"></div></div>`;
+                editBtn.insertAdjacentHTML('beforebegin', html);
+                editBtn.innerText = "Save Changes";
+                isEditing = true;
+            } else {
+                const nameInput = document.getElementById('nameInput');
+                const passwordInput = document.getElementById('passwordInput');
+                const confirmInput = document.getElementById('confirmPasswordInput');
+                
+                if (passwordInput.value && passwordInput.value !== confirmInput.value) {
+                    document.getElementById('passwordError').innerText = "Passwords mismatch"; return;
                 }
-            
-            // تحقق من تطابق كلمة المرور الجديدة
-            if (passwordInput && passwordInput.value) {
-                if (passwordInput.value !== confirmPasswordInput.value) {
-                    errorDiv.innerText = "Passwords do not match.";
-                    passwordInput.focus();
-                    return; 
-                }
-                newPassword = passwordInput.value;
+                
+                const updateData = { username: nameInput.value };
+                if(passwordInput.value) updateData.password = passwordInput.value;
+
+                try {
+                    const res = await fetch(`${PROFILE_API_URL}/`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(updateData)});
+                    if(res.ok) location.reload();
+                } catch(e) { alert("Error"); }
             }
-            
-            // إرسال التحديث إلى الخادم
-            updateProfile(newUsername, newPassword);
-        }
-        }
-    });
+        });
 
+        // تحريك الكاروسيل
+        document.getElementById('btnLeft').addEventListener('click', () => carousel.scrollBy({ left: -180, behavior: 'smooth' }));
+        document.getElementById('btnRight').addEventListener('click', () => carousel.scrollBy({ left: 180, behavior: 'smooth' }));
 
-    // --------------------------------------------------------
-    // 5. كود تحريك الكروت (Carousel)
-    // --------------------------------------------------------
-    const btnLeftCarousel = document.getElementById('btnLeft');
-    const btnRightCarousel = document.getElementById('btnRight');
-    
-    btnLeftCarousel.addEventListener('click', () => {
-        const width = carousel.clientWidth;
-        carousel.scrollBy({ left: -width, behavior: 'smooth' });
-    });
-
-    btnRightCarousel.addEventListener('click', () => {
-        const width = carousel.clientWidth;
-        carousel.scrollBy({ left: width, behavior: 'smooth' });
-    });
-
-
-    // --------------------------------------------------------
-    // 6. التشغيل عند التحميل
-    // --------------------------------------------------------
-window.addEventListener('load', fetchProfileData);
-
-// --------------------------------------------------------
-// 5. دوال تنظيف الواجهة واستعادة العرض
-// --------------------------------------------------------
-
-function revertToViewMode() {
-    // 1. استعادة عرض الإيميل الأصلي
-    profileEmailElement.style.display = 'block';
-
-    // 2. إزالة حقل الاسم (الـ input) وإعادة وضع النص الأصلي
-    const nameInput = document.getElementById('nameInput');
-    if (nameInput) {
-        // نضع النص الحالي (الذي تم تحديثه من الخادم بعد الحفظ)
-        profileNameElement.innerText = profileNameElement.querySelector('input').value; 
-    }
-    
-    // 3. إزالة حقول كلمة المرور ورسالة الخطأ
-    const passwordInput = document.getElementById('passwordInput');
-    const confirmPasswordInput = document.getElementById('confirmPasswordInput');
-    const errorDiv = document.getElementById('passwordError');
-
-    if (passwordInput) passwordInput.remove();
-    if (confirmPasswordInput) confirmPasswordInput.remove();
-    if (errorDiv) errorDiv.remove();
-    
-    // 4. استعادة زر التعديل
-    editBtn.innerText = "Edit Profile";
-    editBtn.style.background = "#4a7fb8";
-    isEditing = false;
-}
-       document.getElementById('btnLeft').addEventListener('click', () => {
-    carousel.scrollBy({ left: -200, behavior: 'smooth' });
-});
-
-document.getElementById('btnRight').addEventListener('click', () => {
-    carousel.scrollBy({ left: 200, behavior: 'smooth' });
-});
-</script>
+        window.addEventListener('load', fetchProfileData);
+    </script>
 </body>
-
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
