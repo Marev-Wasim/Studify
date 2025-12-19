@@ -293,24 +293,26 @@
             display: none;
         }
 
-        .progress-card {
-           background: white;
-           border-radius: 20px;
-           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-           padding: 1.5rem;
-           min-width: 160px;
-          width: 160px;
-          flex-shrink: 0; /* لمنع الانكماش داخل الكاروسيل */
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          scroll-snap-align: start
-        }
+       /* 🟢 تنسيق الكارت الجديد */
+.progress-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    min-width: 160px; 
+    width: 160px;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-shrink: 0; /* مهم جداً عشان الكروت متصغرش */
+    scroll-snap-align: start;
+}
 
-        .progress-card h4 {
-            color: #10203a;
+.progress-card h4 {
+    color: #10203a;
     font-family: 'Konkhmer Sleokchher', serif;
     font-size: 1rem;
     font-weight: 600;
@@ -319,28 +321,46 @@
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
-        }
+}
 
-        .progress-circle {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 1rem;
-            position: relative;
-        }
+/* 🟢 تنسيق الدائرة (مهم جداً للظهور) */
+.circle-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .progress-ring {
-            transition: stroke-dashoffset 0.35s;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-            stroke-linecap: round; /* يجعل أطراف الخط دائرية وجميلة */
-        }
+/* خصائص الرسم SVG */
+svg {
+    transform: rotate(-90deg); /* تدوير عشان تبدأ من فوق */
+    width: 100px;
+    height: 100px;
+}
 
-        .progress-card p {
-            font-family: 'Inter', sans-serif;
+.progress-bg {
+    fill: none;
+    stroke: #f0f0f0;
+    stroke-width: 8;
+}
+
+.progress-bar-circle {
+    fill: none;
+    stroke: #4cd4d0; /* لون التركواز */
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease-in-out;
+}
+
+.progress-text {
+    font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     color: #888;
-    margin-top: 5px;
-        }
+    font-weight: bold;
+}
 
         /* Buttons */
         .carousel-btn {
@@ -708,22 +728,17 @@ function renderProgressCards(subjects) {
     carousel.innerHTML = ''; 
 
     if (!subjects || subjects.length === 0) {
-        carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888;">No subjects added.</p>';
+        carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888; margin-top:20px;">No subjects added.</p>';
         return;
     }
 
     subjects.forEach(subject => {
-        // التأكد من أن النسبة رقم صحيح
+        // نضمن أن النسبة رقم صحيح ولا يتعدى 100
         const percent = Math.min(Math.max(subject.progress_percentage || 0, 0), 100);
         
-        // نصف القطر = 40
+        // حسابات الدائرة
         const radius = 40;
-        // المحيط = 2 * π * r
-        const circumference = 2 * Math.PI * radius; // ≈ 251.327
-        
-        // حساب الإزاحة (Offset) بناءً على النسبة
-        // إذا كانت النسبة 100%، الإزاحة تكون 0 (الدائرة كاملة)
-        // إذا كانت النسبة 0%، الإزاحة تكون المحيط كله (الدائرة فارغة)
+        const circumference = 2 * Math.PI * radius; 
         const offset = circumference - (percent / 100) * circumference;
 
         const card = document.createElement('div');
@@ -733,25 +748,14 @@ function renderProgressCards(subjects) {
             <h4>${subject.name}</h4>
             <div class="circle-container">
                 <svg width="100" height="100">
-                    <circle
-                        stroke="#f0f0f0"
-                        stroke-width="8"
-                        fill="transparent"
-                        r="${radius}"
-                        cx="50"
-                        cy="50"
-                    />
-                    <circle
-                        class="progress-ring__circle"
-                        stroke="#4cd4d0"
-                        stroke-width="8"
-                        fill="transparent"
-                        r="${radius}"
-                        cx="50"
-                        cy="50"
-                        style="stroke-dasharray: ${circumference} ${circumference}; stroke-dashoffset: ${offset};"
-                    />
+                    <circle class="progress-bg" cx="50" cy="50" r="${radius}"></circle>
+                    <circle class="progress-bar-circle" cx="50" cy="50" r="${radius}" 
+                            stroke-dasharray="${circumference}" 
+                            stroke-dashoffset="${offset}"></circle>
                 </svg>
+                <div style="position:absolute; color:#4cd4d0; font-weight:bold;">
+                    ${Math.round(percent)}%
+                </div>
             </div>
             <p class="progress-text">${Math.round(percent)}% Complete</p>
         `;
@@ -959,6 +963,7 @@ document.getElementById('btnRight').addEventListener('click', () => {
 
 
 </html>
+
 
 
 
