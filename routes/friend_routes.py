@@ -125,11 +125,6 @@ def get_friends():
     my_id = session.get('user_id')
     if not my_id:
         return jsonify({'message': 'Unauthorized'}), 401
-        
-    # friends_query = Friend.query.filter(
-    #     or_(Friend.user_id == user_id, Friend.friend_id == user_id),
-    #     Friend.status == 'accepted'
-    # ).all()
 
     friends_query = Friend.query.filter(
         ((Friend.user_id1 == my_id) | (Friend.user_id2 == my_id)),
@@ -138,27 +133,16 @@ def get_friends():
     
     friends_list = []
     for f in friends_query:
-        # if f.user_id == user_id:
-        #     friend_obj = f.receiver
-        # else:
-        #     friend_obj = f.requester
-        
-        # Determine which column holds the other user
+        # نحدد من هو الطرف الآخر في العلاقة (ليس أنا)
         friend_id = f.user_id2 if f.user_id1 == my_id else f.user_id1
-        other_user = User.query.get(friend_id) # Fetch user details
-        #other_user = f.user2 if f.user_id1 == my_id else f.user1
+        other_user = User.query.get(friend_id)
         
-        # friends_list.append({
-        #     'relationship_id': f.id,
-        #     'friend_id': friend_obj.id,
-        #     'username': friend_obj.username,
-        #     'email': friend_obj.email,
-        #     'status': f.status
-        # })
-        friends_list.append({
-            'username': other_user.username,
-            'email': other_user.email
-        })
+        if other_user:
+            friends_list.append({
+                'id': other_user.id, # 🟢 مهم جداً لحذف الصديق لاحقاً
+                'username': other_user.username,
+                'email': other_user.email
+            })
 
     return jsonify(friends_list)
 
@@ -168,10 +152,8 @@ def get_pending_requests():
     my_id = session.get('user_id')
     if not my_id:
         return jsonify({'message': 'Unauthorized'}), 401
-        
-    #pending_query = Friend.query.filter_by(friend_id=user_id, status='pending').all()
     
-    # Logic: Status is pending && was NOT sent by me
+    # نجلب الطلبات التي لم يرسلها المستخدم الحالي (لأنها التي تنتظر موافقته)
     pending_query = Friend.query.filter(
         ((Friend.user_id1 == my_id) | (Friend.user_id2 == my_id)),
         Friend.status == 'pending',
@@ -180,10 +162,10 @@ def get_pending_requests():
     
     requests_list = []
     for r in pending_query:
-        sender = r.user2 if r.user_id1 == my_id else r.user1
+        # المرسل مخزن في sent_by_id، نستخدم الـ relationship 'sender' الموجودة في الـ Model
         requests_list.append({
-            'sender_id': sender.id,
-            'sender_username': sender.username,
+            'sender_id': r.sender.id,
+            'sender_username': r.sender.username,
             'requested_at': r.requested_at
         })
 
@@ -213,6 +195,7 @@ def delete_friend(other_user_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
+
 
 
 
