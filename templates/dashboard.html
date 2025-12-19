@@ -625,10 +625,7 @@
     }
 
 
-    .subject-card.expanded {
-      width: 850px;
-      min-height: 200px;
-    }
+   
 
     .subject-card:hover {
       transform: translateY(-5px);
@@ -1373,13 +1370,7 @@ window.deleteTaskAPI = async function (taskId) {
                </div>`
         ;
         
-        // Expand/Collapse logic
-        newCard.addEventListener('click', (e) => {
-            // Prevent expanding when clicking the delete button
-            if (!e.target.classList.contains('delete-sub-btn') && e.target.tagName !== 'BUTTON') {
-                window.toggleExpand(`subject-${subject.id}`);
-            }
-        });
+       
 
         subjectsContainer.appendChild(newCard);
     }
@@ -1533,6 +1524,7 @@ window.deleteTaskAPI = async function (taskId) {
 
 
 </html>
+
 
 
 
