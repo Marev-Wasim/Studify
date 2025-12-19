@@ -693,7 +693,7 @@
             pointsDisplayElement.innerText = totalPoints;
 
             // 2.3. تحديث كروت التقدم (نفترض أن بياناتها تأتي من API آخر أو تم دمجها هنا)
-            renderProgressCards(data.subjects); // يتم إزالة هذا مؤقتاً لعدم وجود subjects في الـ API الحالي
+            renderProgressCards(data.subjects || [] ); // يتم إزالة هذا مؤقتاً لعدم وجود subjects في الـ API الحالي
 
         } catch (error) {
             console.error('Error loading profile data:', error);
@@ -952,6 +952,7 @@ document.getElementById('btnRight').addEventListener('click', () => {
 
 
 </html>
+
 
 
 
