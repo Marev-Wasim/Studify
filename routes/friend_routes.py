@@ -180,14 +180,10 @@ def get_pending_requests():
     
     requests_list = []
     for r in pending_query:
-        sender_id = r.sent_by_id
-        sender_user = User.query.get(sender_id)
-        
-       if sender_user:
-            requests_list.append({
-            'request_id':r.user_id1
-            'sender_id': sender_user.id
-            'sender_username': sender_user.username,
+        sender = r.user2 if r.user_id1 == my_id else r.user1
+        requests_list.append({
+            'sender_id': sender.id,
+            'sender_username': sender.username,
             'requested_at': r.requested_at
         })
 
