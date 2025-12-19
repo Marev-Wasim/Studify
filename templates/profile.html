@@ -330,8 +330,9 @@
 
         .progress-ring {
             transition: stroke-dashoffset 0.35s;
-    transform: rotate(-90deg);
-    transform-origin: 50% 50%;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            stroke-linecap: round; /* يجعل أطراف الخط دائرية وجميلة */
         }
 
         .progress-card p {
@@ -703,54 +704,60 @@
       
 
 function renderProgressCards(subjects) {
+    const carousel = document.getElementById('carousel');
     carousel.innerHTML = ''; 
-        if (!subjects || subjects.length === 0) {
-            carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888;">No subjects added.</p>';
-            return;
-        }
 
-        subjects.forEach(subject => {
-            const percent = subject.progress_percentage || 0;
-            
-            // حسابات محيط الدائرة (نصف القطر 40)
-            const radius = 40;
-            const circumference = 2 * Math.PI * radius; // ≈ 251.32
-            const offset = circumference - (percent / 100) * circumference;
-
-            const card = document.createElement('div');
-            card.className = 'progress-card';
-            
-            // رسم الدائرة باستخدام SVG
-            card.innerHTML = `
-                <h4>${subject.name}</h4>
-                <div class="circle-container">
-                    <svg width="100" height="100">
-                        <circle
-                            stroke="#e6e6e6"
-                            stroke-width="8"
-                            fill="transparent"
-                            r="${radius}"
-                            cx="50"
-                            cy="50"
-                        />
-                        <circle
-                            class="progress-ring__circle"
-                            stroke="#4cd4d0"
-                            stroke-width="8"
-                            stroke-linecap="round"
-                            fill="transparent"
-                            r="${radius}"
-                            cx="50"
-                            cy="50"
-                            style="stroke-dasharray: ${circumference} ${circumference}; stroke-dashoffset: ${offset};"
-                        />
-                    </svg>
-                </div>
-                <p class="progress-text">${Math.round(percent)}% Complete</p>
-            `;
-            carousel.appendChild(card);
-        });
+    if (!subjects || subjects.length === 0) {
+        carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888;">No subjects added.</p>';
+        return;
     }
+
+    subjects.forEach(subject => {
+        // التأكد من أن النسبة رقم صحيح
+        const percent = Math.min(Math.max(subject.progress_percentage || 0, 0), 100);
+        
+        // نصف القطر = 40
+        const radius = 40;
+        // المحيط = 2 * π * r
+        const circumference = 2 * Math.PI * radius; // ≈ 251.327
+        
+        // حساب الإزاحة (Offset) بناءً على النسبة
+        // إذا كانت النسبة 100%، الإزاحة تكون 0 (الدائرة كاملة)
+        // إذا كانت النسبة 0%، الإزاحة تكون المحيط كله (الدائرة فارغة)
+        const offset = circumference - (percent / 100) * circumference;
+
+        const card = document.createElement('div');
+        card.className = 'progress-card';
+        
+        card.innerHTML = `
+            <h4>${subject.name}</h4>
+            <div class="circle-container">
+                <svg width="100" height="100">
+                    <circle
+                        stroke="#f0f0f0"
+                        stroke-width="8"
+                        fill="transparent"
+                        r="${radius}"
+                        cx="50"
+                        cy="50"
+                    />
+                    <circle
+                        class="progress-ring__circle"
+                        stroke="#4cd4d0"
+                        stroke-width="8"
+                        fill="transparent"
+                        r="${radius}"
+                        cx="50"
+                        cy="50"
+                        style="stroke-dasharray: ${circumference} ${circumference}; stroke-dashoffset: ${offset};"
+                    />
+                </svg>
+            </div>
+            <p class="progress-text">${Math.round(percent)}% Complete</p>
+        `;
+        carousel.appendChild(card);
+    });
+}
     // B. إرسال طلب تحديث الاسم و/أو كلمة المرور (PUT /profile/)
     async function updateProfile(newUsername, newPassword) {
         const updateData = {};
@@ -952,6 +959,7 @@ document.getElementById('btnRight').addEventListener('click', () => {
 
 
 </html>
+
 
 
 
