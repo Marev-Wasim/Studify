@@ -53,7 +53,16 @@ def log_study():
         return jsonify({'message': 'Invalid format for hours_studied or study_date'}), 400
     
     try:
-        # 1. Create the study log record
+        if float(current_total) + hours_float >= 200:
+            # OPTION A: Delete old logs to reset to 0 (Fresh Start)
+            StudyLog.query.filter_by(user_id=user_id).delete()
+            # If resetting, the new log becomes the start of the new cycle
+            log_to_save = hours_float 
+            message = "Congratulations!🥳 You've reached 200 study hours!"
+        else:
+            log_to_save = hours_float
+            message = "Study time logged"
+        # Create the study log record
         log = StudyLog(
             user_id=user_id,
             subject_id=subject_id,
@@ -63,7 +72,7 @@ def log_study():
         )
         db.session.add(log)
         
-        # 2. Update user points
+        # Update user points
         points_earned = calculate_points(hours_float)
         user = User.query.get(user_id)
         if user:
@@ -118,5 +127,6 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
 
