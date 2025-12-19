@@ -37,19 +37,19 @@ def get_user_profile():
     
    # Get all subjects for this user
     user_subjects = Subject.query.filter_by(user_id=user_id).all()
-    subject_ids = [subject.id for subject in user_subjects]
-
-    subjects_data = [{'id': s.id, 'name': s.name} for s in user_subjects]
-    
-    # Get tasks for user's subjects
-    total_tasks = Task.query.filter(Task.subject_id.in_(subject_ids)).count() if subject_ids else 0
-    completed_tasks = Task.query.filter(
-        Task.subject_id.in_(subject_ids),
-        Task.completed == True
-    ).count() if subject_ids else 0
-       
-    # Calculate percentage (avoid division by zero)
-    completion_percentage = (completed_tasks / total_tasks * 100) if total_tasks else 0
+    subjects_list = []
+    for s in user_subjects:
+        # Calculate progress for each subject
+        total_tasks = Task.query.filter_by(subject_id=s.id).count()
+        completed_tasks = Task.query.filter_by(subject_id=s.id, completed=True).count()
+        
+        progress = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
+        
+        subjects_list.append({
+            'id': s.id,
+            'name': s.name,
+            'progress_percentage': round(progress, 1) # Frontend uses this for Progress-Fill
+        })
     
     return jsonify({
         'id': user.id,
@@ -60,8 +60,7 @@ def get_user_profile():
         # New Consolidated Stats
         'total_hours_studied': float(total_hours_studied),
         'badge_count': badge_count,
-        'subjects': subjects_data,
-        'completion_percentage': round(completion_percentage, 1)
+        'subjects': subjects_list
     }), 200
 
 
@@ -99,6 +98,7 @@ def update_user_profile():
         db.session.rollback()
         return jsonify({'error': 'Failed to update profile due to database error'}), 500
         
+
 
 
 
