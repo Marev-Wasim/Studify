@@ -645,7 +645,7 @@
     // --------------------------------------------------------
 
     // A. جلب بيانات الملف الشخصي (GET /profile/)
-    async function fetchProfileData() {
+  /*  async function fetchProfileData() {
         try {
             // استخدام المسار الأساسي '/' للـ Blueprint لجلب البيانات
             const response = await fetch(`${PROFILE_API_URL}/`); 
@@ -687,8 +687,65 @@
             console.error('Error loading profile data:', error);
             // يمكنك عرض رسالة خطأ هنا
         }
+    }*/async function fetchProfileData() {
+    try {
+        // 1. تعديل السطر الأول لجلب البروفايل والمواد معاً
+        const [profileRes, subjectsRes] = await Promise.all([
+            fetch(`${PROFILE_API_URL}/`),
+            fetch(`${BASE_API_URL}/subjects/`) // إضافة جلب المواد
+        ]);
+
+        if (profileRes.status === 401) {
+            window.location.href = 'index.html'; 
+            return;
+        }
+
+        const data = await profileRes.json();
+        const subjectsData = await subjectsRes.json(); // 2. تحويل بيانات المواد لـ JSON
+
+        console.log("✅ البيانات وصلت:", data);
+        console.log("✅ المواد وصلت:", subjectsData);
+
+        profileNameElement.innerText = data.username || 'N/A';
+        profileEmailElement.innerText = data.email || 'N/A';
+        
+        const totalHours = data.total_hours_studied || 0;
+        const totalPoints = data.points || 0;
+        
+        updateHoursDisplay(totalHours);
+        pointsDisplayElement.innerText = totalPoints;
+
+        // 3. تفعيل هذا السطر ليرسم المربعات فعلياً
+        renderProgressCards(subjectsData); 
+
+    } catch (error) {
+        console.error('Error loading profile data:', error);
+    }
+}
+function renderProgressCards(subjects) {
+    const carousel = document.getElementById('carousel');
+    carousel.innerHTML = ''; // مسح المحتوى القديم
+
+    if (!subjects || subjects.length === 0) {
+        carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888;">No subjects added yet.</p>';
+        return;
     }
 
+    subjects.forEach(subject => {
+        const progress = subject.progress_percentage || 0;
+        const card = document.createElement('div');
+        card.className = 'progress-card'; // سيأخذ التنسيق المربع من الـ CSS الخاص بكِ
+        
+        card.innerHTML =` 
+            <h4>${subject.name}</h4>
+            <div class="progress-container" style="height: 10px; margin-bottom: 10px;">
+                <div class="progress-fill" style="width: ${progress}%"></div>
+            </div>
+            <p>${progress}% Complete</p>
+        ;`
+        carousel.appendChild(card);
+    });
+}
     // B. إرسال طلب تحديث الاسم و/أو كلمة المرور (PUT /profile/)
     async function updateProfile(newUsername, newPassword) {
         const updateData = {};
@@ -878,11 +935,19 @@ function revertToViewMode() {
     editBtn.style.background = "#4a7fb8";
     isEditing = false;
 }
+       document.getElementById('btnLeft').addEventListener('click', () => {
+    carousel.scrollBy({ left: -200, behavior: 'smooth' });
+});
+
+document.getElementById('btnRight').addEventListener('click', () => {
+    carousel.scrollBy({ left: 200, behavior: 'smooth' });
+});
 </script>
 </body>
 
 
 </html>
+
 
 
 
