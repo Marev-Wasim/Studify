@@ -1378,10 +1378,9 @@
             if (task.is_complete) {
                 taskEntry.classList.add('completed');
                 timeText = 'Completed!';
-                // Disabled button for completed tasks
-                buttonHTML = `<button disabled style="background-color: #ccc; border: none; border-radius: 5px; padding: 2px 8px;">✓</button>`;
+                // 🟢 التعديل هنا: شيلنا كلمة disabled وخلينا اللون رمادي بس الزرار لسه شغال
+                buttonHTML = `<button onclick="completeTask(${task.id})" style="background: #ccc; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">✓</button>`;
             } else {
-                // Active button for pending tasks
                 buttonHTML = `<button onclick="completeTask(${task.id})" style="background: #00a8a0; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">✓</button>`;
             }
             
@@ -1464,6 +1463,7 @@
 
 
 </html>
+
 
 
 
