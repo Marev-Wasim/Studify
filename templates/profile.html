@@ -270,37 +270,65 @@
             gap: 2rem;
         }
 
-        /* 🟢 تنسيق كروت المواد (الدوائر) */
+       /* Progress Cards & Carousel */
+        .progress-carousel {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .carousel-scroll {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            width: 100%;
+            padding: 10px 5px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .carousel-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
         .progress-card {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
             padding: 1rem;
-            min-width: 160px;
-            width: 160px;
-            height: 230px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            min-width: calc((100% - 2rem) / 3);
+            flex: 0 0 calc((100% - 2rem) / 3);
             text-align: center;
+            box-sizing: border-box;
         }
+
         .progress-card h4 {
-            color: #10203a; font-family: 'Konkhmer Sleokchher'; font-size: 1.1rem;
-            margin-bottom: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;
+            color: black;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
         }
-        .circle-container {
-            position: relative; width: 100px; height: 100px; margin-bottom: 15px;
-            display: flex; align-items: center; justify-content: center;
+
+        .progress-circle {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 1rem;
+            position: relative;
         }
-        svg { transform: rotate(-90deg); width: 100px; height: 100px; }
-        .progress-bg { fill: none; stroke: #f0f0f0; stroke-width: 8; }
-        .progress-bar-circle {
-            fill: none; stroke: #4cd4d0; stroke-width: 8; stroke-linecap: round;
-            transition: stroke-dashoffset 1s ease-in-out;
+
+        .progress-ring {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
         }
-        .progress-text { font-family: 'Inter'; font-size: 0.9rem; color: #888; font-weight: bold; }
+
+        .progress-card p {
+            color: rgba(0, 0, 0, 0.37);
+            font-size: 0.9rem;
+        }
+        
         /* Buttons */
         .carousel-btn {
             width: 40px;
@@ -892,4 +920,5 @@ document.getElementById('btnRight').addEventListener('click', () => {
 
 
 </html>
+
 
