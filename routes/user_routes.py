@@ -45,7 +45,7 @@ def get_user_profile():
         
         progress = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
         
-        subjects_list.append({
+        subjects_final_data.append({
             'id': s.id,
             'name': s.name,
             'progress_percentage': round(progress, 1) # Frontend uses this for Progress-Fill
@@ -98,6 +98,7 @@ def update_user_profile():
         db.session.rollback()
         return jsonify({'error': 'Failed to update profile due to database error'}), 500
         
+
 
 
 
