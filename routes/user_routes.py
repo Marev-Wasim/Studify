@@ -34,8 +34,23 @@ def get_user_profile():
     
     # 2. Count Total Badges
     badge_count = Badge.query.filter_by(user_id=user_id).count()
-    subjects = Subject.query.filter_by(user_id=user_id).all()
-    subjects_data = [{'id': s.id, 'name': s.name} for s in subjects]
+    
+   # Get all subjects for this user
+    user_subjects = Subject.query.filter_by(user_id=user_id).all()
+    subject_ids = [subject.id for subject in user_subjects]
+
+    #subjects_data = [{'id': s.id, 'name': s.name} for s in user_subjects]
+    
+    # Get tasks for user's subjects
+    total_tasks = Task.query.filter(Task.subject_id.in_(subject_ids)).count() if subject_ids else 0
+    completed_tasks = Task.query.filter(
+        Task.subject_id.in_(subject_ids),
+        Task.completed == True
+    ).count() if subject_ids else 0
+       
+    # Calculate percentage (avoid division by zero)
+    completion_percentage = (completed_tasks / total_tasks * 100) if total_tasks else 0
+    
     return jsonify({
         'id': user.id,
         'username': user.username,
@@ -83,6 +98,7 @@ def update_user_profile():
         db.session.rollback()
         return jsonify({'error': 'Failed to update profile due to database error'}), 500
         
+
 
 
 
