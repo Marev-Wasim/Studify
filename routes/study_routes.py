@@ -2,6 +2,7 @@
 from flask import Blueprint, request, jsonify, session
 from extensions import db
 from models.study_log import StudyLog 
+from models.subject import Subject
 from models.user import User
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError # <-- FIX: Ensure IntegrityError is imported
@@ -117,4 +118,5 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
