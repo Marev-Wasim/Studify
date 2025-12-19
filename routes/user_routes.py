@@ -44,7 +44,7 @@ def get_user_profile():
         # New Consolidated Stats
         'total_hours_studied': float(total_hours_studied),
         'badge_count': badge_count,
-        'subjects': subjects_data
+        'subjects': subjects_list
     }), 200
 
 
@@ -82,6 +82,7 @@ def update_user_profile():
         db.session.rollback()
         return jsonify({'error': 'Failed to update profile due to database error'}), 500
         
+
 
 
 
