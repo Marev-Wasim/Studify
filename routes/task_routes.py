@@ -109,38 +109,46 @@ def complete_task(task_id):
     if not task:
         return jsonify({'error': 'Task not found or unauthorized'}), 404
         
-    if task.completed:
-        return jsonify({'message': 'Task is already completed'}), 200
+   # if task.completed:
+   #     return jsonify({'message': 'Task is already completed'}), 200
 
     try:
-        task.completed = True
-        task.completed_at = datetime.utcnow()
-        minutes_studied = task.est_min
-        
-        if minutes_studied and minutes_studied > 0:
-            hours_logged = round(minutes_studied / 60.0, 2)
+        # 🟢 المنطق الجديد: التبديل بين True و False
+        if not task.completed:
+            # 1. تحويلها لمكتملة
+            task.completed = True
+            task.completed_at = datetime.utcnow()
             
-            study_log = StudyLog(
-                user_id=user_id,
-                subject_id=task.subject_id,
-                study_date=datetime.utcnow().date(),
-                hours_studied=hours_logged,
-                task_id=task.task_id 
-            )
-            db.session.add(study_log)
+            # تسجيل الساعات في StudyLog (زي ما كودك كان بيعمل)
+            minutes_studied = task.est_min
+            if minutes_studied and minutes_studied > 0:
+                hours_logged = round(minutes_studied / 60.0, 2)
+                study_log = StudyLog(
+                    user_id=user_id,
+                    subject_id=task.subject_id,
+                    study_date=datetime.utcnow().date(),
+                    hours_studied=hours_logged,
+                    task_id=task.task_id 
+                )
+                db.session.add(study_log)
+        else:
+            # 2. إعادتها لحالة "غير مكتملة"
+            task.completed = False
+            task.completed_at = None
             
-            # 🟢 2. تحديث نقاط المستخدم (User Points)
-            #user = User.query.get(user_id)
-            #if user:
-             #   points_earned = minutes_studied // 10 # نقطة واحدة لكل دقيقة
-              #  user.total_coins = (user.total_coins or 0) + points_earned
-               # db.session.add(user)
-                
+            # ❗ خطوة اختيارية ومهمة: مسح الساعات اللي اتسجلت عشان التوتال يرجع مظبوط
+            StudyLog.query.filter_by(task_id=task_id).delete()
+
         db.session.commit()
-        return jsonify({'message': 'Task marked as complete', 'id': task.task_id}), 200
+        return jsonify({
+            'message': 'Task status updated', 
+            'is_complete': task.completed, 
+            'id': task.task_id
+        }), 200
+
     except Exception as e:
         db.session.rollback()
-        return jsonify({'message': 'An error occurred while updating the task', 'details': str(e)}), 500
+        return jsonify({'message': 'An error occurred', 'details': str(e)}), 500
 
 
 @task_bp.route('/<int:task_id>', methods=['PUT'])
@@ -189,6 +197,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
