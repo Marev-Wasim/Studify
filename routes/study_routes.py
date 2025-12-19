@@ -53,6 +53,9 @@ def log_study():
         return jsonify({'message': 'Invalid format for hours_studied or study_date'}), 400
     
     try:
+        total_hours_query = db.session.query(func.sum(StudyLog.hours_studied)).filter(StudyLog.user_id == user_id)
+        current_total = total_hours_query.scalar() or 0.0 
+        
         if float(current_total) + hours_float >= 200:
             # OPTION A: Delete old logs to reset to 0 (Fresh Start)
             StudyLog.query.filter_by(user_id=user_id).delete()
@@ -76,14 +79,14 @@ def log_study():
         points_earned = calculate_points(hours_float)
         user = User.query.get(user_id)
         if user:
-            user.points += points_earned
+            user.total_coins = (user.total_coins or 0) + points_earned
         
         db.session.commit()
 
         return jsonify({
-            'message': 'Study time logged and points awarded', 
+            'message': message,
             'points_earned': points_earned,
-            'new_total_points': user.points if user else 0
+            'new_total_points': user.total_coins if user else 0
         }), 201
         
     except IntegrityError as e:
@@ -127,6 +130,7 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
 
 
