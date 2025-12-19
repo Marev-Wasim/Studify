@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, session
 from extensions import db, bcrypt
 from models.user import User
 from models.subject import Subject
+from models.task import Task
 from models.study_log import StudyLog 
 from models.badge import Badge       
 from sqlalchemy import func
@@ -82,6 +83,7 @@ def update_user_profile():
         db.session.rollback()
         return jsonify({'error': 'Failed to update profile due to database error'}), 500
         
+
 
 
 
