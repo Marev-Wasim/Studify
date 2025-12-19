@@ -180,8 +180,9 @@ def get_pending_requests():
     
     requests_list = []
     for r in pending_query:
-        #sender = r.user2 if r.user_id1 == my_id else r.user1
+        sender = r.user2 if r.user_id1 == my_id else r.user1
         requests_list.append({
+            'sender_id': sender.id,
             'sender_username': sender.username,
             'requested_at': r.requested_at
         })
@@ -212,4 +213,5 @@ def delete_friend(other_user_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
+
 
