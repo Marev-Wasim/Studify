@@ -293,75 +293,41 @@
             display: none;
         }
 
-       /* 🟢 تنسيق الكارت الجديد */
-.progress-card {
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    min-width: 160px; 
-    width: 160px;
-    height: 220px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    flex-shrink: 0; /* مهم جداً عشان الكروت متصغرش */
-    scroll-snap-align: start;
-}
+        .progress-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+            padding: 1rem;
+            min-width: calc((100% - 2rem) / 3);
+            flex: 0 0 calc((100% - 2rem) / 3);
+            text-align: center;
+            box-sizing: border-box;
+        }
 
-.progress-card h4 {
-    color: #10203a;
-    font-family: 'Konkhmer Sleokchher', serif;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
-}
+        .progress-card h4 {
+            color: black;
+            font-family: 'Konkhmer Sleokchher', serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
 
-/* 🟢 تنسيق الدائرة (مهم جداً للظهور) */
-.circle-container {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .progress-circle {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 1rem;
+            position: relative;
+        }
 
-/* خصائص الرسم SVG */
-svg {
-    transform: rotate(-90deg); /* تدوير عشان تبدأ من فوق */
-    width: 100px;
-    height: 100px;
-}
+        .progress-ring {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
 
-.progress-bg {
-    fill: none;
-    stroke: #f0f0f0;
-    stroke-width: 8;
-}
-
-.progress-bar-circle {
-    fill: none;
-    stroke: #4cd4d0; /* لون التركواز */
-    stroke-width: 8;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 1s ease-in-out;
-}
-
-.progress-text {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    color: #888;
-    font-weight: bold;
-}
-
+        .progress-card p {
+            color: rgba(0, 0, 0, 0.37);
+            font-size: 0.9rem;
+        }
         /* Buttons */
         .carousel-btn {
             width: 40px;
@@ -723,45 +689,45 @@ svg {
     }
       
 
-function renderProgressCards(subjects) {
-    const carousel = document.getElementById('carousel');
-    carousel.innerHTML = ''; 
+     // 2. دالة رسم كروت المواد (الدوائر)
+    function renderProgressCards(subjects) {
+        carousel.innerHTML = ''; 
 
-    if (!subjects || subjects.length === 0) {
-        carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888; margin-top:20px;">No subjects added.</p>';
-        return;
-    }
+        if (subjects.length === 0) {
+            carousel.innerHTML = '<p style="text-align:center; width:100%; color:#888; margin-top: 20px;">No subjects added yet.</p>';
+            return;
+        }
 
-    subjects.forEach(subject => {
-        // نضمن أن النسبة رقم صحيح ولا يتعدى 100
-        const percent = Math.min(Math.max(subject.progress_percentage || 0, 0), 100);
-        
-        // حسابات الدائرة
-        const radius = 40;
-        const circumference = 2 * Math.PI * radius; 
-        const offset = circumference - (percent / 100) * circumference;
+        subjects.forEach(subject => {
+            // ضمان النسبة بين 0 و 100
+            const percent = Math.min(Math.max(subject.progress_percentage || 0, 0), 100);
+            
+            // حسابات الدائرة (نصف القطر 40)
+            const radius = 40;
+            const circumference = 2 * Math.PI * radius; 
+            const offset = circumference - (percent / 100) * circumference;
 
-        const card = document.createElement('div');
-        card.className = 'progress-card';
-        
-        card.innerHTML = `
-            <h4>${subject.name}</h4>
-            <div class="circle-container">
-                <svg width="100" height="100">
-                    <circle class="progress-bg" cx="50" cy="50" r="${radius}"></circle>
-                    <circle class="progress-bar-circle" cx="50" cy="50" r="${radius}" 
-                            stroke-dasharray="${circumference}" 
-                            stroke-dashoffset="${offset}"></circle>
-                </svg>
-                <div style="position:absolute; color:#4cd4d0; font-weight:bold;">
-                    ${Math.round(percent)}%
+            const card = document.createElement('div');
+            card.className = 'progress-card';
+            
+            card.innerHTML = `
+                <h4>${subject.name}</h4>
+                <div class="circle-container">
+                    <svg width="100" height="100">
+                        <circle class="progress-bg" cx="50" cy="50" r="${radius}"></circle>
+                        <circle class="progress-bar-circle" cx="50" cy="50" r="${radius}" 
+                                style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${offset};"></circle>
+                    </svg>
+                    <div style="position:absolute; color:#4cd4d0; font-weight:bold;">
+                        ${Math.round(percent)}%
+                    </div>
                 </div>
-            </div>
-            <p class="progress-text">${Math.round(percent)}% Complete</p>
-        `;
-        carousel.appendChild(card);
-    });
-}
+                <p class="progress-text">${Math.round(percent)}% Complete</p>
+            `;
+            carousel.appendChild(card);
+        });
+    }
+      
     // B. إرسال طلب تحديث الاسم و/أو كلمة المرور (PUT /profile/)
     async function updateProfile(newUsername, newPassword) {
         const updateData = {};
@@ -963,6 +929,7 @@ document.getElementById('btnRight').addEventListener('click', () => {
 
 
 </html>
+
 
 
 
