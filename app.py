@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, session, redirect, url_for, make_response
 from flask_cors import CORS
 from extensions import db, bcrypt  
 from sqlalchemy import text
@@ -19,6 +19,12 @@ with app.app_context():
     except Exception as e:
         print("Connection failed!")
         print(e)
+@app.after_request # Added global handler to prevent back-button access after logout
+def add_header(response): 
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate" # EDITED: Prevent caching
+    response.headers["Pragma"] = "no-cache" 
+    response.headers["Expires"] = "0" 
+    return response 
 
 # Import models AFTER db.init_app to avoid circular import
 from models.user import User
@@ -53,12 +59,15 @@ def signup_page():
     return render_template("signup.html")
 @app.route('/profile-page')
 def profile_page():
+    if 'user_id' not in session: return redirect(url_for('auth.login'))
     return render_template('profile.html')
 @app.route('/dashboard-page')
 def dashboard_page():
+    if 'user_id' not in session: return redirect(url_for('auth.login'))
     return render_template('dashboard.html')
 @app.route('/friends-page')
 def friends_page():
+    if 'user_id' not in session: return redirect(url_for('auth.login'))
     return render_template('friends.html')
 
 
@@ -66,6 +75,7 @@ if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
 
 
 
