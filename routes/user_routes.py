@@ -39,7 +39,7 @@ def get_user_profile():
     user_subjects = Subject.query.filter_by(user_id=user_id).all()
     subject_ids = [subject.id for subject in user_subjects]
 
-    #subjects_data = [{'id': s.id, 'name': s.name} for s in user_subjects]
+    subjects_data = [{'id': s.id, 'name': s.name} for s in user_subjects]
     
     # Get tasks for user's subjects
     total_tasks = Task.query.filter(Task.subject_id.in_(subject_ids)).count() if subject_ids else 0
@@ -60,7 +60,7 @@ def get_user_profile():
         # New Consolidated Stats
         'total_hours_studied': float(total_hours_studied),
         'badge_count': badge_count,
-        'subjects': subjects_list,
+        'subjects': subjects_data,
         'completion_percentage': round(completion_percentage, 1)
     }), 200
 
@@ -99,6 +99,7 @@ def update_user_profile():
         db.session.rollback()
         return jsonify({'error': 'Failed to update profile due to database error'}), 500
         
+
 
 
 
