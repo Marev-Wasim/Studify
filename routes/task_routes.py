@@ -123,10 +123,12 @@ def complete_task(task_id):
             minutes_studied = task.est_min
             if minutes_studied and minutes_studied > 0:
                 hours_logged = round(minutes_studied / 60.0, 2)
+                """
                 current_total = db.session.query(func.sum(StudyLog.hours_studied)).filter(StudyLog.user_id == user_id).scalar() or 0.0
                 if float(current_total) + hours_logged >= 200:
                     StudyLog.query.filter_by(user_id=user_id).delete()
                     db.session.flush()
+                """
                 study_log = StudyLog(
                     user_id=user_id,
                     subject_id=task.subject_id,
@@ -201,6 +203,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
