@@ -93,6 +93,7 @@ CREATE TABLE badges (
 GO
 
 -- Indexes for performance
+CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_study_logs_user_date ON study_logs(user_id, study_date);
 CREATE INDEX idx_friends_user ON friends(user_id1, status);
 CREATE INDEX idx_friends_user2_status ON friends(user_id2, status);
@@ -104,3 +105,4 @@ GO
 
 
 PRINT 'All 7 tables created successfully!';
+
