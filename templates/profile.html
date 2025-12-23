@@ -649,7 +649,7 @@
     try {
         // طلب بيانات البروفايل (التي أصبحت تشمل النقاط الآن)
         const response = await fetch(`${PROFILE_API_URL}/`); 
-        const data = await response.json();
+       /* const data = await response.json();
 
 // 1. جلب الساعات الكلية من الباك إند
 const totalHours = data.total_hours_studied || 0; 
@@ -663,7 +663,7 @@ updateHoursDisplay(totalHours);
 
 // إذا كنتِ تريدين الأولوية للنقاط القادمة من الباك إند، استخدمي data.points
 // أما إذا أردتِ الحساب التلقائي دائماً استخدمي calculatedPoints
-pointsDisplayElement.innerText = data.points || calculatedPoints;
+pointsDisplayElement.innerText = data.points || calculatedPoints;*/
         if (response.status === 401) {
             window.location.href = 'index.html'; 
             return;
@@ -924,6 +924,7 @@ document.getElementById('btnRight').addEventListener('click', () => {
 
 
 </html>
+
 
 
 
