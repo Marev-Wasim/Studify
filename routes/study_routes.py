@@ -13,32 +13,28 @@ def get_auth_user_id():
     """Retrieves the authenticated user's ID from the session."""
     return session.get('user_id')
 
-@study_bp.route('/points', methods=['GET', 'PUT']) 
+@study_bp.route('/points', methods=['GET'])
 def calculate_points():
+    # Get the 'hours' parameter from the URL 
+    hours_logged = request.args.get('hours', 0)
     
-    hours_logged = 0
-    
-    if request.method == 'GET':
-        # Retrieves hours from the browser URL parameters
-        hours_logged = request.args.get('hours', 0)
-    elif request.method == 'PUT':
-        # Retrieves hours from the JSON data sent by the frontend
-        data = request.get_json() or {}
-        hours_logged = data.get('hours_studied', 0)
-
     try:
         hours_float = float(hours_logged)
-        # Rule: 6 points per hour (1 point per 10 minutes)
+        
+        # Apply the calculation rule: 6 points per hour
         points = int(round(hours_float * 6))
         
+        # Return JSON for the frontend to consume
         return jsonify({
             'hours_provided': hours_float,
             'points_calculated': points,
             'status': 'success'
         }), 200
+        
     except (ValueError, TypeError):
+        # Handle cases where input is not a valid number
         return jsonify({
-            'error': 'Invalid hours format', 
+            'error': 'Invalid format. Provide a numeric value.',
             'points_calculated': 0
         }), 400
         
@@ -144,5 +140,6 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
 
