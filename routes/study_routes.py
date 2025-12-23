@@ -24,25 +24,16 @@ def calculate_points_api():
     # Get the 'hours' parameter from the URL 
     hours_logged = request.args.get('hours', 0)
     
-    try:
-        hours_float = float(hours_logged)
-        
+    try: 
         # Apply the calculation rule: 6 points per hour
         points = calculate_points(hours_logged)
         
         # Return JSON for the frontend to consume
         return jsonify({
-            'hours_provided': hours_float,
+            'hours_provided': float(hours_logged),
             'points_calculated': points,
             'status': 'success'
         }), 200
-        
-    except (ValueError, TypeError):
-        # Handle cases where input is not a valid number
-        return jsonify({
-            'error': 'Invalid format. Provide a numeric value.',
-            'points_calculated': 0
-        }), 400
         
 @study_bp.route('/', methods=['POST'])
 def log_study():
@@ -146,6 +137,7 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
 
 
