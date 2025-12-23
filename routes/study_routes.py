@@ -19,9 +19,10 @@ def calculate_points(hours_logged):
     try:
         hours_float = float(hours_logged)
         # Rule: 6 points per hour (1 point per 10 minutes)
-        return int(round(hours_float * 6))
+        points = int(round(hours_float * 6))
+        return jsonify({'points_calculated': points}), 200
     except (ValueError, TypeError):
-        return 0
+        return jsonify({'points_calculated': 0}), 400
 
 @study_bp.route('/', methods=['POST'])
 def log_study():
@@ -125,3 +126,4 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
