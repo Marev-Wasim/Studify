@@ -114,6 +114,7 @@ def search_users():
         results.append({
             'id': user.id,
             'username': user.username,
+            'points': user.total_coins,
             'status': status
         })
     
@@ -141,6 +142,7 @@ def get_friends():
             friends_list.append({
                 'id': other_user.id, # 🟢 مهم جداً لحذف الصديق لاحقاً
                 'username': other_user.username,
+                'points': other_user.total_coins,
                 'email': other_user.email
             })
 
@@ -166,6 +168,7 @@ def get_pending_requests():
         requests_list.append({
             'sender_id': r.sender.id,
             'sender_username': r.sender.username,
+            'sender_points': r.sender.total_coins,
             'requested_at': r.requested_at
         })
 
@@ -195,6 +198,7 @@ def delete_friend(other_user_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
+
 
 
 
