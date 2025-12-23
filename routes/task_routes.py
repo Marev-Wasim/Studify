@@ -88,6 +88,14 @@ def delete_task(task_id):
     if not task:
         return jsonify({'error': 'Task not found or unauthorized'}), 404
 
+    # PRE-DELETE HOOK HERE
+    # Update all study logs to 'nullify' the task reference.
+    # This keeps the study history but removes the link to the deleted task.
+    db.session.query(StudyLog).filter(StudyLog.task_id == task_id).update(
+        {StudyLog.task_id: None}, 
+        synchronize_session=False
+    )
+
     db.session.delete(task)
     db.session.commit()
 
@@ -203,6 +211,7 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
 
