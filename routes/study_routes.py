@@ -13,6 +13,7 @@ def get_auth_user_id():
     """Retrieves the authenticated user's ID from the session."""
     return session.get('user_id')
 
+@study_bp.route('/points', methods=['PUT'])
 def calculate_points(hours_logged):
     """Calculates points based on study hours (6 points per hour)."""
     try:
@@ -124,5 +125,6 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
 
