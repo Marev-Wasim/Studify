@@ -93,9 +93,10 @@ jobs:
         with:
           app-name: 'studify'
           slot-name: 'Production'
-          package: python-app
+          package: .
 
           
+
 
 
 
