@@ -736,7 +736,7 @@
                 renderSearchResults(fetchedResults.map(user => ({
                     id: user.id,
                     username: user.username, 
-                    points: /study/points || 0,
+                    points: user.points || 0,
                     status: user.status
                 })));
             } else {
@@ -866,6 +866,7 @@
 </body>
 
 </html>
+
 
 
 
