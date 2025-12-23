@@ -11,14 +11,14 @@ app.config.from_object('config.Config')
 db.init_app(app)
 bcrypt.init_app(app)
 
-# # Test connection
-# with app.app_context():
-#     try:
-#         result = db.session.execute(text("SELECT 1")).scalar()  # wrap in text()
-#         print("Connection successful! Result:", result)
-#     except Exception as e:
-#         print("Connection failed!")
-#         print(e)
+# Test connection
+with app.app_context():
+    try:
+        result = db.session.execute(text("SELECT 1")).scalar()  # wrap in text()
+        print("Connection successful! Result:", result)
+    except Exception as e:
+        print("Connection failed!")
+        print(e)
 @app.after_request # Added global handler to prevent back-button access after logout
 def add_header(response): 
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate" # EDITED: Prevent caching
@@ -51,22 +51,22 @@ app.register_blueprint(friend_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(study_bp)
 
-@app.route('/health')
-def health_check():
-    try:
-        # Pings the database
-        db.session.execute(text("SELECT 1"))
-        return jsonify({
-            "status": "healthy",
-            "database": "connected",
-            "message": "System is operational"
-        }), 200
-    except Exception as e:
-        return jsonify({
-            "status": "unhealthy",
-            "database": "error",
-            "details": str(e)
-        }), 500
+# @app.route('/health')
+# def health_check():
+#     try:
+#         # Pings the database
+#         db.session.execute(text("SELECT 1"))
+#         return jsonify({
+#             "status": "healthy",
+#             "database": "connected",
+#             "message": "System is operational"
+#         }), 200
+#     except Exception as e:
+#         return jsonify({
+#             "status": "unhealthy",
+#             "database": "error",
+#             "details": str(e)
+#         }), 500
 
 @app.route("/")
 def index():
@@ -92,3 +92,4 @@ if __name__ == "__main__":
     # with app.app_context():
     #     db.create_all()
     app.run(debug=True)
+
