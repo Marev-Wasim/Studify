@@ -19,22 +19,21 @@ def calculate_point(hours_logged):
         return int(round(hours_float * 6))
     except (ValueError, TypeError):
         return 0
+        
 @study_bp.route('/points', methods=['GET'])
 def calculate_points_api():
-    # Get the 'hours' parameter from the URL 
+    """API endpoint for the frontend to preview points."""
     hours_logged = request.args.get('hours', 0)
     
-    try: 
-        # Apply the calculation rule: 6 points per hour
-        points = calculate_points(hours_logged)
-        
-        # Return JSON for the frontend to consume
-        return jsonify({
-            'hours_provided': float(hours_logged),
-            'points_calculated': points,
-            'status': 'success'
-        }), 200
-        
+    # Call our fixed helper function
+    points = calculate_points(hours_logged) 
+    
+    return jsonify({
+        'hours_provided': float(hours_logged),
+        'points_calculated': points,
+        'status': 'success'
+    }), 200  
+    
 @study_bp.route('/', methods=['POST'])
 def log_study():
     user_id = get_auth_user_id()
@@ -137,6 +136,7 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
 
 
