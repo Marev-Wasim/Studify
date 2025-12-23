@@ -113,7 +113,7 @@ def complete_task(task_id):
         Task.task_id == task_id,
         Subject.user_id == user_id
     ).first()
-    
+    user = User.query.get(user_id)
     if not task:
         return jsonify({'error': 'Task not found or unauthorized'}), 404
         
@@ -139,7 +139,6 @@ def complete_task(task_id):
                 """
                 points_earned = int(round(hours_logged * 6))
                 
-                user = User.query.get(user_id)
                 if user:
                     user.total_coins = (user.total_coins or 0) + points_earned
                 study_log = StudyLog(
@@ -225,5 +224,6 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
 
