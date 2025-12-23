@@ -12,9 +12,15 @@ study_bp = Blueprint('study', __name__, url_prefix='/study')
 def get_auth_user_id():
     """Retrieves the authenticated user's ID from the session."""
     return session.get('user_id')
-
+    
+def calculate_point(hours_logged):
+    try:
+        hours_float = float(hours_logged)
+        return int(round(hours_float * 6))
+    except (ValueError, TypeError):
+        return 0
 @study_bp.route('/points', methods=['GET'])
-def calculate_points():
+def calculate_points_api():
     # Get the 'hours' parameter from the URL 
     hours_logged = request.args.get('hours', 0)
     
@@ -22,7 +28,7 @@ def calculate_points():
         hours_float = float(hours_logged)
         
         # Apply the calculation rule: 6 points per hour
-        points = int(round(hours_float * 6))
+        points = calculate_points(hours_logged)
         
         # Return JSON for the frontend to consume
         return jsonify({
@@ -140,6 +146,7 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
 
 
