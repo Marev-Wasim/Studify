@@ -95,6 +95,7 @@ GO
 -- Indexes for performance
 CREATE INDEX idx_study_logs_user_date ON study_logs(user_id, study_date);
 CREATE INDEX idx_friends_user ON friends(user_id1, status);
+CREATE INDEX idx_friends_user2_status ON friends(user_id2, status);
 CREATE INDEX idx_study_logs_user_subject ON study_logs(user_id, subject_id);
 CREATE INDEX idx_tasks_subject_id ON tasks(subject_id);
 CREATE INDEX idx_tasks_due_date ON tasks(due_date);
@@ -103,4 +104,3 @@ GO
 
 
 PRINT 'All 7 tables created successfully!';
-
