@@ -26,7 +26,7 @@ def calculate_points_api():
     hours_logged = request.args.get('hours', 0)
     
     # Call our fixed helper function
-    points = calculate_points(hours_logged) 
+    points = calculate_point(hours_logged) 
     
     return jsonify({
         'hours_provided': float(hours_logged),
@@ -136,6 +136,7 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
 
 
