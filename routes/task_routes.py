@@ -155,8 +155,17 @@ def complete_task(task_id):
             task.completed = False
             task.completed_at = None
             
-            # ❗ خطوة اختيارية ومهمة: مسح الساعات اللي اتسجلت عشان التوتال يرجع مظبوط
-            StudyLog.query.filter_by(task_id=task_id).delete()
+# REMOVE HOURS: Find and delete the log associated with this task
+            log_to_remove = StudyLog.query.filter_by(task_id=task_id).first()
+            if log_to_remove:
+                # SUBTRACT POINTS: Calculate what was earned and remove it
+                hours_to_remove = float(log_to_remove.hours_studied)
+                points_to_remove = int(round(hours_to_remove * 6))
+                
+                if user:
+                    user.total_coins = max(0, (user.total_coins or 0) - points_to_remove)
+                
+                db.session.delete(log_to_remove)
 
         db.session.commit()
         return jsonify({
@@ -216,4 +225,5 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
 
