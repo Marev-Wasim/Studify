@@ -57,17 +57,26 @@ def delete_subject(subject_id):
     try:
         # 1. حذف سجلات الدراسة المرتبطة (StudyLogs)
         # هام: نستخدم synchronize_session=False لتجنب مشاكل الذاكرة
-        StudyLog.query.filter_by(subject_id=subject_id).delete(synchronize_session=False)
+        # StudyLog.query.filter_by(subject_id=subject_id).delete(synchronize_session=False)
+        # 1. Instead of deleting, we NULLIFY the subject_id and task_id
+        # This keeps the 'hours_studied' records in the database for total history.
+        StudyLog.query.filter_by(subject_id=subject_id).update(
+            {
+                StudyLog.subject_id: None,
+                StudyLog.task_id: None
+            }, 
+            synchronize_session=False
+        )
         
-        # 2. حذف المهام المرتبطة (Tasks)
+        # 2. Delete the Tasks (Since you want the task to disappear, but the logs above are now safe)
         Task.query.filter_by(subject_id=subject_id).delete(synchronize_session=False)
         
-        # 3. حذف المادة (Subject)
+        # 3. Delete the Subject
         db.session.delete(subject)
         
-        # 4. حفظ التغييرات في قاعدة البيانات
+        # 4. Save changes
         db.session.commit()
-        return jsonify({'message': 'Subject and associated records deleted successfully'}), 200
+        return jsonify({'message': 'Subject and tasks deleted successfully, study hours preserved in history'}), 200
         
     except Exception as e:
         db.session.rollback()
@@ -93,14 +102,3 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({'message': 'Subject updated successfully'})
-
-
-
-
-
-
-
-
-
-
-
