@@ -650,6 +650,14 @@
             // استخدام المسار الأساسي '/' للـ Blueprint لجلب البيانات
             const response = await fetch(`${PROFILE_API_URL}/`); 
 
+
+        // 2. 🟢 جلب النقاط من الرابط الجديد الذي قمنا بعمله
+            const pointsResponse = await fetch(`${BASE_API_URL}/study/points`);
+            const pointsData = await pointsResponse.json();
+
+            console.log("✅ Profile Data:", data);
+            console.log("✅ Points Data:", pointsData);
+
             if (response.status === 401) {
                 // توجيه لصفحة تسجيل الدخول إذا لم يكن مسجل الدخول
                 window.location.href = 'index.html'; 
@@ -660,12 +668,6 @@
             }
 
             const data = await response.json();
-
-            
-            // 👇👇👇 ضعي هذا السطر للاختبار 👇👇👇
-            console.log("✅ البيانات وصلت بنجاح:", data);
-
-
             
             // 2.1. تحديث معلومات الملف الشخصي
             profileNameElement.innerText = data.username || 'N/A';
@@ -675,10 +677,12 @@
             // بما أن كود الـ Flask Profile Blueprint أرسل فقط (username, email, points)، سنعتمد عليه.
             
             const totalHours = data.total_hours_studied || 0; // قيمة وهمية مؤقتة حتى يتم تحديث الـ API
-            const totalPoints = data.points || 0;
-            
-            updateHoursDisplay(totalHours);
-            pointsDisplayElement.innerText = totalPoints;
+             updateHoursDisplay(totalHours);
+                     
+           // 3. النقاط (من رابط الـ Study)
+            const points = pointsData.points_calculated || 0;
+            document.getElementById('pointsDisplay').innerText = points;
+
 
             // 2.3. تحديث كروت التقدم (نفترض أن بياناتها تأتي من API آخر أو تم دمجها هنا)
             renderProgressCards(data.subjects); // يتم إزالة هذا مؤقتاً لعدم وجود subjects في الـ API الحالي
