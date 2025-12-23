@@ -646,47 +646,36 @@
 
     // A. جلب بيانات الملف الشخصي (GET /profile/)
     async function fetchProfileData() {
-        try {
-            // 1. نرسل الطلبين في نفس الوقت لتسريع الصفحة
-            const [profileRes, pointsRes] = await Promise.all([
-                fetch(`${PROFILE_API_URL}/`),
-                fetch(`${BASE_API_URL}/study/points`)
-            ]);
-
-            // 2. التحقق من تسجيل الدخول
-            if (profileRes.status === 401) {
-                window.location.href = 'index.html';
-                return;
-            }
-
-            // 3. تحويل البيانات لـ JSON (بأسماء واضحة ومختلفة)
-            const profileData = await profileRes.json();
-            const pointsData = await pointsRes.json();
-
-            console.log("✅ وصلت بيانات البروفايل:", profileData);
-            console.log("✅ وصلت بيانات النقاط:", pointsData);
-
-            // 4. تحديث الواجهة بالبيانات
-            // أ. الاسم والإيميل
-            profileNameElement.innerText = profileData.username || 'N/A';
-            profileEmailElement.innerText = profileData.email || 'N/A';
-            
-            // ب. الساعات (تؤخذ من بيانات البروفايل كما طلبتِ)
-            const totalHours = profileData.total_hours_studied || 0; 
-            updateHoursDisplay(totalHours);
-                      
-            // ج. النقاط (تؤخذ من رابط الدراسة المخصص)
-            const points = pointsData.points_calculated || 0;
-            pointsDisplayElement.innerText = points;
-
-            // د. رسم كروت المواد (Subjects)
-            renderProgressCards(profileData.subjects || []);
-
-        } catch (error) {
-            console.error('❌ خطأ في الـ Fetch:', error);
-            alert("Failed to load profile data. Please check your connection.");
+    try {
+        // طلب بيانات البروفايل (التي أصبحت تشمل النقاط الآن)
+        const response = await fetch(`${PROFILE_API_URL}/`); 
+        
+        if (response.status === 401) {
+            window.location.href = 'index.html'; 
+            return;
         }
+
+        const data = await response.json();
+        console.log("✅ البيانات كاملة من User API:", data);
+
+        // 1. تحديث الاسم والإيميل
+        profileNameElement.innerText = data.username || 'N/A';
+        profileEmailElement.innerText = data.email || 'N/A';
+        
+        // 2. تحديث الساعات (من نفس الـ data)
+        const totalHours = data.total_hours_studied || 0; 
+        updateHoursDisplay(totalHours);
+                  
+        // 3. 🟢 تحديث النقاط (أخذناها من data.points مباشرة)
+        document.getElementById('pointsDisplay').innerText = data.points || 0;
+
+        // 4. رسم كروت المواد
+        renderProgressCards(data.subjects || []);
+
+    } catch (error) {
+        console.error('Error loading profile data:', error);
     }
+}
       
 
 function renderProgressCards(subjects) {
@@ -904,6 +893,7 @@ document.getElementById('btnRight').addEventListener('click', () => {
 
 
 </html>
+
 
 
 
