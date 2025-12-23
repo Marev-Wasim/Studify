@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, session
 from extensions import db
 from models.friend import Friend
 from models.user import User
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 friend_bp = Blueprint('friend', __name__, url_prefix='/friends')
     
@@ -98,8 +98,10 @@ def search_users():
     # This JOIN gets the user AND their relationship with you in one go
     users_with_rel = db.session.query(User, Friend).outerjoin(
         Friend, 
-        ((Friend.user_id1 == (my_id if my_id < User.id else User.id)) & 
-         (Friend.user_id2 == (my_id if my_id > User.id else User.id)))
+        # ((Friend.user_id1 == (my_id if my_id < User.id else User.id)) & 
+        #  (Friend.user_id2 == (my_id if my_id > User.id else User.id)))
+        (Friend.user_id1 == func.least(my_id, User.id)) & 
+        (Friend.user_id2 == func.greatest(my_id, User.id))
     ).filter(
         User.username.contains(query),
         User.id != my_id
@@ -221,6 +223,7 @@ def delete_friend(other_user_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
+
 
 
 
