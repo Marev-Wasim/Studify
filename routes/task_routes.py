@@ -137,6 +137,11 @@ def complete_task(task_id):
                     StudyLog.query.filter_by(user_id=user_id).delete()
                     db.session.flush()
                 """
+                points_earned = int(round(hours_logged * 6))
+                
+                user = User.query.get(user_id)
+                if user:
+                    user.total_coins = (user.total_coins or 0) + points_earned
                 study_log = StudyLog(
                     user_id=user_id,
                     subject_id=task.subject_id,
@@ -211,3 +216,4 @@ def update_task(task_id):
 
     db.session.commit()
     return jsonify({'message': 'Task updated successfully'}), 200
+
