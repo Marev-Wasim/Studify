@@ -675,7 +675,7 @@
             // بما أن كود الـ Flask Profile Blueprint أرسل فقط (username, email, points)، سنعتمد عليه.
             
             const totalHours = data.total_hours_studied || 0; // قيمة وهمية مؤقتة حتى يتم تحديث الـ API
-            const totalPoints = data.points || 0;
+            const totalPoints = data./study/points || 0;
             
             updateHoursDisplay(totalHours);
             pointsDisplayElement.innerText = totalPoints;
@@ -905,3 +905,4 @@ document.getElementById('btnRight').addEventListener('click', () => {
 
 
 </html>
+
