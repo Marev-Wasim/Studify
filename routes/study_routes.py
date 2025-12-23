@@ -13,7 +13,7 @@ def get_auth_user_id():
     """Retrieves the authenticated user's ID from the session."""
     return session.get('user_id')
     
-def calculate_point(hours_logged):
+def calculate_points(hours_logged):
     try:
         hours_float = float(hours_logged)
         return int(round(hours_float * 6))
@@ -26,7 +26,7 @@ def calculate_points_api():
     hours_logged = request.args.get('hours', 0)
     
     # Call our fixed helper function
-    points = calculate_point(hours_logged) 
+    points = calculate_points(hours_logged) 
     
     return jsonify({
         'hours_provided': float(hours_logged),
@@ -136,6 +136,7 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
 
 
