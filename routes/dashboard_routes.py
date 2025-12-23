@@ -20,11 +20,17 @@ def summary():
         return jsonify({'error': 'Not authenticated'}), 401
     
     user_id = session['user_id']
+
+    # 1. Get total hours (Uses idx_study_logs_user_date)
+    # This is MUCH faster because it stays in the database
+    total_hours = db.session.query(func.sum(StudyLog.hours_studied)).filter(
+        StudyLog.user_id == user_id
+    ).scalar() or 0
     
     # 1. Get all subjects for this user
     # user_subjects = Subject.query.filter_by(user_id=user_id).all()
     # subject_ids = [subject.id for subject in user_subjects]
-    # 1.Get Subject IDs (Uses index on user_id if exists)
+    # 2. Get Subject IDs (Uses index on user_id if exists)
     subject_ids = [s.id for s in Subject.query.filter_by(user_id=user_id).all()]
     if not subject_ids:
         return jsonify({'total_tasks': 0, 'completed_tasks': 0, 'total_hours': 0, 'completion_percentage': 0})
@@ -37,7 +43,7 @@ def summary():
     #     Task.subject_id.in_(subject_ids),
     #     Task.completed == True
     # ).count() if subject_ids else 0
-    # 2.Get Task Counts (Uses idx_tasks_subject_id)
+    # 3.Get Task Counts (Uses idx_tasks_subject_id)
     # We do this in one query to be efficient
     task_stats = db.session.query(
         func.count(Task.task_id),
@@ -50,11 +56,6 @@ def summary():
     # 3. Get user's study logs (already has user_id)
     # user_study_logs = StudyLog.query.filter_by(user_id=user_id).all()
     # total_hours = sum([log.hours_studied for log in user_study_logs])
-    # 3. Get total hours (Uses idx_study_logs_user_date)
-    # This is MUCH faster because it stays in the database
-    total_hours = db.session.query(func.sum(StudyLog.hours_studied)).filter(
-        StudyLog.user_id == user_id
-    ).scalar() or 0
     
     # 4. Calculate percentage (avoid division by zero)
     # completion_percentage = (completed_tasks / total_tasks * 100) if total_tasks else 0
