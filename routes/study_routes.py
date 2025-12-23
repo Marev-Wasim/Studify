@@ -13,17 +13,35 @@ def get_auth_user_id():
     """Retrieves the authenticated user's ID from the session."""
     return session.get('user_id')
 
-@study_bp.route('/points', methods=['PUT'])
-def calculate_points(hours_logged):
-    """Calculates points based on study hours (6 points per hour)."""
+@study_bp.route('/points', methods=['GET', 'PUT']) 
+def calculate_points():
+    
+    hours_logged = 0
+    
+    if request.method == 'GET':
+        # Retrieves hours from the browser URL parameters
+        hours_logged = request.args.get('hours', 0)
+    elif request.method == 'PUT':
+        # Retrieves hours from the JSON data sent by the frontend
+        data = request.get_json() or {}
+        hours_logged = data.get('hours_studied', 0)
+
     try:
         hours_float = float(hours_logged)
         # Rule: 6 points per hour (1 point per 10 minutes)
         points = int(round(hours_float * 6))
-        return jsonify({'points_calculated': points}), 200
+        
+        return jsonify({
+            'hours_provided': hours_float,
+            'points_calculated': points,
+            'status': 'success'
+        }), 200
     except (ValueError, TypeError):
-        return jsonify({'points_calculated': 0}), 400
-
+        return jsonify({
+            'error': 'Invalid hours format', 
+            'points_calculated': 0
+        }), 400
+        
 @study_bp.route('/', methods=['POST'])
 def log_study():
     user_id = get_auth_user_id()
@@ -126,4 +144,5 @@ def get_study_logs():
         'logs': formatted_logs,
         'total_hours_studied': float(total_hours_studied)
     })
+
 
