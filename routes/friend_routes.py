@@ -91,26 +91,49 @@ def search_users():
         return jsonify([])
     
     # Find users whose username contains the query string (excluding yourself)
-    users = User.query.filter(
+    # users = User.query.filter(
+    #     User.username.contains(query),
+    #     User.id != my_id
+    # ).limit(10).all()
+    # This JOIN gets the user AND their relationship with you in one go
+    users_with_rel = db.session.query(User, Friend).outerjoin(
+        Friend, 
+        ((Friend.user_id1 == (my_id if my_id < User.id else User.id)) & 
+         (Friend.user_id2 == (my_id if my_id > User.id else User.id)))
+    ).filter(
         User.username.contains(query),
         User.id != my_id
     ).limit(10).all()
     
     #return jsonify([{'id': u.id, 'username': u.username} for u in users])
     results = []
-    for user in users:
-        # Check relationship status using your id1 < id2 logic
-        id1, id2 = sorted([my_id, user.id])
-        rel = Friend.query.filter_by(user_id1=id1, user_id2=id2).first()
+    # for user in users:
+    #     # Check relationship status using your id1 < id2 logic
+    #     id1, id2 = sorted([my_id, user.id])
+    #     rel = Friend.query.filter_by(user_id1=id1, user_id2=id2).first()
         
-        status = "none" # Stranger, no row for this pair 
+    #     status = "none" # Stranger, no row for this pair 
+    #     if rel:
+    #         if rel.status == 'accepted':
+    #             status = "friends"
+    #         elif rel.status == 'pending':
+    #             # Identify if I sent it or they sent it
+    #             status = "sent_by_me" if rel.sent_by_id == my_id else "sent_to_me"
+
+    #     results.append({
+    #         'id': user.id,
+    #         'username': user.username,
+    #         'points': user.total_coins,
+    #         'status': status
+    #     })
+    for user, rel in users_with_rel:
+        status = "none"
         if rel:
             if rel.status == 'accepted':
                 status = "friends"
             elif rel.status == 'pending':
-                # Identify if I sent it or they sent it
                 status = "sent_by_me" if rel.sent_by_id == my_id else "sent_to_me"
-
+        
         results.append({
             'id': user.id,
             'username': user.username,
@@ -198,6 +221,7 @@ def delete_friend(other_user_id):
     db.session.commit()
 
     return jsonify({'message': 'Friend/Request removed'})
+
 
 
 
