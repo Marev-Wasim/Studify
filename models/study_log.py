@@ -7,7 +7,8 @@ class StudyLog(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), nullable=False)
     study_date = db.Column(db.Date, nullable=False)
-    hours_studied = db.Column(db.Numeric(4, 2), nullable=False)
+    hours_studied = db.Column(db.Numeric(6, 2), nullable=False)
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.task_id'), nullable=True)
   
+
 
