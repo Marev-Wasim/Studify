@@ -1272,25 +1272,7 @@
     /**
      * Marks a task as complete via PUT /tasks/id/complete
      */
- /*   window.completeTask = async function (taskId) {
-        try {
-            const response = await fetch(`${BASE_API_URL}/tasks/${taskId}/complete`, {
-                method: 'PUT'
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                await fetchSubjectsAndTasks(); 
-            } else {
-                alert(`Completion Failed: ${result.error || result.message || 'Server error'}`);
-            }
-            
-        } catch (error) {
-            console.error('Error completing task:', error.message);
-            alert(`Failed to complete task: ${error.message}`);
-        }
-    }*/
+ 
     
 window.toggleTaskComplete = async function (taskId) {
     try {
@@ -1375,52 +1357,7 @@ window.deleteTaskAPI = async function (taskId) {
         subjectsContainer.appendChild(newCard);
     }
 
-    /**
-     * Adds a task entry to its corresponding subject card.
-     * @param {Object} task - { id, name, time, date, completed, subject_id, subjectName }
-     */
- /*   function addTaskToCard(task) {
-        const targetCard = document.getElementById(`subject-${task.subject_id}`);
-
-        if (targetCard) {
-            const tasksList = targetCard.querySelector('.tasks-list');
-            const noTasksMsg = tasksList.querySelector('.no-tasks-message');
-            if (noTasksMsg) {
-                tasksList.removeChild(noTasksMsg);
-            }
-
-            const taskEntry = document.createElement('div');
-            taskEntry.className = 'task-entry';
-            taskEntry.id = `task-${task.id}`;
-            taskEntry.setAttribute('data-due-date', task.due_date);
-
-            const dateObj = new Date(task.due_date);
-            const formattedDate = dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }); 
-            
-            let buttonHTML = '';
-            let timeText = `${task.time} Mins`;
-            
-            if (task.is_complete) {
-                taskEntry.classList.add('completed');
-                timeText = 'Completed!';
-                // 🟢 التعديل هنا: شيلنا كلمة disabled وخلينا اللون رمادي بس الزرار لسه شغال
-                buttonHTML = `<button onclick="completeTask(${task.id})" style="background: #ccc; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">✓</button>`;
-            } else {
-                buttonHTML = `<button onclick="completeTask(${task.id})" style="background: #00a8a0; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; padding: 2px 8px; font-size: 16px; font-weight: bold;">✓</button>`;
-            }
-            
-            taskEntry.innerHTML = `
-                <span style="flex-grow: 1;">
-                    ${task.title} <span style="font-size:0.9em; color:#555;">(Due: ${formattedDate})</span>
-                </span>
-                <span class="task-time">${timeText}</span>
-                ${buttonHTML}
-            `;
-            
-            tasksList.appendChild(taskEntry);
-        }
-    }
-    */
+   
  function addTaskToCard(task) {
     const targetCard = document.getElementById(`subject-${task.subject_id}`);
 
@@ -1524,6 +1461,7 @@ window.deleteTaskAPI = async function (taskId) {
 
 
 </html>
+
 
 
 
