@@ -9,9 +9,6 @@
         href="https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&family=KoHo:wght@400;500;600&family=Inter:wght@400;600;700;800&display=swap"
         rel="stylesheet">
     <style>
-        /* * هذا الجزء يحتوي على تنسيقات CSS الخاصة بالصفحة
-         * تم الإبقاء عليه كما أرسلته سابقاً
-         */
         * {
             margin: 0;
             padding: 0;
@@ -522,7 +519,6 @@
                 });
 
                 if (response.status === 401) {
-                    // إذا لم يكن مصرحًا، أعد التوجيه لصفحة الدخول
                     alert("Error: Authentication required (User must be logged in).");
                     window.location.href = '/index-page';
                     return null;
@@ -539,13 +535,8 @@
             }
         }
 
-        /**
-         * Sends a POST/PUT/DELETE request to the API.
-         * @param {string} endpoint - The API path.
-         * @param {string} method - HTTP method ('POST', 'PUT', 'DELETE').
-         * @param {Object} [data] - The body data for POST/PUT.
-         * @returns {Promise<boolean>} True if the operation was successful, false otherwise.
-         */
+
+        
         async function sendMutation(endpoint, method, data = null) {
             try {
                 const body = data ? JSON.stringify(data) : undefined;
@@ -571,11 +562,7 @@
         }
 
 
-        // --- 2. Data Initialization (Loading) ---
-
-        /**
-         * Loads all necessary data from the backend.
-         */
+        
         async function loadAllData() {
             // Fetch friends
             const fetchedFriends = await fetchData('/friends/');
@@ -594,20 +581,16 @@
                 friendRequests = fetchedRequests.map(req => ({
                     ...req,
                     name: req.sender_username,
-                    // 🚨 [تذكير]: يجب أن يُرجع الباك إند: request_id و sender_id (الذي هو ID المرسل)
-                    // نفترض هنا أن هذه الحقول موجودة (req.request_id و req.sender_id)
                 }));
             }
             
-            // إلغاء محاولة جلب allUsersOnServer لكي لا تفشل دالة loadAllData()
+            
             allUsersOnServer = [];
 
-            // Render the UI after all data is loaded
             renderFriends();
             renderRequests();
         }
 
-        // --- 3. Rendering Functions ---
 
         function renderFriends() {
             const container = document.getElementById('friendsContainer');
@@ -620,8 +603,7 @@
             }
 
             container.innerHTML = friends.map(friend => {
-                // 🚨 [ملاحظة]: هنا نعتمد على أن friend.id هو ID الصديق الآخر، 
-                // وهو ما يتوقعه الباك إند في مسار الحذف /friends/:otherUserId
+                
                 
                 return `
                     <div class="friend-card">
@@ -651,7 +633,6 @@
                 return;
             }
 
-            // يتم جلب الأصدقاء والطلبات المعلقة في loadAllData()
             const myFriendIds = friends.map(f => f.id);
             const pendingRequestUserIds = friendRequests.map(r => r.id); 
 
@@ -668,7 +649,6 @@
                 } else if (isSentToMe) {
                     buttonHtml = '<button class="sent-btn" disabled>Request Received</button>';
                 } else {
-                    // 🟢 [تصحيح]: نمرر اسم المستخدم (Username)
                     buttonHtml = `<button class="add-btn-small" onclick="sendFriendRequest(this, '${user.username}')">Add Friend</button>`;
                 }
 
@@ -696,7 +676,6 @@
                 return;
             }
             container.innerHTML = friendRequests.map(req => {
-                // 🚨 [ملاحظة]: هنا نعتمد على وجود sender_id (المرسل) و request_id (رقم العلاقة) في بيانات الطلبات
                 
                 return `
                     <div class="request-item">
@@ -714,21 +693,14 @@
             }).join('');
         }
 
-        // --- 4. Logic Functions (Now Asynchronous) ---
-
-        /**
-         * 🟢 [التعديل]: دالة جلب نتائج البحث من الخادم
-         * تم تغيير الشرط ليقبل حرفاً واحداً (أو أكثر)
-         */
+        
         async function fetchAndRenderSearchResults(query) {
             
-            // 🚨 [التعديل]: إذا كان فارغاً (أقل من حرف)، نعود لقائمة الأصدقاء
             if (query.length === 0) {
                 renderFriends();
                 return;
             }
             
-            // يتم إرسال الطلب مع وجود حرف واحد على الأقل
             const fetchedResults = await fetchData(`/friends/users/search?q=${encodeURIComponent(query)}`);
 
             if (fetchedResults) {
@@ -744,39 +716,30 @@
         }
 
 
-        // 🟢 [التعديل]: معالج البحث الجديد:
         document.getElementById('searchInput').addEventListener('input', function (e) {
             const query = e.target.value.trim();
             fetchAndRenderSearchResults(query);
         });
 
-        // Tab click to reset search (كما هو)
         document.getElementById('tabBtn').addEventListener('click', function () {
             document.getElementById('searchInput').value = "";
             renderFriends();
         });
 
 
-        /**
-         * Sends a friend request to a user.
-         * @param {HTMLElement} btn - The button element clicked.
-         * @param {string} targetUsername - The username of the user to send the request to.
-         */
+        
         async function sendFriendRequest(btn, targetUsername) {
             // 1. Disable button and show loading/pending state immediately for better UX
             const originalText = btn.innerText;
             btn.innerText = "Sending...";
             btn.disabled = true;
 
-            // 2. Call the API
-            // 🟢 [تصحيح]: نرسل 'friend_username' كما يتوقعه الباك إند
+            
             const success = await sendMutation('/friends/request', 'POST', { friend_username: targetUsername });
 
-            // 3. Handle the result
             if (success) {
                 btn.innerText = "Request Sent";
                 btn.className = "sent-btn";
-                // نُعيد تحميل جميع البيانات لتحديث حالة البحث وطلبات الصداقة
                 await loadAllData();
             } else {
                 // Revert button state on failure
@@ -786,56 +749,41 @@
         }
 
 
-        /**
-         * Accepts a friend request.
-         * @param {number} senderId - The ID of the user who sent the request.
-         */
+       
         async function acceptRequest(senderId) {
-            // 1. Optimistic UI update (optional, but faster feeling)
             const originalRequest = friendRequests.find(r => r.sender_id === senderId);
             friendRequests = friendRequests.filter(r => r.sender_id !== senderId);
             renderRequests(); 
 
-            // 2. Call the API
-            // 🟢 [تصحيح]: استخدام المسار والـ Body الصحيحين (يتوقع sender_id)
+            
             const success = await sendMutation('/friends/accept', 'PUT', { sender_id: senderId });
 
-            // 3. Handle the result
             if (success) {
                 await loadAllData();
             } else {
-                // Revert UI update and show an error
                 if (originalRequest) friendRequests.push(originalRequest);
                 renderRequests();
             }
         }
 
-        /**
-         * Declines a friend request.
-         * @param {number} requestId - The ID of the relationship record to delete.
-         */
+       
         async function declineRequest(requestId) {
             if (confirm("Reject this friend request?")) {
                 const originalRequest = friendRequests.find(r => r.request_id === requestId);
                 friendRequests = friendRequests.filter(r => r.request_id !== requestId);
                 renderRequests(); 
 
-                // 2. Call the API
-                // 🟢 [تصحيح]: المسار الصحيح للحذف: /friends/:requestId (يجب أن يكون ID العلاقة)
+                
                 const success = await sendMutation(`/friends/${requestId}`, 'DELETE');
 
                 if (!success) {
                     if (originalRequest) friendRequests.push(originalRequest);
                     renderRequests();
                 }
-                // إذا نجح، فإن loadAllData() ستقوم بالتحديث
             }
         }
 
-        /**
-         * Removes a friend.
-         * @param {number} otherUserId - The ID of the friend (the other user's ID).
-         */
+        
         async function removeFriend(otherUserId) {
             if (confirm("Remove this friend permanently?")) {
                 // 1. Optimistic UI update
@@ -843,28 +791,26 @@
                 friends = friends.filter(f => f.id !== otherUserId);
                 renderFriends();
 
-                // 2. Call the API
-                // 🟢 [تصحيح]: المسار الصحيح للحذف: /friends/:otherUserId (يتوقع ID المستخدم الآخر)
+
                 const success = await sendMutation(`/friends/${otherUserId}`, 'DELETE');
 
-                // 3. Handle the result
                 if (success) {
                     await loadAllData();
                 } else {
-                    // Revert UI update and show an error
                     if (originalFriend) friends.push(originalFriend);
                     renderFriends();
                 }
             }
         }
 
-        // --- 5. Initial Run ---
+        // --- Initial Run ---
         window.addEventListener('load', loadAllData);
 
     </script>
 </body>
 
 </html>
+
 
 
 
