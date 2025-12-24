@@ -954,12 +954,9 @@
     }
     
 
-    /* تنسيق المهمة الفاشلة (التي فات موعدها) */
     .task-entry.failed {
       border-left: 5px solid #ff4d4d;
-      /* خط أحمر على اليسار */
       background-color: #fff0f0;
-      /* خلفية حمراء فاتحة */
     }
 
     .task-entry.failed .task-time {
@@ -971,6 +968,64 @@
       text-decoration: line-through;
       color: #888;
     }
+
+
+@media (max-width: 1024px) {
+    .frame .div {
+        max-width: 95%; 
+        min-height: auto;
+        padding-bottom: 50px;
+    }
+    
+    #subjectsContainer {
+        width: 90%;
+        left: 5%;
+        position: relative; 
+        top: 20px;
+        height: auto;
+    }
+    
+    .subject-card {
+        width: 100%; 
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        align-items: flex-start; 
+    }
+
+    .girl-illustration, .ellipse, .ellipse-2 {
+        display: none;
+    }
+
+    /* جعل الهيدر مرن */
+    .frame .text-wrapper-3 {
+        left: 80px;
+        font-size: 30px;
+    }
+
+    .frame .nav-links {
+        top: 85px; 
+        right: auto;
+        left: 20px;
+        gap: 15px;
+    }
+
+    .frame .rectangle, .frame .rectangle-9 {
+        position: relative;
+        top: 150px;
+        right: 0;
+        left: 0;
+        width: 90%;
+        margin: 20px auto;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .frame .rectangle-6, .frame .rectangle-7, .frame .sun-mon-tue-wen-thu, .frame .element, .frame .line, .frame .line-2, .frame .line-3, .frame .line-4, .frame .line-5, .frame .line-6, .frame .line-7, .frame .line-8, .frame .line-9, .frame .line-10, .frame .rectangle-33, .frame .rectangle-34, .frame .ellipse-3, .frame .ellipse-4, .frame .ellipse-5, .frame .rectangle-8 {
+        display: none;
+    }
+}
   </style>
 </head>
 
@@ -1462,6 +1517,7 @@ window.deleteTaskAPI = async function (taskId) {
 
 
 </html>
+
 
 
 
