@@ -191,6 +191,16 @@ input.input-error {
       <h2>Join Studify Today!</h2>
       <p>Join us and start your study journey!</p>
 
+      {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <div style="color: #ff4d4d; background: #fff0f0; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; border: 1px solid #ff4d4d;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
       <form action="/auth/signup" method="POST">
 
   <div class="form-row">
@@ -277,6 +287,7 @@ input.input-error {
 </script>
 </body>
 </html>
+
 
 
 
