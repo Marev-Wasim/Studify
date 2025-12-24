@@ -649,21 +649,7 @@
     try {
         // طلب بيانات البروفايل (التي أصبحت تشمل النقاط الآن)
         const response = await fetch(`${PROFILE_API_URL}/`); 
-       /* const data = await response.json();
-
-// 1. جلب الساعات الكلية من الباك إند
-const totalHours = data.total_hours_studied || 0; 
-
-// 2. حساب النقاط تلقائياً (نقطة لكل 10 دقائق)
-// الساعة فيها 6 نقاط (60 / 10 = 6)
-const calculatedPoints = Math.floor(totalHours * 6);
-
-// 3. تحديث الواجهة
-updateHoursDisplay(totalHours);
-
-// إذا كنتِ تريدين الأولوية للنقاط القادمة من الباك إند، استخدمي data.points
-// أما إذا أردتِ الحساب التلقائي دائماً استخدمي calculatedPoints
-pointsDisplayElement.innerText = data.points || calculatedPoints;*/
+     
         if (response.status === 401) {
             window.location.href = 'index.html'; 
             return;
@@ -755,19 +741,7 @@ function renderProgressCards(subjects) {
     // --------------------------------------------------------
     // 3. دوال الرسم وعناصر التحكم (Render & Logic)
     // --------------------------------------------------------
-
-   /* function updateHoursDisplay(totalHours) {
-        const goalHours = 200;
-        const hoursDisplay = totalHours.toFixed(1);
-        
-        let progressPercentage = (totalHours / goalHours) * 100;
-        if (progressPercentage > 100) progressPercentage = 100;
-
-        hoursValueElement.innerText = `${hoursDisplay} Hours`;
-        progressFillElement.style.width = `${progressPercentage}%`;
-        hoursTextElement.innerText = `Next Reward at ${goalHours} Hours`;
-    }
-*/function updateHoursDisplay(totalHours) {
+function updateHoursDisplay(totalHours) {
     const goalHours = 200;
     
     // حساب الساعات الحالية داخل الدورة (من 0 إلى 199.9)
@@ -924,6 +898,7 @@ document.getElementById('btnRight').addEventListener('click', () => {
 
 
 </html>
+
 
 
 
