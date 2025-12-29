@@ -55,17 +55,17 @@ GO
 
 -- 5. Coin Transactions
 -- reason: to earn money, auto-filled through Flask
-CREATE TABLE coin_transactions (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    user_id INT NOT NULL,
-    study_log_id INT,
-    coins_earned INT NOT NULL,
-    reason NVARCHAR(200),
-    transaction_date DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE NO ACTION,
-    FOREIGN KEY (study_log_id) REFERENCES study_logs(id) ON DELETE SET NULL
-);
-GO
+-- CREATE TABLE coin_transactions (
+--     id INT IDENTITY(1,1) PRIMARY KEY,
+--     user_id INT NOT NULL,
+--     study_log_id INT,
+--     coins_earned INT NOT NULL,
+--     reason NVARCHAR(200),
+--     transaction_date DATETIME DEFAULT GETDATE(),
+--     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE NO ACTION,
+--     FOREIGN KEY (study_log_id) REFERENCES study_logs(id) ON DELETE SET NULL
+-- );
+-- GO
 
 -- 6. Friends
 -- The table only prevents duplicate or self-friend entries
@@ -83,14 +83,14 @@ CREATE TABLE friends (
 GO
 
 -- 7. Badges
-CREATE TABLE badges (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    user_id INT NOT NULL,
-    badge_name NVARCHAR(100) NOT NULL,
-    earned_date DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-GO
+-- CREATE TABLE badges (
+--     id INT IDENTITY(1,1) PRIMARY KEY,
+--     user_id INT NOT NULL,
+--     badge_name NVARCHAR(100) NOT NULL,
+--     earned_date DATETIME DEFAULT GETDATE(),
+--     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+-- );
+-- GO
 
 -- Indexes for performance
 CREATE INDEX idx_users_username ON users(username);
@@ -105,4 +105,5 @@ GO
 
 
 PRINT 'All 7 tables created successfully!';
+
 
